@@ -1,0 +1,76 @@
+# API 草案与验收契约
+
+状态：接口规划，不是已实现文档。实施时生成 OpenAPI 并以接口测试保持一致；这里的路径可小幅调整并同步记录，不要空报接口已通。
+
+## 1. 公共约定
+
+前缀 `/api/v1`。JSON请求/响应，身份会话和租户上下文由服务端核验。公开slug/tenant_id只是定位；私有ID接口仍需权限。
+
+错误至少包含 `code`、用户可理解的 `message`、`request_id`。建议使用401未认证、403无权限、404资源不存在（避免暴露其他租户资源）、409并发/幂等冲突、422参数错误、429限流；一致策略通过测试固定。
+
+列表采用明确的分页和稳定排序。创建、转换和状态更新考虑幂等。输出只保留角色可见字段，不把数据库对象直接序列化。
+
+## 2. 端点清单
+
+| 模块 | 方法与路径草案 | 权限与重点 |
+|---|---|---|
+| 健康 | GET /health/live、/health/ready | 存活与依赖就绪分开，不返回凭据 |
+| 真实登录 | POST /auth/wechat | code由服务端交换；凭据缺失明确报错，不降级假登录 |
+| 自己 | GET /me | 当前身份，不暴露平台他人资料 |
+| 公开店铺 | GET /stores/{store_id} | 仅已发布且启用；公开字段 |
+| 商品 | GET /stores/{store_id}/products、/{product_id} | 同店、已上架，分页 |
+| 询货 | POST /stores/{store_id}/inquiries | 登录身份、限流、私有图片权限 |
+| 顾客需求 | POST /stores/{store_id}/reservations | 幂等、同店商品、自助归属 |
+| 本人历史 | GET /me/records?store_id=... | 必须本人且所属店铺，不能仅按电话 |
+| 记录详情 | GET /me/records/{type}/{id} | 本人权限与字段裁剪 |
+| 请求取消 | POST /me/reservations/{id}/cancellation-requests | 留痕，不越权直接完成备货 |
+| 商户租户 | GET /merchant/tenants | 只列当前用户有效成员身份 |
+| 店铺维护 | PATCH /merchant/tenants/{tenant_id}/store | 成员角色、版本检查 |
+| 分类商品 | /merchant/tenants/{tenant_id}/categories、products | GET/POST/PATCH与下架，所有关联同租户 |
+| 代记 | POST /merchant/tenants/{tenant_id}/reservations | 来源、原始需求；客户账号不能任意绑定 |
+| 待办 | GET /merchant/tenants/{tenant_id}/tasks | 仅本租户、状态/时间筛选 |
+| 答复 | POST /merchant/tenants/{tenant_id}/inquiries/{id}/replies | 公私备注区别 |
+| 转需求 | POST /merchant/tenants/{tenant_id}/inquiries/{id}/convert | 显式、幂等、权限 |
+| 状态 | POST /merchant/tenants/{tenant_id}/reservations/{id}/transitions | expected_version、允许迁移、审计 |
+| 上传 | POST /merchant/tenants/{tenant_id}/media；顾客私有图独立入口 | 文件类型/大小/权限，公开图和私图分开 |
+| 私有图 | GET /media/{id}/content | 所属记录读取权限或受控短期链接 |
+| 平台商户 | /platform/tenants、/applications | 平台管理员鉴权、审核/暂停留痕 |
+
+开发身份入口仅在受控开发配置存在，不纳入公开生产API。生产启动保护须独立测试。
+
+## 3. 代记请求示例（设计样例，全部为合成信息）
+
+```json
+{
+  "source": "MERCHANT_PHONE",
+  "customer_label": "演示顾客甲",
+  "raw_text": "干贝半斤，分两袋，明天下午自提",
+  "items": [
+    {"product_id": null, "name": "干贝", "quantity": "0.5", "unit": "斤", "spec": "分两袋"}
+  ],
+  "fulfillment_method": "PICKUP",
+  "expected_time_note": "明天下午（提交时由界面补成明确日期）",
+  "mark_confirmed": false
+}
+```
+
+相对日期必须在实际提交前转换或明确确认，历史不能永远写“明天”却没有参照。无商品明细时可仅用 raw_text 保存快速草稿。
+
+## 4. 状态更新示例
+
+```json
+{
+  "target_status": "PREPARING",
+  "expected_version": 3,
+  "note": "开始准备",
+  "visible_to_customer": true
+}
+```
+
+后端先鉴权、查租户、校验版本与允许迁移，再事务更新和写事件；不能让客户直接PATCH任意 status。
+
+## 5. 接口必须覆盖的反例
+
+其他租户ID、其他顾客ID、私有图片地址猜测、已冻结店铺提交、重复提交、同键不同载荷、跨店商品关联、负数/过多数量、非法状态、旧版本更新、公开API泄露手机号、未登录/假登录生产开启。
+
+开发完成后补充真实请求与响应、错误码、OpenAPI位置、契约测试命令，不仅保留成功curl示例。
