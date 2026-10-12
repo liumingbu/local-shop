@@ -14,7 +14,7 @@
 |---|---|---|---|
 | DOC-01 | 初始化文档包 | READY_FOR_REVIEW | 导入提交 1e1aa561；[草稿 PR #1](https://github.com/liumingbu/local-shop/pull/1)，未合并 |
 | M0-01 | 仓库检查 | DONE | main 62be6e58；旧验证分支 7bd637bf；任务分支开始时不存在；初始无打开 PR |
-| M0-02 | Dot开发环境验证 | 基础通过；扩展 NOT_RUN | ENVIRONMENT_CHECK.md；数据库/依赖/微信等未测试 |
+| M0-02 | Dot开发环境验证 | 基础通过；PG BLOCKED | ENVIRONMENT_CHECK.md；PyPI安装通过；PG启动被拒绝，连接/迁移未测，微信未测 |
 | M0-03 | Dot真实提交/PR验证 | DONE | 远端导入提交 1e1aa561 及草稿 PR #1 已实际创建；55文件逐字节核验通过 |
 | M0-04 | main基线和文档PR | READY_FOR_REVIEW | main 62be6e58 未改动；PR #1 指向 main，未合并 |
 | M1 | 工程初始化 | TODO | 无源码、无依赖锁、无运行记录 |
@@ -29,12 +29,12 @@
 - main：62be6e588b375c2cab90364472322b96f8c5f9e8。
 - env-check/20261012：7bd637bf3b0c90852285048ed08d76db0c7ddb44；真实报告原样保留。
 - GitHub 接口可写；先前403为历史结果。终端直接推送认证仍未通过。
-- 本轮范围仅文档导入和 PR；未授权执行包内长期开发提示词。
+- 用户已于14:55 UTC明确下达长期开发任务；先等待文档PR合并，独立PG预检查已执行。
 - 原包旧台账：evidence/package-original/docs/PROGRESS.md。
 
 ## 下一步最小任务
 
-文档导入及远端核验已完成，等待用户审阅 PR #1 和后续开发指令。数据库等未测试能力仍需真实验证。
+文档导入及远端核验已完成，等待用户审阅合并 PR #1；长期开发已授权。PG服务启动受限；合并后先推进无DB依赖项，数据库集成仍阻塞。
 
 ## 后续更新格式
 

@@ -80,3 +80,5 @@ run_id:
 
 - `ENVIRONMENT_CHECK.md`：Dot 实际基础环境报告，六项测试于 14:23 UTC 重跑通过，远端提交 7bd637bf 已核验。
 - 本轮制品导入检查另见 evidence/FOUNDATION_IMPORT_20261012.md；业务、数据库和微信测试仍 NOT_RUN。
+
+- 2026-10-12 14:58 UTC：[PG预检查](evidence/POSTGRES_PREFLIGHT_20261012.md)，启动BLOCKED；无数据库集成测试执行，业务测试仍NOT_RUN。

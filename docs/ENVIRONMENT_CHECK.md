@@ -96,3 +96,9 @@ npm test
 ## 验证边界
 
 本次未验证业务功能、第三方依赖下载、数据库、浏览器 UI、生产部署、长期后台运行、跨会话文件持久性或 GitHub Actions CI。测试没有安装任何外部依赖。没有修改仓库可见性或合并测试分支。
+
+## 后续补查：2026-10-12 14:58 UTC
+
+基础验证原文和结果保留。新验证：虚拟环境和PyPI依赖安装成功；PostgreSQL 16.2二进制及initdb成功，但服务启动因Unix socket Operation not permitted失败，提权重试也失败。真实数据库连接、事务与迁移未运行；DB_INTEGRATION_OK不成立。该二进制仅做预检查，不作为生产版本建议。
+
+详见 [数据库预检查](evidence/POSTGRES_PREFLIGHT_20261012.md)。文档PR #1仍待合并，因此M0整体未完成。

@@ -1,6 +1,6 @@
 # HANDOFF｜下一轮从这里继续
 
-更新时间：2026-10-12 UTC。本轮仅导入文档，不执行包内长期开发任务。
+更新时间：2026-10-12 UTC。用户已明确授权长期开发；当前仍等待文档基线合并。
 
 ## 基线与工作区
 
@@ -15,12 +15,12 @@
 
 ## 当前能力与边界
 
-Dot 自身云电脑程序及六项基础测试通过；GitHub 接口写入已验证。终端 git push 认证仍未通过。数据库、业务程序、微信真机、依赖安装及部署 NOT_RUN。
+Dot 自身云电脑程序及六项基础测试通过；GitHub 接口写入已验证。终端 git push 认证仍未通过。PyPI依赖安装通过；PG二进制/initdb通过，但socket创建被拒绝，服务启动BLOCKED。数据库连接/迁移、业务、微信及部署NOT_RUN。详见docs/evidence/POSTGRES_PREFLIGHT_20261012.md。
 
 ## 下一步
 
 1. 核对本轮 PR 的实际 base/head、远端 SHA 和审阅状态，不自动合并。
-2. 用户审阅并合并文档 PR，明确启动后续开发后，再进入 M1；首个业务闭环为 M2 老板代记和租户隔离。
+2. 用户审阅并合并文档 PR 后进入 M1（长期任务已授权）；首个业务闭环为 M2 老板代记和租户隔离。
 3. M1 需要另行实测依赖与 PostgreSQL 等条件，不从基础 smoke 测试推导通过。
 
 原包交接记录保留在 docs/evidence/package-original/HANDOFF.md。导入和差异说明见 docs/evidence/FOUNDATION_IMPORT_20261012.md。
