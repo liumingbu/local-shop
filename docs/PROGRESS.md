@@ -12,11 +12,11 @@
 
 | ID | 事项 | 当前状态 | 证据/说明 |
 |---|---|---|---|
-| DOC-01 | 初始化文档包 | IN_PROGRESS | 本轮导入 chore/project-foundation；提交/PR 待完成后更新 |
+| DOC-01 | 初始化文档包 | READY_FOR_REVIEW | 导入提交 1e1aa561；[草稿 PR #1](https://github.com/liumingbu/local-shop/pull/1)，未合并 |
 | M0-01 | 仓库检查 | DONE | main 62be6e58；旧验证分支 7bd637bf；任务分支开始时不存在；初始无打开 PR |
 | M0-02 | Dot开发环境验证 | 基础通过；扩展 NOT_RUN | ENVIRONMENT_CHECK.md；数据库/依赖/微信等未测试 |
-| M0-03 | Dot真实提交/PR验证 | 提交通过；本轮 PR 待创建 | 环境报告远端 7bd637bf 已回读 |
-| M0-04 | main基线和文档PR | IN_PROGRESS | main 已存在；文档 PR 未合并 |
+| M0-03 | Dot真实提交/PR验证 | DONE | 远端导入提交 1e1aa561 及草稿 PR #1 已实际创建；55文件逐字节核验通过 |
+| M0-04 | main基线和文档PR | READY_FOR_REVIEW | main 62be6e58 未改动；PR #1 指向 main，未合并 |
 | M1 | 工程初始化 | TODO | 无源码、无依赖锁、无运行记录 |
 | M2 | 老板代记闭环 | TODO | 无业务测试 |
 | M3 | 商品与店铺 | TODO | 无业务测试 |
@@ -34,7 +34,7 @@
 
 ## 下一步最小任务
 
-完成文档分支提交与 PR、核验远端；等待用户审阅和后续开发指令。数据库等未测试能力仍需真实验证。
+文档导入及远端核验已完成，等待用户审阅 PR #1 和后续开发指令。数据库等未测试能力仍需真实验证。
 
 ## 后续更新格式
 

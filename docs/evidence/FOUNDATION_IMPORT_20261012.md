@@ -30,3 +30,10 @@
 发布通过已授权 GitHub 接口创建树、提交和更新本任务分支。终端直接 git push 认证没有重新配置，不能宣称其通过。
 
 本轮 PR 目标 main，草稿、不合并。提交 SHA、PR URL 和最终远端文件逐字节核验结果在实际发布完成后记录。没有调用其他执行环境，没有创建或运行 GitHub Actions。
+
+## 发布后实际核验（2026-10-12 14:31 UTC）
+
+- 导入提交：1e1aa561c330daa17938d618d5e8a39ebc636602。
+- PR：https://github.com/liumingbu/local-shop/pull/1；draft=true，state=open，merged=false，head=chore/project-foundation，base=main。
+- 云电脑 git fetch 后，55个远端文件与本地逐字节一致。main 仍为62be6e58，原验证分支仍为7bd637bf；环境报告完全保留。
+- 本地分支对齐已发布提交后工作树干净。本节与进度/交接是后续状态补记，不声称包含自身SHA。

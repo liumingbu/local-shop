@@ -9,7 +9,9 @@
 - 基准：`62be6e588b375c2cab90364472322b96f8c5f9e8`；任务分支 `chore/project-foundation`，开始时远端不存在。
 - 旧独立验证工作区存在未跟踪 ENVIRONMENT_CHECK.md、__pycache__/，原样保留，未覆盖或清理。
 - 已核验环境报告提交：`7bd637bf3b0c90852285048ed08d76db0c7ddb44`，保留 env-check/20261012 分支及报告原文。
-- 本轮提交 SHA 和 PR 以 GitHub 分支、PR 及本轮最终回报为准，禁止虚构自引用 SHA。
+- 文档导入提交：`1e1aa561c330daa17938d618d5e8a39ebc636602`，55 个远端文件已逐字节核验。
+- [草稿 PR #1](https://github.com/liumingbu/local-shop/pull/1)：head chore/project-foundation → base main，open，未合并。
+- 本次状态补记会生成后续文档提交；最终 HEAD 以 GitHub PR 为准。工作树核验时干净，状态补记期间仅修改进度、交接和证据文档。
 
 ## 当前能力与边界
 
