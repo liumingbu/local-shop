@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from .attachments import attachments_json, link_private
 from .cancellation_data import cancellation_json, pending_cancellation
+from .confirmation_data import acknowledge_latest, confirmation_json
 from .image_store import active_media
 from .models import (
     CancellationRequest,
@@ -62,6 +63,8 @@ class NewReservation(StrictModel):
 
 
 class Transition(StrictModel):
+    confirmation_revision_id: UUID | None = None
+    customer_agreed: bool = False
     target_status: Status
     expected_version: int = Field(ge=1)
     note: str = Field(default="", max_length=500)
@@ -116,6 +119,7 @@ def reservation_json(record, session=None):
     if session is not None:
         value["attachments"] = attachments_json(session, record.tenant_id, reservation_id=record.id)
         value["cancellation_requests"] = cancellation_json(session, record)
+        value["confirmation_revisions"] = confirmation_json(session, record)
     return value
 
 
@@ -144,20 +148,9 @@ def idempotent(session, tenant, actor, endpoint, key, payload, action):
     return response
 
 
-def create_reservation(
-    session,
-    tenant_id,
-    uid,
-    data,
-    customer_user_id=None,
-    source_inquiry_id=None,
-    privacy_version=None,
-):
-    data = dict(data)
-    if data.get("expected_at") is not None and isinstance(data["expected_at"], str):
-        data["expected_at"] = datetime.fromisoformat(data["expected_at"])
+def snapshot_items(session, tenant_id, items):
     snapshots = []
-    for item in data["items"]:
+    for item in items:
         snapshot = dict(item)
         if item["product_id"]:
             product = session.scalar(
@@ -185,6 +178,22 @@ def create_reservation(
                 else None,
             }
         snapshots.append(snapshot)
+    return snapshots
+
+
+def create_reservation(
+    session,
+    tenant_id,
+    uid,
+    data,
+    customer_user_id=None,
+    source_inquiry_id=None,
+    privacy_version=None,
+):
+    data = dict(data)
+    if data.get("expected_at") is not None and isinstance(data["expected_at"], str):
+        data["expected_at"] = datetime.fromisoformat(data["expected_at"])
+    snapshots = snapshot_items(session, tenant_id, data["items"])
     record = Reservation(
         tenant_id=tenant_id,
         actor_id=uid,
@@ -422,6 +431,11 @@ def build_router(access):
             }
             if payload.target_status not in allowed[row.status]:
                 raise HTTPException(409, "INVALID_TRANSITION")
+            if payload.target_status == "CONFIRMED":
+                acknowledge_latest(session, row, uid, payload.confirmation_revision_id,
+                                   payload.customer_agreed)
+            elif payload.confirmation_revision_id or payload.customer_agreed:
+                raise HTTPException(422, "CONFIRMATION_FIELDS_NOT_APPLICABLE")
             previous = row.status
             row.status = payload.target_status
             row.version += 1

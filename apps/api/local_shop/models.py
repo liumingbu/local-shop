@@ -388,3 +388,34 @@ class CancellationRequest(Base):
             postgresql_where=text("status = 'REQUESTED'"),
         ),
     )
+
+
+class ConfirmationRevision(Base):
+    __tablename__ = "confirmation_revisions"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    reservation_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    proposed_version: Mapped[int] = mapped_column(Integer)
+    details: Mapped[dict] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    confirmed_version: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    confirmed_by: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    confirmed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "reservation_id"],
+            ["reservations.tenant_id", "reservations.id"],
+            name="fk_confirmation_same_tenant",
+        ),
+        UniqueConstraint(
+            "tenant_id", "reservation_id", "proposed_version", name="uq_confirmation_version"
+        ),
+        CheckConstraint("proposed_version >= 2", name="ck_confirmation_version"),
+        CheckConstraint(
+            "(confirmed_version IS NULL AND confirmed_by IS NULL AND confirmed_at IS NULL) "
+            "OR (confirmed_version IS NOT NULL AND confirmed_by IS NOT NULL "
+            "AND confirmed_at IS NOT NULL AND confirmed_version > proposed_version)",
+            name="ck_confirmation_ack",
+        ),
+    )

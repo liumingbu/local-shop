@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from .attachments import attachments_json, copy_inquiry_attachments, link_private
 from .cancellation_data import cancellation_json
 from .catalog import find_owned, published_store
+from .confirmation_data import confirmation_json
 from .models import (
     Category,
     Inquiry,
@@ -99,6 +100,7 @@ def customer_reservation(row, session, detail=False):
     )
     value = {name: source[name] for name in allowed}
     value["cancellation_requests"] = cancellation_json(session, row)
+    value["confirmation_revisions"] = confirmation_json(session, row)
     value["attachments"] = attachments_json(
         session, row.tenant_id, reservation_id=row.id, customer=True
     )

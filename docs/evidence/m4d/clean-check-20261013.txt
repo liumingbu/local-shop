@@ -1,0 +1,99 @@
+af376a55bd72d78cb141ec505273046e422f67c1
+All checks passed!
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+........................................................................ [ 47%]
+........................................................................ [ 94%]
+........                                                                 [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /workspace/scratch/d168cc482c3f/local-shop-m2-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+152 passed, 1 warning in 102.46s (0:01:42)
+waiting for server to shut down.... done
+server stopped
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-13 13:40:18.896 JST [1307] LOG:  starting PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-13 13:40:18.896 JST [1307] LOG:  listening on IPv4 address "127.0.0.1", port 55679
+2026-10-13 13:40:18.897 JST [1310] LOG:  database system was shut down at 2026-10-13 13:40:18 JST
+2026-10-13 13:40:18.899 JST [1307] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: cancellation decision/audit/idempotency durable
+PASS real HTTP after restart: original and confirmed revisions remain distinct
+waiting for server to shut down....2026-10-13 13:40:20.019 JST [1307] LOG:  received fast shutdown request
+2026-10-13 13:40:20.020 JST [1307] LOG:  aborting any active transactions
+2026-10-13 13:40:20.020 JST [1307] LOG:  background worker "logical replication launcher" (PID 1313) exited with exit code 1
+2026-10-13 13:40:20.020 JST [1308] LOG:  shutting down
+2026-10-13 13:40:20.021 JST [1308] LOG:  checkpoint starting: shutdown immediate
+2026-10-13 13:40:20.021 JST [1308] LOG:  checkpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=8, longest=0.001 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/155D520, redo lsn=0/155D520
+2026-10-13 13:40:20.023 JST [1307] LOG:  database system is shut down
+ done
+server stopped
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 typecheck
+> npm run typecheck --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> @local-shop/miniprogram@0.1.0 typecheck
+> tsc --noEmit
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 build
+> vue-tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 13 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  0.36 kB │ gzip:  0.28 kB
+dist/assets/index-DzxXMGFL.css   1.26 kB │ gzip:  0.62 kB
+dist/assets/index--O-OFrUZ.js   73.02 kB │ gzip: 28.79 kB
+
+✓ built in 124ms
+
+> @local-shop/miniprogram@0.1.0 build
+> tsc && node build-assets.cjs
+
+Assets copied; this is not a WeChat runtime test.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
