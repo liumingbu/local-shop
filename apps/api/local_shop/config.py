@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import SecretStr, model_validator
+from pydantic import Field, SecretStr, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy.engine import make_url
 
@@ -17,6 +17,10 @@ class Settings(BaseSettings):
     app_secret_key: SecretStr
     dev_auth_enabled: bool = False
     media_root: Path = Path("var/media")
+    media_receive_timeout_seconds: float = Field(default=15, ge=0.05, le=120)
+    db_statement_timeout_ms: int = Field(default=10000, ge=100, le=60000)
+    db_lock_timeout_ms: int = Field(default=3000, ge=100, le=60000)
+    db_pool_timeout_seconds: float = Field(default=5, ge=0.05, le=60)
 
     @model_validator(mode="after")
     def validate_runtime(self):
