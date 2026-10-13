@@ -1,0 +1,27 @@
+<view class="page"><view class="eyebrow">{{store.name || '指定店铺'}} · {{kind==='inquiry'?'询货':'需求登记'}}</view>
+  <view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{locked}}">原请求结果未确认，内容已锁定。重试会使用同一请求，不会新建另一份。</view>
+  <view class="notice">仅使用合成演示资料。询货答复不自动成为备货需求；登记不代表商家已确认。</view>
+  <block wx:if="{{draft && !done}}"><view class="card">
+    <textarea data-field="raw_text" value="{{draft.raw_text}}" bindinput="input" disabled="{{busy || locked}}" maxlength="4000" placeholder="想问什么／需要什么？也可以只上传需求图片"/>
+    <block wx:if="{{kind==='reservation'}}"><input data-field="customer_label" value="{{draft.customer_label}}" bindinput="input" disabled="{{busy || locked}}" maxlength="100" placeholder="称呼（选填，不用于认领历史）"/>
+      <view wx:for="{{draft.items}}" wx:key="index" class="line"><view>{{item.name}} · {{item.spec}} · {{item.unit}}</view>
+        <input type="digit" value="{{item.quantity}}" data-index="{{index}}" bindinput="quantity" disabled="{{busy || locked}}"/>
+        <button size="mini" data-index="{{index}}" bindtap="remove" disabled="{{busy || locked}}">移除</button></view>
+      <view class="muted">不同单位/规格分别保留，不计算应付金额。</view>
+      <picker range="{{methodLabels}}" value="{{methodIndex}}" bindchange="method" disabled="{{busy || locked}}"><view class="field">{{methodLabels[methodIndex]}}</view></picker>
+      <view class="muted">仅登记意向；店铺是否支持：自提{{store.allow_pickup?'已开放':'未开放'}}，配送{{store.allow_delivery?'已开放':'未开放'}}。</view>
+      <picker mode="date" value="{{draft.expected_date}}" bindchange="date" disabled="{{busy || locked}}"><view class="field">期望日期：{{draft.expected_date || '未选择（可选）'}}</view></picker>
+      <picker mode="time" value="{{draft.expected_clock}}" bindchange="clock" disabled="{{busy || locked}}"><view class="field">期望时间：{{draft.expected_clock || '未选择（可选）'}}，北京时间</view></picker>
+      <input data-field="expected_time_note" value="{{draft.expected_time_note}}" bindinput="input" disabled="{{busy || locked}}" maxlength="200" placeholder="时段补充，尽量写明确日期"/>
+    </block>
+    <view wx:if="{{kind==='inquiry' && draft.product_id}}" class="muted">已关联本店商品，可补充问题。</view>
+  </view><view class="card"><checkbox-group bindchange="consent"><label><checkbox value="accepted" checked="{{consent}}" disabled="{{busy || locked}}"/>我已阅读开发隐私说明，仅提交合成演示资料</label></checkbox-group>
+    <button size="mini" bindtap="privacy">查看说明</button><view class="muted">图片最多5张，提交到本店后本店商户可处理。正式隐私授权尚未接入。</view>
+    <view wx:for="{{draft.media_ids}}" wx:key="*this" class="line">图片 {{index+1}} 已上传（尚未提交）<button size="mini" data-id="{{item}}" bindtap="removeImage" disabled="{{busy || locked}}">移除关联</button></view>
+    <button bindtap="upload" disabled="{{busy || locked || !consent || draft.media_ids.length>=5}}">选择需求图片</button>
+  </view><button class="primary" bindtap="submit" disabled="{{busy}}">{{busy?'处理中…':locked?'重试原请求':kind==='inquiry'?'提交询货':'提交需求登记'}}</button></block>
+  <button bindtap="discard" disabled="{{busy || locked || done}}">放弃本店未提交草稿</button>
+  <view wx:if="{{!draft && !done}}" class="muted">请先登录后登记。浏览店铺不要求登录。</view>
+  <view wx:if="{{done}}" class="notice">已提交，请在我的记录中查看，勿重复新建。</view>
+  <button bindtap="home" disabled="{{busy}}">返回入口／登录</button>
+</view>

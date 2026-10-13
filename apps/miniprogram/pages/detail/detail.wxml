@@ -1,0 +1,23 @@
+<view class="page"><view class="error" wx:if="{{error}}">{{error}}</view>
+  <block wx:if="{{row}}"><view class="card"><view class="title">{{label}}</view><view class="muted">{{time}}</view>
+    <view class="subtitle">原始{{kind==='inquiry'?'询货':'需求'}}</view><view class="pre">{{row.raw_text || '图片／商品需求'}}</view>
+    <view wx:if="{{row.product_snapshot}}">关联商品：{{row.product_snapshot.name}} · {{row.product_snapshot.spec}}</view>
+    <view wx:for="{{row.items}}" wx:key="index">{{item.name}} · {{item.spec}} · {{item.quantity}} {{item.unit}}</view>
+    <block wx:if="{{kind==='reservation'}}"><view>期望时间：{{expected}}</view><view>{{row.expected_time_note}}</view><view>交付意向：{{row.fulfillment_method==='DELIVERY'?'商家配送':'自提'}}</view></block>
+    <view class="photos"><view wx:for="{{images}}" wx:key="id"><image wx:if="{{item.path}}" src="{{item.path}}" class="cover" mode="aspectFit"/><text wx:else>图片暂不可用</text></view></view>
+  </view>
+  <view wx:if="{{row.confirmed_text}}" class="card"><view class="subtitle">从询货转需求时的整理文字</view><view>{{row.confirmed_text}}</view><view class="muted">最新确认情况以状态和下方候选版本为准。</view></view>
+  <view wx:for="{{revisions}}" wx:key="id" class="card"><view class="subtitle">{{item.label}}</view><view class="muted">需求版本 {{item.proposed_version}}</view>
+    <view>{{item.details.summary}}</view><view wx:for="{{item.details.items}}" wx:for-item="line" wx:key="index">{{line.name}} · {{line.spec}} · {{line.quantity}} {{line.unit}}</view>
+    <view>候选交付时间：{{item.fulfillment}}</view><view>{{item.details.time_note}}</view><view>修改原因：{{item.details.change_reason}}</view>
+    <view wx:if="{{item.confirmed_version}}" class="muted">商户记录确认于 {{item.confirmed}}，不是微信电子签认。</view><view wx:else class="notice">待确认候选，不是已承诺的交付结果。</view>
+  </view>
+  <view class="card" wx:if="{{kind==='inquiry'}}"><view class="subtitle">商家回复</view><view wx:for="{{row.replies}}" wx:key="id" class="line">{{item.text}}</view>
+    <view wx:if="{{!row.replies.length}}">暂无对客回复</view><button wx:if="{{row.converted_reservation_id}}" bindtap="converted">查看明确转换的需求</button>
+    <view class="muted">询货回复不会自动开始备货。当前没有已验证的微信消息提醒，请主动刷新或联系商家。</view></view>
+  <view wx:for="{{cancellations}}" wx:key="id" class="card"><view class="subtitle">{{item.label}}</view><view>申请原因：{{item.reason}}</view><view>商家答复：{{item.response_note || '尚未处理'}}</view></view>
+  <view wx:if="{{kind==='reservation' && (canCancel || locked)}}" class="card"><view class="subtitle">申请取消</view><textarea value="{{reason}}" bindinput="reason" maxlength="500" disabled="{{busy || locked}}" placeholder="说明取消意向，商家处理后才会取消"/>
+    <button bindtap="cancel" disabled="{{busy}}">{{locked?'重试原取消申请':'提交取消意向'}}</button><view class="muted">申请不等于已取消，不代表已向商户送达微信消息。</view></view>
+  <view class="card"><view class="subtitle">处理记录</view><view wx:for="{{events}}" wx:key="index" class="line"><view>{{item.actionLabel}} · {{item.label}}</view><view>{{item.note}}</view><view class="muted">{{item.time}}</view></view></view>
+  </block><button bindtap="load" disabled="{{busy || !recordId}}">刷新处理结果</button><button bindtap="records" disabled="{{!storeId}}">本店我的记录</button><button bindtap="home">返回入口／登录</button>
+</view>

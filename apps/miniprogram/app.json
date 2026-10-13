@@ -1,6 +1,12 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/store/store",
+    "pages/product/product",
+    "pages/compose/compose",
+    "pages/records/records",
+    "pages/detail/detail",
+    "pages/privacy/privacy"
   ],
   "window": {
     "navigationBarTitleText": "local-shop",

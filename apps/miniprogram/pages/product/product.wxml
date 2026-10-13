@@ -1,0 +1,10 @@
+<view class="page"><view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
+  <block wx:if="{{product}}"><swiper wx:if="{{images.length}}" indicator-dots class="gallery"><swiper-item wx:for="{{images}}" wx:key="*this"><image src="{{item}}" mode="aspectFit" class="gallery-image"/></swiper-item></swiper>
+    <view class="card"><view class="title">{{product.name}}</view><view>{{product.description}}</view><view>规格 {{product.spec || '未注明'}} · 单位 {{product.unit}}</view>
+      <view wx:if="{{product.reference_price!==null}}">参考价 {{product.reference_price}} 元 / {{product.unit}}</view>
+      <view>供货状态：{{product.supply_status==='UNAVAILABLE'?'暂缺':product.supply_status==='CONFIRM'?'需商家确认':'常备（非实时库存）'}}</view>
+      <view class="muted">参考价不是应付金额；不提供在线支付。供货情况请询问商家。</view>
+      <view>数量（{{product.unit}}）</view><input type="digit" value="{{quantity}}" bindinput="quantity" maxlength="13"/>
+      <button bindtap="add" disabled="{{busy}}">加入本店需求</button><button bindtap="inquiry">询问此商品</button><button bindtap="cart">查看需求草稿</button>
+    </view></block>
+</view>

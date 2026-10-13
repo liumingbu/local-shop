@@ -12,6 +12,8 @@
   },
   "include": [
     "app.ts",
+    "config.ts",
+    "lib/**/*.ts",
     "pages/**/*.ts"
   ],
   "exclude": [

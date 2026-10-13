@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tsc && node build-assets.cjs"
+    "build": "node build-assets.cjs --clean && tsc && node build-assets.cjs"
   },
   "devDependencies": {
     "miniprogram-api-typings": "5.2.3",

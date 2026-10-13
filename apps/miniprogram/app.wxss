@@ -1,1 +1,21 @@
-page { background: #f6f4ef; color: #203c37; font-family: sans-serif; }
+page { background:#f4f6f4; color:#20352c; font-size:30rpx; font-family:system-ui,sans-serif; }
+.page { padding:32rpx 28rpx 64rpx; max-width:1000rpx; margin:auto; }
+.eyebrow { color:#567467; font-size:24rpx; margin-bottom:14rpx; }
+.title { font-size:44rpx; font-weight:700; line-height:1.4; margin:12rpx 0 26rpx; }
+.subtitle { font-size:32rpx; font-weight:600; margin-bottom:14rpx; }
+.card { background:#fff; border:1rpx solid #dfe7e1; border-radius:18rpx; padding:26rpx; margin:22rpx 0; line-height:1.7; }
+.muted { color:#64786d; font-size:25rpx; line-height:1.6; margin:10rpx 0; }
+.notice { background:#fff6dc; color:#695122; padding:20rpx; border-radius:12rpx; font-size:26rpx; line-height:1.6; margin:16rpx 0; }
+.error { background:#fff0ed; color:#a63725; border:1rpx solid #efc3bb; padding:20rpx; border-radius:12rpx; margin:16rpx 0; }
+button { font-size:28rpx; background:#e8eee9; color:#244d37; border-radius:12rpx; margin:16rpx 0; }
+button.primary { background:#246744; color:#fff; }
+button[disabled] { opacity:.55; }
+input,textarea,.field { box-sizing:border-box; background:#f6f8f6; border:1rpx solid #d8e2da; border-radius:10rpx; padding:18rpx; margin:16rpx 0; width:100%; }
+input { min-height:82rpx; } textarea { min-height:200rpx; }
+.actions { display:flex; align-items:center; gap:12rpx; flex-wrap:wrap; }
+.actions button { flex:1; min-width:150rpx; }.actions text { font-size:24rpx; }
+.line { border-top:1rpx solid #e5ebe5; padding:18rpx 0; }.empty { padding:44rpx 16rpx; text-align:center; color:#64786d; }
+.logo { width:100rpx; height:100rpx; border-radius:18rpx; }.cover { width:180rpx; height:180rpx; border-radius:12rpx; background:#edf1ed; }
+.gallery { width:100%; height:450rpx; }.gallery-image { width:100%; height:450rpx; }
+.categories { white-space:nowrap; }.categories button { display:inline-block; margin-right:12rpx; }
+.photos { display:flex; gap:12rpx; flex-wrap:wrap; }.pre { white-space:pre-wrap; word-break:break-all; }

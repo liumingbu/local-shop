@@ -1,0 +1,20 @@
+<view class="page"><view class="eyebrow">local-shop · 店铺</view>
+  <view class="error" wx:if="{{error}}">{{error}}</view><view wx:if="{{busy}}" class="muted">加载中…</view>
+  <block wx:if="{{store}}"><view class="card"><image wx:if="{{logo}}" src="{{logo}}" class="logo" mode="aspectFill"/>
+    <view class="title">{{store.name}}</view><view>{{store.description}}</view><view class="muted">{{store.business_hours}}</view>
+    <view>联系：{{store.public_contact || '商家暂未填写'}}</view><view>地址：{{store.public_address || '商家暂未填写'}}</view><view>{{store.delivery_note}}</view>
+    <view class="muted">{{store.allow_pickup?'支持自提':'未开放自提'}} · {{store.allow_delivery?'支持配送意向登记':'未开放配送'}}</view>
+    <button open-type="share">分享本店</button><view class="muted">分享功能代码已接入，真实微信分享待验收。</view>
+  </view>
+  <view class="actions"><button bindtap="inquiry">询货</button><button bindtap="request">需求清单</button><button bindtap="records">我的记录</button></view>
+  <scroll-view scroll-x class="categories"><button size="mini" data-id="" bindtap="category" disabled="{{busy}}">全部分类</button>
+    <button wx:for="{{store.categories}}" wx:key="id" size="mini" data-id="{{item.id}}" bindtap="category" disabled="{{busy}}">{{item.name}}</button></scroll-view>
+  <view class="card product" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="product">
+    <image wx:if="{{item.cover}}" src="{{item.cover}}" mode="aspectFill" class="cover"/><view class="subtitle">{{item.name}}</view>
+    <view>{{item.spec}} · {{item.unit}} · {{item.supplyLabel}}</view><view wx:if="{{item.reference_price!==null}}">参考价 {{item.reference_price}} 元 / {{item.unit}}</view>
+    <view class="muted">参考信息，实际供货请与商家确认</view>
+  </view>
+  <view wx:if="{{!products.length && !busy}}" class="empty">本店暂未发布商品，仍可文字询货。</view>
+  <view class="actions"><button bindtap="previous" disabled="{{busy || page<=1}}">上一页</button><text>第 {{page}} 页</text><button bindtap="next" disabled="{{busy || page*20>=total}}">下一页</button></view>
+  </block><button wx:if="{{storeId && error}}" data-id="" bindtap="category" disabled="{{busy}}">重新显示本店全部商品</button><button wx:if="{{storeId}}" bindtap="load" disabled="{{busy}}">刷新本店</button>
+</view>

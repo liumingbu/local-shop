@@ -1,1 +1,21 @@
-<view class="page"><text class="title">{{title}}</text><text>{{stage}}</text><text>尚未执行微信开发者工具或真机验证。</text></view>
+<view class="page">
+  <view class="eyebrow">local-shop · 多商户店面</view><view class="title">进店看看，把需求说清楚</view>
+  <view class="notice">当前为开发版。真实微信登录、扫码、消息与隐私流程尚未验收；不提供支付功能。</view>
+  <view class="error" wx:if="{{error}}">{{error}}</view>
+  <view class="card"><view class="subtitle">进入指定店铺</view>
+    <input placeholder="输入完整店铺编号（开发验证）" value="{{storeInput}}" bindinput="input" maxlength="36" />
+    <button bindtap="enter" disabled="{{busy}}">进入本店</button>
+    <view class="muted">分享入口会直接定位对应店铺。无效入口不会跳到其他店。</view>
+  </view>
+  <view class="card" wx:if="{{recent.length}}"><view class="subtitle">最近浏览</view>
+    <button wx:for="{{recent}}" wx:key="id" data-id="{{item.id}}" bindtap="enter">{{item.name}}</button>
+  </view>
+  <view class="card"><view>身份：{{identity}}</view>
+    <block wx:if="{{devAllowed}}"><picker range="{{aliases}}" value="{{aliasIndex}}" bindchange="chooseIdentity"><view class="field">开发身份：{{aliases[aliasIndex]}}</view></picker>
+      <button bindtap="signIn" disabled="{{busy}}">进入受控开发身份</button></block>
+    <view class="muted" wx:else>尚未配置真实微信登录。浏览店铺无需登录。</view>
+    <button bindtap="signOut" disabled="{{busy}}">退出身份</button>
+    <view class="muted">切换身份不会带入其他人的草稿、私图或历史。登录令牌仅保存在内存。</view>
+  </view>
+  <view class="muted">商户手机工作台将在独立模块提供。</view>
+</view>
