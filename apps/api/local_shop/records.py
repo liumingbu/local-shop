@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
+from .image_store import active_media
 from .models import (
     Category,
     IdempotencyKey,
@@ -73,6 +74,7 @@ class StoreInput(StrictModel):
     delivery_note: str = Field(default="", max_length=500)
     allow_pickup: bool = False
     allow_delivery: bool = False
+    logo_media_id: UUID | None = None
 
 
 def store_json(row):
@@ -164,6 +166,8 @@ def build_router(access):
         membership = authorize(session, tenant_id, uid)
         if membership.role != "OWNER":
             raise HTTPException(403, "OWNER_REQUIRED")
+        if payload.logo_media_id is not None:
+            active_media(session, tenant_id, payload.logo_media_id, "LOGO")
         lock_scope(session, f"store:{tenant_id}")
         row = session.get(Store, tenant_id)
         current_version = row.version if row else 0

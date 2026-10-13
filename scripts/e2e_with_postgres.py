@@ -78,6 +78,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
             "API_HOST": "127.0.0.1",
             "API_PORT": "8000",
             "PYTHONPATH": str(root / "apps/api"),
+            "MEDIA_ROOT": str(folder / "media"),
         }
         subprocess.run(
             [str(root / ".venv/bin/alembic"), "-c", "apps/api/alembic.ini", "upgrade", "head"],
@@ -112,10 +113,12 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
             wait_http("http://127.0.0.1:5173", web)
             if args.http_only:
                 from catalog_http import exercise_catalog
+                from media_http import exercise_media, verify_media_after_restart
                 from owner_http import exercise, verify_after_restart
 
                 state = exercise("http://127.0.0.1:8000")
                 exercise_catalog("http://127.0.0.1:8000")
+                images = exercise_media("http://127.0.0.1:8000")
                 api.terminate()
                 api.wait(timeout=10)
                 subprocess.run(
@@ -128,6 +131,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                 processes.append(api)
                 wait_http("http://127.0.0.1:8000/health/ready", api)
                 verify_after_restart("http://127.0.0.1:8000", state)
+                verify_media_after_restart("http://127.0.0.1:8000", images)
                 result = subprocess.CompletedProcess([], 0)
             elif args.serve_for:
                 print("ISOLATED_SERVICES_READY http://127.0.0.1:5173", flush=True)

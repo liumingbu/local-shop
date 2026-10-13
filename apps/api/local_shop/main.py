@@ -14,6 +14,7 @@ from .catalog import build_router as catalog_router
 from .config import Settings
 from .db import build_engine, probe_database
 from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
+from .media import build_router as media_router
 from .records import build_router
 
 
@@ -103,4 +104,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     access = build_access(settings, engine)
     app.include_router(build_router(access))
     app.include_router(catalog_router(access))
+    app.include_router(media_router(access, settings))
     return app

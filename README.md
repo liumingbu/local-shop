@@ -124,3 +124,19 @@ PG_BIN=/path/to/postgresql/bin .venv/bin/python scripts/e2e_with_postgres.py --h
 浏览器自动化：相同命令去掉 `--http-only`；需要可启动 Chromium。
 当前 Dot 命令环境 Chromium 启动被 Unix socket 权限阻塞；浏览器三项测试未执行到页面断言，
 不能用 HTTP 或构建通过代替浏览器通过。已有云浏览器连接本机服务亦返回连接拒绝。
+
+## M3 图片接口（开发验证范围）
+
+MEDIA_ROOT 是后端受控本机目录，不得将目录整体挂载为公开静态站点。
+应用账号需要该目录读写权限；数据库与文件必须一起备份。
+
+- 上传：POST /api/v1/merchant/tenants/{tenant_id}/media?purpose=PRODUCT 或 LOGO。
+  Authorization: Bearer、Idempotency-Key 必需；请求体直接为图片二进制，Content-Type 为 image/jpeg、image/png 或 image/webp。
+- 上限2 MiB、1200万解码像素；拒绝SVG/HTML/动画/伪图片。真实解码后缩至最长边1600，统一JPEG并移除EXIF等元数据。
+- PUT .../products/{product_id}/images，提交 media_ids（最多8个有序且不重复）与expected_version；空数组移除商品关联，不删除图片文件。
+- 店铺PUT的logo_media_id只接受本店LOGO图片；null移除Logo。
+- 上传成功不意味着公开：仅当前发布店铺、发布商品、有效分类、已关联有效商品图片可通过公开URL获取。
+- PATCH .../media/{id} 可凭expected_version设置ACTIVE/ARCHIVED，归档可恢复；不物理删除真实文件。
+
+HTTP脚本已包含上传、归一化、排序、公开下载及重启后图片字节一致性验证。
+图片维护页面及微信上传接口适配尚待后续实现，不能据后端通过声称真机图片已验证。

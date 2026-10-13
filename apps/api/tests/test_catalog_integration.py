@@ -73,7 +73,9 @@ def store(client, **extra):
 
 def update_product(client, row, **extra):
     payload = {
-        key: value for key, value in row.items() if key not in ("id", "version", "price_label")
+        key: value
+        for key, value in row.items()
+        if key not in ("id", "version", "price_label", "images")
     }
     return client.put(
         base() + "/products/" + row["id"],

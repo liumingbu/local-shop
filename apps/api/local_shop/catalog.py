@@ -9,7 +9,8 @@ from pydantic import Field
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from .models import Category, Product, Store, Tenant
+from .image_store import images_json
+from .models import Category, MediaObject, Product, Store, Tenant
 from .records import StrictModel, idempotent, store_json
 
 
@@ -46,7 +47,7 @@ def category_json(row, public=False):
     return value
 
 
-def product_json(row, public=False):
+def product_json(row, session, public=False):
     value = {
         "id": str(row.id),
         "category_id": str(row.category_id),
@@ -59,6 +60,7 @@ def product_json(row, public=False):
         "supply_status": row.supply_status,
         "sort_order": row.sort_order,
     }
+    value["images"] = images_json(session, row, public=public)
     if not public:
         value |= {"status": row.status, "version": row.version}
     return value
@@ -173,7 +175,7 @@ def build_router(access):
             row = Product(tenant_id=tenant_id, **payload.model_dump())
             session.add(row)
             session.flush()
-            return product_json(row)
+            return product_json(row, session)
 
         return idempotent(
             session, tenant_id, uid, "create-product", key, payload.model_dump(mode="json"), action
@@ -196,7 +198,7 @@ def build_router(access):
             setattr(row, name, value)
         row.version += 1
         session.flush()
-        return product_json(row)
+        return product_json(row, session)
 
     @router.get("/merchant/tenants/{tenant_id}/products/{product_id}")
     def get_product(
@@ -206,7 +208,7 @@ def build_router(access):
         session: Session = Depends(database, scope="function"),
     ):
         authorize(session, tenant_id, uid)
-        return product_json(find_owned(session, Product, tenant_id, product_id))
+        return product_json(find_owned(session, Product, tenant_id, product_id), session)
 
     @router.get("/merchant/tenants/{tenant_id}/products")
     def list_products(
@@ -227,7 +229,7 @@ def build_router(access):
             query.order_by(Product.sort_order, Product.id).offset((page - 1) * limit).limit(limit)
         )
         return {
-            "items": [product_json(row) for row in rows],
+            "items": [product_json(row, session) for row in rows],
             "total": total,
             "page": page,
             "limit": limit,
@@ -237,8 +239,14 @@ def build_router(access):
     def public_store(store_id: UUID, session: Session = Depends(database, scope="function")):
         store = published_store(session, store_id)
         value = store_json(store)
-        for key in ("version", "published"):
+        for key in ("version", "published", "logo_media_id"):
             value.pop(key)
+        logo = session.get(MediaObject, store.logo_media_id) if store.logo_media_id else None
+        value["logo_url"] = (
+            f"/api/v1/stores/{store_id}/logo"
+            if logo and logo.status == "ACTIVE" and logo.purpose == "LOGO"
+            else None
+        )
         rows = session.scalars(
             select(Category)
             .where(Category.tenant_id == store_id, Category.status == "ACTIVE")
@@ -281,7 +289,7 @@ def build_router(access):
             query.order_by(Product.sort_order, Product.id).offset((page - 1) * limit).limit(limit)
         )
         return {
-            "items": [product_json(row, public=True) for row in rows],
+            "items": [product_json(row, session, public=True) for row in rows],
             "total": total,
             "page": page,
             "limit": limit,
@@ -295,6 +303,6 @@ def build_router(access):
         row = session.scalar(public_products_query(store_id).where(Product.id == product_id))
         if row is None:
             raise HTTPException(404, "PRODUCT_NOT_FOUND")
-        return product_json(row, public=True)
+        return product_json(row, session, public=True)
 
     return router

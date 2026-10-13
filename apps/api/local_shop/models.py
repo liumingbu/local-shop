@@ -68,7 +68,15 @@ class Store(Base):
     delivery_note: Mapped[str] = mapped_column(String(500), default="")
     allow_pickup: Mapped[bool] = mapped_column(default=False)
     allow_delivery: Mapped[bool] = mapped_column(default=False)
+    logo_media_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     version: Mapped[int] = mapped_column(Integer, default=1)
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "logo_media_id"],
+            ["media_objects.tenant_id", "media_objects.id"],
+            name="fk_store_logo_same_tenant",
+        ),
+    )
 
 
 class Category(Base):
@@ -182,3 +190,46 @@ class IdempotencyKey(Base):
     payload_hash: Mapped[str] = mapped_column(String(64))
     response: Mapped[dict] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class MediaObject(Base):
+    __tablename__ = "media_objects"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    purpose: Mapped[str] = mapped_column(String(20))
+    storage_key: Mapped[str] = mapped_column(String(100), unique=True)
+    mime_type: Mapped[str] = mapped_column(String(30), default="image/jpeg")
+    size: Mapped[int] = mapped_column(Integer)
+    width: Mapped[int] = mapped_column(Integer)
+    height: Mapped[int] = mapped_column(Integer)
+    sha256: Mapped[str] = mapped_column(String(64))
+    status: Mapped[str] = mapped_column(String(20), default="ACTIVE")
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id", name="uq_media_tenant_id"),
+        CheckConstraint("purpose IN ('PRODUCT','LOGO')", name="ck_media_purpose"),
+        CheckConstraint("status IN ('ACTIVE','ARCHIVED')", name="ck_media_status"),
+        CheckConstraint("size > 0 AND width > 0 AND height > 0", name="ck_media_dimensions"),
+    )
+
+
+class ProductMedia(Base):
+    __tablename__ = "product_media"
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    product_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    media_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
+    sort_order: Mapped[int] = mapped_column(Integer)
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "product_id"],
+            ["products.tenant_id", "products.id"],
+            name="fk_image_same_product_tenant",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "media_id"],
+            ["media_objects.tenant_id", "media_objects.id"],
+            name="fk_image_same_media_tenant",
+        ),
+        UniqueConstraint("tenant_id", "product_id", "sort_order", name="uq_product_image_order"),
+    )

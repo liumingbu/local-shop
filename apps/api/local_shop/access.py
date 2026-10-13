@@ -26,8 +26,17 @@ class IdempotencyInput(BaseModel):
 
 def build_access(settings, engine):
     def database():
-        with Session(engine) as session, session.begin():
-            yield session
+        with Session(engine) as session:
+            try:
+                with session.begin():
+                    yield session
+            except BaseException:
+                for path in session.info.get("new_media_paths", []):
+                    try:
+                        path.unlink(missing_ok=True)
+                    except OSError:
+                        pass  # Orphan is never public without a committed association.
+                raise
 
     def actor(request: Request, session: Session = Depends(database, scope="function")):
         if not settings.dev_auth_enabled:

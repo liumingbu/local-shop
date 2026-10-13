@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -15,6 +16,7 @@ class Settings(BaseSettings):
     database_url: SecretStr
     app_secret_key: SecretStr
     dev_auth_enabled: bool = False
+    media_root: Path = Path("var/media")
 
     @model_validator(mode="after")
     def validate_runtime(self):
