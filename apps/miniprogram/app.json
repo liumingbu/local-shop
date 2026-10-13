@@ -6,7 +6,10 @@
     "pages/compose/compose",
     "pages/records/records",
     "pages/detail/detail",
-    "pages/privacy/privacy"
+    "pages/privacy/privacy",
+    "pages/merchant/merchant",
+    "pages/merchantdetail/merchantdetail",
+    "pages/shopsettings/shopsettings"
   ],
   "window": {
     "navigationBarTitleText": "local-shop",

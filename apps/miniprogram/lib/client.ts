@@ -100,6 +100,7 @@ export function errorText(error: unknown): string {
     if (!(error instanceof ApiError))
         return '操作未完成，请稍后重试';
     const texts: Record<string, string> = {
+        NO_MERCHANT_MEMBERSHIP: '当前账号没有商户成员资格', OWNER_REQUIRED: '只有店主可以维护店铺资料', TENANT_NOT_FOUND: '该店铺不在当前账号授权范围', DATE_REQUIRED: '设置时刻前请先选择日期',
         OTHER_PRODUCT_DRAFT_EXISTS: '本店已有另一商品的询货草稿，请先处理或明确放弃原草稿',
         PRIVACY_CONSENT_REQUIRED: '请先阅读并确认开发隐私说明', INVALID_QUANTITY: '数量须大于0，最多3位小数',
         EMPTY_DRAFT: '请填写需求、选择商品或上传图片', IMAGE_OVER_2M: '压缩后图片仍超过2MiB，请换用较小图片',

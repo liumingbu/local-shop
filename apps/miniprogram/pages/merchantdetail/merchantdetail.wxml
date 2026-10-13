@@ -1,0 +1,43 @@
+<view class="page"><view class="eyebrow">商户 · 处理详情</view><view class="title">{{label || '需求与询货'}}</view>
+<view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
+<view class="notice" wx:if="{{locked}}">原操作结果未确认，其他操作已锁定。</view><button wx:if="{{locked}}" bindtap="retry" disabled="{{busy}}">重试原操作（同一请求）</button>
+<block wx:if="{{row}}"><view class="card"><view class="subtitle">原始内容 · 保留不覆盖</view><view>{{row.customer_label || '顾客询货'}} · {{time}}</view><view class="pre">{{row.raw_text}}</view>
+<view wx:for="{{row.items}}" wx:key="index">{{item.name}} {{item.quantity}} {{item.unit}} {{item.spec}}</view>
+<view wx:if="{{row.product_snapshot}}">询货商品：{{row.product_snapshot.name}} {{row.product_snapshot.spec}}</view>
+<view wx:if="{{kind==='reservation'}}">交付：{{row.fulfillment_method==='DELIVERY'?'配送':'自提'}} · 原期望：{{row.expected_time_note || expected}}</view>
+<view class="pre" wx:if="{{row.internal_note}}">内部备注（不对顾客展示）：{{row.internal_note}}</view>
+<view wx:if="{{row.confirmed_text}}">转需求时商户记录：{{row.confirmed_text}}</view>
+<image wx:for="{{images}}" wx:key="id" src="{{item.path}}" mode="widthFix" wx:if="{{item.path}}"/><view class="muted">私有图片需当前账号有权限。加载失败不代表没有附件。</view></view>
+<view class="card" wx:for="{{revisions}}" wx:key="id"><view class="subtitle">{{item.label}} · 版本 {{item.proposed_version}}</view><view class="pre">{{item.details.summary}}</view>
+<view wx:for="{{item.details.items}}" wx:for-item="line" wx:key="index">{{line.name}} {{line.quantity}} {{line.unit}} {{line.spec}}</view>
+<view>约定：{{item.fulfillment}} {{item.details.time_note}}</view><view>变更理由：{{item.details.change_reason}}</view></view>
+<view class="card" wx:if="{{kind==='reservation'}}"><view class="subtitle">备货与交付</view>
+<input data-field="note" value="{{note}}" bindinput="input" maxlength="500" placeholder="状态说明（默认内部）" disabled="{{busy || locked}}"/>
+<checkbox-group bindchange="check"><label><checkbox value="visible" checked="{{visible}}" disabled="{{busy || locked}}"/>说明可让顾客看到</label><label wx:if="{{revisions.length}}"><checkbox value="agreed" checked="{{agreed}}" disabled="{{busy || locked}}"/>已核对最新候选并与顾客明确重新确认</label></checkbox-group>
+<view class="actions"><button wx:for="{{actions}}" wx:key="status" bindtap="transition" data-status="{{item.status}}" disabled="{{busy || locked}}">标记{{item.label}}</button></view>
+<view class="muted">这里只记录商户已沟通的结果，不代表顾客已在微信签署确认。</view></view>
+<view class="card" wx:if="{{pendingCancellation}}"><view class="subtitle">顾客申请取消，待处理</view><view>{{pendingCancellation.reason}}</view>
+<input data-field="responseNote" value="{{responseNote}}" bindinput="input" maxlength="500" placeholder="答复原因（顾客可见，必填）" disabled="{{busy || locked}}"/>
+<view class="actions"><button bindtap="decision" data-decision="ACCEPTED" disabled="{{busy || locked}}">同意取消</button><button bindtap="decision" data-decision="REJECTED" disabled="{{busy || locked}}">不同意取消</button></view></view>
+<view class="card" wx:if="{{kind==='inquiry'}}"><view class="subtitle">询货答复（不会自动备货）</view>
+<view wx:for="{{row.replies}}" wx:key="id">{{item.visible_to_customer?'给顾客的答复':'内部记录'}}：{{item.text}}</view>
+<block wx:if="{{row.status!=='CLOSED'}}"><textarea data-field="replyText" value="{{replyText}}" bindinput="input" maxlength="2000" placeholder="答复内容" disabled="{{busy || locked}}"/>
+<checkbox-group bindchange="check"><label><checkbox value="visible" checked="{{visible}}" disabled="{{busy || locked}}"/>向顾客展示答复（不勾选仅内部留存）</label><label><checkbox value="converted" checked="{{convertConfirmed}}" disabled="{{busy || locked}}"/>转需求时已明确确认要货</label></checkbox-group>
+<view class="actions"><button bindtap="reply" disabled="{{busy || locked}}">保存答复</button><button bindtap="close" disabled="{{busy || locked}}">关闭询货</button></view>
+<block wx:if="{{!row.converted_reservation_id}}"><view class="subtitle">明确转为要货需求</view><input data-field="customerLabel" value="{{customerLabel}}" bindinput="input" maxlength="100" placeholder="顾客称呼" disabled="{{busy || locked}}"/>
+<textarea data-field="conversionText" value="{{conversionText}}" bindinput="input" maxlength="4000" placeholder="商户确认内容；原询货另行保留" disabled="{{busy || locked}}"/>
+<picker range="{{methods}}" value="{{methodIndex}}" bindchange="method" disabled="{{busy || locked}}"><view class="field">{{methods[methodIndex]}}</view></picker><button bindtap="convert" disabled="{{busy || locked}}">明确生成需求记录</button></block></block>
+<button wx:if="{{row.converted_reservation_id}}" bindtap="converted">查看已生成的需求</button></view>
+<view class="card" wx:if="{{kind==='reservation' && canPropose}}"><view class="subtitle">新增确认候选（不改原文）</view><textarea data-field="summary" value="{{summary}}" bindinput="input" maxlength="4000" placeholder="调整后的商品／交付约定" disabled="{{busy || locked}}"/>
+<view class="actions"><button bindtap="copyItems" disabled="{{busy || locked}}">以原始清单填入</button><button bindtap="addItem" disabled="{{busy || locked}}">加一项（无需商品库）</button></view>
+<view wx:for="{{items}}" wx:key="index"><input data-index="{{index}}" data-field="name" value="{{item.name}}" bindinput="item" maxlength="120" placeholder="名称" disabled="{{busy || locked}}"/>
+<input data-index="{{index}}" data-field="quantity" value="{{item.quantity}}" bindinput="item" type="digit" placeholder="数量，可小数" disabled="{{busy || locked}}"/>
+<input data-index="{{index}}" data-field="unit" value="{{item.unit}}" bindinput="item" maxlength="20" placeholder="单位" disabled="{{busy || locked}}"/>
+<input data-index="{{index}}" data-field="spec" value="{{item.spec}}" bindinput="item" maxlength="120" placeholder="规格" disabled="{{busy || locked}}"/><button data-index="{{index}}" bindtap="removeItem" disabled="{{busy || locked}}">移除此项</button></view>
+<input data-field="changeReason" value="{{changeReason}}" bindinput="input" maxlength="500" placeholder="变更理由（必填）" disabled="{{busy || locked}}"/>
+<picker mode="date" value="{{date}}" bindchange="date" disabled="{{busy || locked}}"><view class="field">约定日期：{{date || '未设置'}}</view></picker><picker mode="time" value="{{clock}}" bindchange="clock" disabled="{{busy || locked}}"><view class="field">时刻：{{clock || '未设置'}}</view></picker>
+<button bindtap="clearTime" disabled="{{busy || locked}}">清除日期时刻</button><input data-field="timeNote" value="{{timeNote}}" bindinput="input" maxlength="180" placeholder="时段说明（北京时间）" disabled="{{busy || locked}}"/>
+<button bindtap="propose" disabled="{{busy || locked}}">保存候选，等待重新确认</button><view class="muted">开始备货后不支持直接修改候选。离开页面未提交的编辑不会保留。</view></view>
+<view class="card" wx:if="{{cancellations.length}}"><view class="subtitle">取消处理历史</view><view wx:for="{{cancellations}}" wx:key="id">{{item.label}}：{{item.reason}} ／ {{item.response_note}}</view></view>
+<view class="card"><view class="subtitle">处理留痕</view><view wx:for="{{events}}" wx:key="index">{{item.time}} · {{item.action}} · {{item.label}} {{item.note}}</view></view>
+</block><view class="actions"><button bindtap="load" disabled="{{busy}}">刷新详情</button><button bindtap="back">工作台</button><button bindtap="home">入口／登录</button></view></view>

@@ -1,0 +1,23 @@
+<view class="page"><view class="eyebrow">local-shop · 商户工作台</view><view class="title">{{storeName || '今天要处理什么'}}</view>
+  <view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
+  <picker wx:if="{{members.length>1}}" range="{{memberNames}}" value="{{memberIndex}}" bindchange="choose" disabled="{{busy}}"><view class="field">已授权店铺：{{memberNames[memberIndex]}}</view></picker>
+  <block wx:if="{{tenantId}}"><view class="actions"><button bindtap="settings" disabled="{{busy || role!=='OWNER'}}">店铺资料</button><button bindtap="store">看公开店铺</button></view>
+    <view class="actions"><button wx:for="{{counts}}" wx:key="name" data-status="{{item.status}}" data-kind="{{item.kind}}" bindtap="filter" disabled="{{busy}}">{{item.name}} {{item.total}}</button></view>
+    <view class="card" wx:if="{{form}}"><view class="subtitle">快速代记</view><view class="muted">没建商品库也能先记下来。仅使用合成演示资料。</view>
+      <view class="notice" wx:if="{{locked}}">原请求结果未确认，仅可重试原内容。</view>
+      <input value="{{form.customer_label}}" data-field="customer_label" bindinput="input" disabled="{{busy || locked}}" maxlength="100" placeholder="顾客称呼（必填，不用于关联账号）"/>
+      <textarea value="{{form.raw_text}}" data-field="raw_text" bindinput="input" disabled="{{busy || locked}}" maxlength="4000" placeholder="原始需求（必填），数量、单位、要求可以先写在这里"/>
+      <picker range="{{sources}}" value="{{sourceIndex}}" bindchange="source" disabled="{{busy || locked}}"><view class="field">来源：{{sources[sourceIndex]}}</view></picker>
+      <picker range="{{methods}}" value="{{methodIndex}}" bindchange="method" disabled="{{busy || locked}}"><view class="field">意向：{{methods[methodIndex]}}</view></picker>
+      <input value="{{form.expected_time_note}}" data-field="expected_time_note" bindinput="input" disabled="{{busy || locked}}" maxlength="200" placeholder="期望日期／时段（保留原话，不自动推断）"/>
+      <input value="{{form.internal_note}}" data-field="internal_note" bindinput="input" disabled="{{busy || locked}}" maxlength="2000" placeholder="内部备注（顾客不可见）"/>
+      <checkbox-group bindchange="confirmed"><label><checkbox value="confirmed" checked="{{form.mark_confirmed}}" disabled="{{busy || locked}}"/>已通过电话等方式明确确认，否则保持待确认</label></checkbox-group>
+      <button class="primary" bindtap="create" disabled="{{busy}}">{{locked?'重试原代记':'保存需求'}}</button>
+    </view><button wx:if="{{lastId}}" bindtap="latest">查看刚保存的需求</button>
+    <view class="actions"><button data-kind="reservation" data-status="" bindtap="filter" disabled="{{busy}}">全部需求／历史</button><button data-kind="inquiry" data-status="" bindtap="filter" disabled="{{busy}}">全部询货</button></view>
+    <view class="card" wx:for="{{records}}" wx:key="id" data-id="{{item.id}}" bindtap="open"><view class="subtitle">{{item.label}} · {{item.customer_label || '顾客询货'}}</view><view class="pre">{{item.raw_text || '图片／商品内容'}}</view><view class="muted">{{item.time}}</view></view>
+    <view class="empty" wx:if="{{!records.length && !busy && !error}}">当前筛选没有记录</view>
+    <view class="actions"><button bindtap="previous" disabled="{{busy || page<=1}}">上一页</button><text>第 {{page}} 页</text><button bindtap="next" disabled="{{busy || page*20>=total}}">下一页</button></view>
+  </block><button bindtap="load" disabled="{{busy}}">刷新待办</button><button bindtap="home">返回入口／登录</button>
+  <view class="muted">尚无已验证的微信消息提醒，请主动刷新和联系。这里只是备货交付记录，不涉及支付结算。</view>
+</view>
