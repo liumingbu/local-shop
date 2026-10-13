@@ -12,7 +12,7 @@
 
 开发数据库现使用同一Dot云电脑从官方源码编译的PostgreSQL16.15，构建和实际回归见[环境证据](docs/evidence/pg1615/RESULT_20261013.md)。浏览器交互受环境限制，微信开发者工具/真机与生产部署未验收。
 
-阶段验收与复现入口见[ACCEPTANCE](docs/ACCEPTANCE.md)。
+阶段交付索引见[DELIVERY](docs/DELIVERY.md)，验收与复现入口见[ACCEPTANCE](docs/ACCEPTANCE.md)。
 
 ## 先读这些文档
 
