@@ -78,7 +78,7 @@ API 默认只监听127.0.0.1:8000；工作台代理健康检查到此地址。/h
 PYTHONPATH=apps/api .venv/bin/python -m local_shop.seed
 ```
 
-种子生成商户A/B、两店租户成员和无商户权限的顾客A/B，均为合成身份；生产/未显式开启开发身份时拒绝执行。开发会话 /api/v1/dev/session 接受 merchant-a、merchant-b、customer-a、customer-b，15分钟到期，不代表微信登录。官方启动入口关闭代理头信任，部署不得擅自放开开发身份。
+种子生成商户A/B、两店租户成员、初始无商户权限的顾客A/B，以及没有商户成员权限的平台演示管理员，均为合成身份；生产/未显式开启开发身份时拒绝执行。开发会话 /api/v1/dev/session 接受 merchant-a、merchant-b、customer-a、customer-b、platform-admin，15分钟到期，不代表微信登录。官方启动入口关闭代理头信任，部署不得擅自放开开发身份。
 
 ### 实际测试入口
 

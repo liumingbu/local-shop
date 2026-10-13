@@ -154,3 +154,15 @@
 - 本人与商户DTO均有confirmation_revisions，不含actor账号；包含提议版本/快照、确认版本/时间、agreement_recorded_by=MERCHANT。顾客期望时间与候选最终时间分开；未确认候选不得显示成承诺。
 - 原confirmed_text仍是从询货转换时保存的文字，历史保持原值；有修订时界面以最新候选及其confirmed_version区分“待确认/已确认”，不能把旧字段误当最新确认结果。
 - 迁移0008遇确认历史拒绝破坏性降级。
+
+## 平台邀请审核与暂停（2026-10-13 实现补充）
+
+- GET /platform/me、/platform/tenants、/platform/invitations、/platform/audit：独立平台管理员表鉴权，分页。平台角色不授予商户记录/附件访问权。
+- POST /platform/invitations：owner_user_id必须是服务端已有且启用的身份UUID；proposed_name、reason。不按姓名/电话绑定，不创建已公开店铺。
+- GET /me/shop-invitations；POST /me/shop-invitations/{id}/response：只有收件账号可读取/明确ACCEPTED或DECLINED，携带expected_version。
+- POST /platform/invitations/{id}/review：携带expected_version、APPROVED/REJECTED和reason。只有收件人已ACCEPTED才可APPROVED；批准原子创建租户、OWNER成员和默认未公开的店铺。
+- POST /platform/tenants/{id}/status：expected_version、ACTIVE/SUSPENDED、reason。暂停后隐藏公开店铺，拒绝新增顾客业务和商户读写；顾客仍可读取本人历史。暂停期间的历史处理政策须上线前确认。
+- 所有上述POST需要Idempotency-Key；按actor+key防重，同键不同命令/载荷409。操作、审计和结果在一事务内；未知结果使用原键重试，返回原始结果后可刷新当前状态。
+- 审计不输出完整幂等结果或请求键，不新增跨租户顾客搜索/导出。
+
+此处为开发身份下真实API验证，不是已经完成真实商户身份核验或资质审批。正式平台管理员安全初始化渠道尚待部署阶段确认；本次只在受控演示种子生成platform-admin。

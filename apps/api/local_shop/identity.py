@@ -6,6 +6,7 @@ from fastapi import HTTPException, Request
 from .config import Settings
 
 DEMO_USERS = {
+    "platform-admin": "00000000-0000-4000-8000-000000000005",
     "merchant-a": "00000000-0000-4000-8000-000000000001",
     "merchant-b": "00000000-0000-4000-8000-000000000002",
     "customer-a": "00000000-0000-4000-8000-000000000003",

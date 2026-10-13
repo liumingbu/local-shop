@@ -81,6 +81,7 @@ def published_store(session, tenant_id):
         select(Store)
         .join(Tenant)
         .where(Store.tenant_id == tenant_id, Store.published.is_(True), Tenant.status == "ACTIVE")
+        .with_for_update(read=True, of=Tenant)
     )
     if row is None:
         raise HTTPException(404, "STORE_NOT_FOUND")

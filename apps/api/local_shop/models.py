@@ -36,12 +36,14 @@ class User(Base):
 
 class Tenant(Base):
     __tablename__ = "tenants"
+    version: Mapped[int] = mapped_column(Integer, default=1)
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
     display_name: Mapped[str] = mapped_column(String(100))
     status: Mapped[str] = mapped_column(String(20), default="ACTIVE")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     __table_args__ = (
         CheckConstraint("status IN ('ACTIVE', 'SUSPENDED')", name="ck_tenants_status"),
+        CheckConstraint("version >= 1", name="ck_tenant_version"),
     )
 
 
@@ -418,4 +420,57 @@ class ConfirmationRevision(Base):
             "AND confirmed_at IS NOT NULL AND confirmed_version > proposed_version)",
             name="ck_confirmation_ack",
         ),
+    )
+
+
+class PlatformAdmin(Base):
+    __tablename__ = "platform_admins"
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    status: Mapped[str] = mapped_column(String(20), default="ACTIVE")
+    __table_args__ = (
+        CheckConstraint("status IN ('ACTIVE','DISABLED')", name="ck_platform_admin_status"),
+    )
+
+
+class ShopInvitation(Base):
+    __tablename__ = "shop_invitations"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    owner_user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    proposed_name: Mapped[str] = mapped_column(String(100))
+    status: Mapped[str] = mapped_column(String(20), default="INVITED")
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    tenant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("tenants.id"), unique=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('INVITED','ACCEPTED','DECLINED','APPROVED','REJECTED')",
+            name="ck_invitation_status",
+        ),
+        CheckConstraint("version >= 1", name="ck_invitation_version"),
+        CheckConstraint(
+            "(status = 'APPROVED' AND tenant_id IS NOT NULL) OR "
+            "(status <> 'APPROVED' AND tenant_id IS NULL)",
+            name="ck_invitation_tenant",
+        ),
+        Index("ix_invitation_owner_status", "owner_user_id", "status", "created_at"),
+    )
+
+
+class PlatformOperation(Base):
+    __tablename__ = "platform_operations"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    key: Mapped[str] = mapped_column(String(100))
+    action: Mapped[str] = mapped_column(String(100))
+    payload_hash: Mapped[str] = mapped_column(String(64))
+    response: Mapped[dict] = mapped_column(JSONB)
+    tenant_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("tenants.id"))
+    invitation_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("shop_invitations.id"))
+    before_status: Mapped[str | None] = mapped_column(String(20))
+    after_status: Mapped[str] = mapped_column(String(20))
+    reason: Mapped[str] = mapped_column(String(500))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (
+        UniqueConstraint("actor_id", "key", name="uq_platform_operation_actor_key"),
+        Index("ix_platform_operation_time", "created_at", "id"),
     )
