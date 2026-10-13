@@ -123,3 +123,13 @@
 - expected_at为可空带时区时间；expected_time_note保留备注不猜测精确时间。
 - 当前隐私版本development-draft-v1只用于开发模拟，不代替正式隐私文本/授权/真实身份核验。
 - 私图/取消申请/原生页面尚未实现，未包含在本轮通过范围。
+
+## M4b 私图已实现（开发身份）
+
+- POST /api/v1/stores/{store_id}/private-media?privacy_accepted=true：登录顾客、已发布店铺、原始二进制图、Idempotency-Key。
+- POST /api/v1/merchant/tenants/{tenant_id}/private-media：本店有效成员代记私图。
+- 顾客询货/需求及商户代记可带media_ids（最多5、不重复、保序）；仅本人上传、同店、PRIVATE用途。仅图顾客请求可无raw_text。
+- GET /api/v1/me/media/{media_id}/content?store_id=...：本人上传或本人记录中明确可见的关联图。无匿名URL/URL令牌；不能下载别店/别人的私图。
+- 既有商户media内容与状态接口对PRIVATE加关联限制：非本人上传且尚未提交的客户图片不可读取/归档；提交到本店后才可处理。
+- 转需求复制原咨询附件与顺序；商户新增内部附件默认不对顾客可见。PRIVATE不能关联商品/Logo或修改用途。
+- 0006降级遇私图拒绝。没有真实资料自动清理任务；保留/删除政策发布前另确认。

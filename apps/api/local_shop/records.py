@@ -10,6 +10,7 @@ from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
+from .attachments import attachments_json, link_private
 from .image_store import active_media
 from .models import (
     Category,
@@ -53,6 +54,7 @@ class NewReservation(StrictModel):
     fulfillment_method: Literal["PICKUP", "DELIVERY"] = "PICKUP"
     expected_time_note: str = Field(default="", max_length=200)
     internal_note: str = Field(default="", max_length=2000)
+    media_ids: list[UUID] = Field(default_factory=list, max_length=5)
     mark_confirmed: bool = False
     expected_at: AwareDatetime | None = None
 
@@ -91,8 +93,8 @@ def lock_scope(session, scope: str):
     session.execute(text("SELECT pg_advisory_xact_lock(:value)"), {"value": value})
 
 
-def reservation_json(record):
-    return {key: str(getattr(record, key)) for key in ("id", "tenant_id", "actor_id")} | {
+def reservation_json(record, session=None):
+    value = {key: str(getattr(record, key)) for key in ("id", "tenant_id", "actor_id")} | {
         "source": record.source,
         "customer_user_id": str(record.customer_user_id) if record.customer_user_id else None,
         "source_inquiry_id": str(record.source_inquiry_id) if record.source_inquiry_id else None,
@@ -109,6 +111,9 @@ def reservation_json(record):
         "created_at": record.created_at.isoformat(),
         "updated_at": record.updated_at.isoformat(),
     }
+    if session is not None:
+        value["attachments"] = attachments_json(session, record.tenant_id, reservation_id=record.id)
+    return value
 
 
 def idempotent(session, tenant, actor, endpoint, key, payload, action):
@@ -183,7 +188,7 @@ def create_reservation(
         customer_user_id=customer_user_id,
         source_inquiry_id=source_inquiry_id,
         privacy_version=privacy_version,
-        **{k: v for k, v in data.items() if k not in {"mark_confirmed", "items"}},
+        **{k: v for k, v in data.items() if k not in {"mark_confirmed", "items", "media_ids"}},
         items=snapshots,
     )
     record.status = "CONFIRMED" if data.get("mark_confirmed", False) else "PENDING_CONFIRMATION"
@@ -212,7 +217,15 @@ def create_reservation(
             )
         )
     session.flush()
-    return reservation_json(record)
+    link_private(
+        session,
+        tenant_id,
+        uid,
+        data.get("media_ids", []),
+        reservation_id=record.id,
+        visible=customer_user_id == uid,
+    )
+    return reservation_json(record, session)
 
 
 def build_router(access):
@@ -321,7 +334,7 @@ def build_router(access):
             .limit(limit)
         )
         return {
-            "items": [reservation_json(row) for row in rows],
+            "items": [reservation_json(row, session) for row in rows],
             "total": count,
             "page": page,
             "limit": limit,
@@ -347,7 +360,7 @@ def build_router(access):
             .where(RecordEvent.tenant_id == tenant_id, RecordEvent.reservation_id == record_id)
             .order_by(RecordEvent.version)
         )
-        return reservation_json(record) | {
+        return reservation_json(record, session) | {
             "events": [
                 {
                     "from_status": e.from_status,
@@ -412,7 +425,7 @@ def build_router(access):
                 )
             )
             session.flush()
-            return reservation_json(row)
+            return reservation_json(row, session)
 
         return idempotent(
             session,
