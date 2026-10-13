@@ -116,3 +116,7 @@ run_id:
 ## 平台基础管理（2026-10-13）
 
 代码99d41f55远端干净检出：171项Python（145真实PG，19项平台专项）+50项Node、Ruff/TS/构建、实际HTTP/PG和重启回归均通过。邀请/收件人接受/审核/启停/审计、平台与业务权限分离、并发/回滚/暂停锁验证见[evidence/platform/RESULT_20261013.md](evidence/platform/RESULT_20261013.md)。平台界面和正式身份未完成。
+
+## 平台Web和本人邀请（2026-10-13）
+
+代码3e23f683远端干净检出：171项Python、10项Web控制器Node、54项原生模拟wx、Ruff/TS/构建与真实HTTP/PG及重启通过。见[evidence/platform-ui/RESULT_20261013.md](evidence/platform-ui/RESULT_20261013.md)。浏览器DOM/WXML/真机未验收。
