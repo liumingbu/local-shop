@@ -2,10 +2,12 @@
 
 2026-10-13 UTC。用户授权Dot自行测试审查后合并常规PR；环境/费用/生产边界不变。
 
-- PR #1–#17已合并并fetch核验；当前main基准e70eddabe526c915edf99c7711407f19b93fd5ac。
-- 当前feat/linux-delivery-validation：Nginx/TLS代理、systemd候选、配置样例、发布硬门禁和真实合成组件检查；迁移仍0009_platform。
-- Nginx1.30.5同一Dot官方源码构建并签名核验；真实TLS1.2/1.3、代理鉴权/私图/幂等、413/429和无查询串访问日志专项PASS；远端代码b665273600146732647e9ac7b270ef7641b84d4f独立干净检出213 Python/18 Web/54原生及全套HTTP/恢复/代理通过，见evidence/linux-delivery。
-- systemd-analyze verify失败：/run/systemd只读。--skip-systemd明确只重跑其他组件；systemd服务启停/生产master-worker生命周期未测。
-- 正式身份适配器尚未实现，production_preflight主动退出2；不得移除门禁发布开发版。浏览器DOM、微信WXML/工具/真机仍未验收。
-- 恢复工具PR #17已真实CLI恢复21表92合成行3图，原报告保留；不上传真实/合成数据库备份。
-- 下一步完成当前PR远端测试与合并、生成可核对源码验收包。真实微信和生产条件需用户安全配置/授权，不沿用旧佳琪资料。
+- PR #1–#18均已合并并fetch核验；main基准406ab69be3313b906834efa9cecddad5f194d878，树29dfe1869498e814c95fd70d0d9251c32708cd0f。
+- 当前chore/development-delivery仅补交付文档。运行代码与最后被测b665273600146732647e9ac7b270ef7641b84d4f一致；迁移0009_platform。
+- 独立远端干净检出：213 Python（154真实PG）/18 Web/54原生、Ruff/TS/构建、真实HTTP/PG重启/恢复/代理通过，见evidence/linux-delivery。恢复21表92合成行3图；不上传备份。
+- Nginx1.30.5同机官方源码签名核验和编译；真实TLS1.2/1.3、私图/幂等、413/429、无查询串访问日志通过。
+- systemd-analyze因/run/systemd只读BLOCKED；--skip-systemd仅重跑其他组件。服务生命周期/生产未测。
+- 正式身份适配器尚未实现，production_preflight硬拒绝发布；浏览器DOM、微信WXML/工具/真机/真实登录/分享/消息尚未验收。
+- 开发验证源码交付等级DEV_REVIEW_READY，见DELIVERY.md及ACCEPTANCE.md；不是PILOT_READY或已上线。最终ZIP从明确合并SHA导出并核对所有Git文件、隐藏配置、CRC/哈希。
+- 下一步核对本项目AppID/安全配置和获准微信验收条件，再实现正式身份/真测；不复用旧佳琪资料，不因AppID缺失假装功能已通过，不未经授权更换执行环境。
+- 本轮后若继续工作，先读取最新main、所有分支和PR；本文件是交付快照，不假设当前分支尚未合并。没有自动后台生产运行承诺。
