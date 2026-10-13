@@ -212,6 +212,7 @@ class MediaObject(Base):
     tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
     owner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     purpose: Mapped[str] = mapped_column(String(20))
+    privacy_version: Mapped[str | None] = mapped_column(String(40), nullable=True)
     storage_key: Mapped[str] = mapped_column(String(100), unique=True)
     mime_type: Mapped[str] = mapped_column(String(30), default="image/jpeg")
     size: Mapped[int] = mapped_column(Integer)
@@ -222,7 +223,7 @@ class MediaObject(Base):
     version: Mapped[int] = mapped_column(Integer, default=1)
     __table_args__ = (
         UniqueConstraint("tenant_id", "id", name="uq_media_tenant_id"),
-        CheckConstraint("purpose IN ('PRODUCT','LOGO')", name="ck_media_purpose"),
+        CheckConstraint("purpose IN ('PRODUCT','LOGO','PRIVATE')", name="ck_media_purpose"),
         CheckConstraint("status IN ('ACTIVE','ARCHIVED')", name="ck_media_status"),
         CheckConstraint("size > 0 AND width > 0 AND height > 0", name="ck_media_dimensions"),
     )
@@ -305,4 +306,39 @@ class InquiryEvent(Base):
             name="fk_inquiry_event_tenant",
         ),
         UniqueConstraint("tenant_id", "inquiry_id", "version", name="uq_inquiry_event_version"),
+    )
+
+
+class PrivateAttachment(Base):
+    __tablename__ = "private_attachments"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    media_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    inquiry_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    reservation_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    visible_to_customer: Mapped[bool] = mapped_column(default=False)
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "media_id"],
+            ["media_objects.tenant_id", "media_objects.id"],
+            name="fk_private_media_tenant",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "inquiry_id"],
+            ["inquiries.tenant_id", "inquiries.id"],
+            name="fk_private_inquiry_tenant",
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "reservation_id"],
+            ["reservations.tenant_id", "reservations.id"],
+            name="fk_private_reservation_tenant",
+        ),
+        CheckConstraint(
+            "num_nonnulls(inquiry_id, reservation_id) = 1", name="ck_private_single_parent"
+        ),
+        UniqueConstraint("tenant_id", "inquiry_id", "media_id", name="uq_private_inquiry_media"),
+        UniqueConstraint(
+            "tenant_id", "reservation_id", "media_id", name="uq_private_reservation_media"
+        ),
     )

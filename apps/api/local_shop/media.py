@@ -5,13 +5,14 @@ import os
 from typing import Literal
 from uuid import UUID, uuid4
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from fastapi.responses import FileResponse
 from pydantic import Field, field_validator
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 from starlette.concurrency import run_in_threadpool
 
+from .attachments import require_customer_private_access, require_merchant_private_access
 from .catalog import find_owned, published_store
 from .image_store import MAX_UPLOAD, active_media, images_json, media_path, normalize_image
 from .models import Category, MediaObject, Product, ProductMedia
@@ -77,6 +78,34 @@ def build_router(access, settings):
         session: Session = Depends(database, scope="function"),
     ):
         await run_in_threadpool(authorize, session, tenant_id, uid)
+        return await receive_image(tenant_id, request, purpose, key, uid, session)
+
+    @router.post("/stores/{store_id}/private-media", status_code=201)
+    async def customer_upload(
+        store_id: UUID,
+        request: Request,
+        privacy_accepted: bool = Query(...),
+        key: str = Depends(key_value),
+        uid: UUID = Depends(actor),
+        session: Session = Depends(database, scope="function"),
+    ):
+        if not privacy_accepted:
+            raise HTTPException(422, "PRIVACY_CONSENT_REQUIRED")
+        await run_in_threadpool(published_store, session, store_id)
+        return await receive_image(store_id, request, "PRIVATE", key, uid, session)
+
+    @router.post("/merchant/tenants/{tenant_id}/private-media", status_code=201)
+    async def merchant_private_upload(
+        tenant_id: UUID,
+        request: Request,
+        key: str = Depends(key_value),
+        uid: UUID = Depends(actor),
+        session: Session = Depends(database, scope="function"),
+    ):
+        await run_in_threadpool(authorize, session, tenant_id, uid)
+        return await receive_image(tenant_id, request, "PRIVATE", key, uid, session)
+
+    async def receive_image(tenant_id, request, purpose, key, uid, session):
         if request.headers.get("content-type", "").split(";", 1)[0] not in {
             "image/jpeg",
             "image/png",
@@ -109,6 +138,7 @@ def build_router(access, settings):
                     tenant_id=tenant_id,
                     owner_id=uid,
                     purpose=purpose,
+                    privacy_version="development-draft-v1" if purpose == "PRIVATE" else None,
                     storage_key=path.name,
                     size=len(normalized),
                     width=width,
@@ -134,7 +164,20 @@ def build_router(access, settings):
         session: Session = Depends(database, scope="function"),
     ):
         authorize(session, tenant_id, uid)
-        return send_image(active_media(session, tenant_id, media_id))
+        media = active_media(session, tenant_id, media_id)
+        require_merchant_private_access(session, media, uid)
+        return send_image(media)
+
+    @router.get("/me/media/{media_id}/content")
+    def customer_content(
+        media_id: UUID,
+        store_id: UUID,
+        uid: UUID = Depends(actor),
+        session: Session = Depends(database, scope="function"),
+    ):
+        media = active_media(session, store_id, media_id, "PRIVATE")
+        require_customer_private_access(session, media, uid)
+        return send_image(media)
 
     @router.patch("/merchant/tenants/{tenant_id}/media/{media_id}")
     def set_status(
@@ -146,6 +189,7 @@ def build_router(access, settings):
     ):
         authorize(session, tenant_id, uid)
         row = find_owned(session, MediaObject, tenant_id, media_id, lock=True)
+        require_merchant_private_access(session, row, uid)
         if row.version != payload.expected_version:
             raise HTTPException(409, "VERSION_CONFLICT")
         row.status = payload.status

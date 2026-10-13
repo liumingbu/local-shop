@@ -10,6 +10,7 @@ from pydantic import AwareDatetime, Field, model_validator
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from .attachments import attachments_json, copy_inquiry_attachments, link_private
 from .catalog import find_owned, published_store
 from .models import (
     Category,
@@ -40,19 +41,27 @@ class CustomerRequest(StrictModel):
     fulfillment_method: Literal["PICKUP", "DELIVERY"] = "PICKUP"
     expected_time_note: str = Field(default="", max_length=200)
     expected_at: AwareDatetime | None = None
+    media_ids: list[UUID] = Field(default_factory=list, max_length=5)
     privacy_accepted: Literal[True]
 
     @model_validator(mode="after")
     def content_required(self):
-        if not self.raw_text and not self.items:
+        if not self.raw_text and not self.items and not self.media_ids:
             raise ValueError("Text or items required")
         return self
 
 
 class InquiryInput(StrictModel):
-    raw_text: str = Field(min_length=1, max_length=4000)
+    raw_text: str = Field(default="", max_length=4000)
     product_id: UUID | None = None
+    media_ids: list[UUID] = Field(default_factory=list, max_length=5)
     privacy_accepted: Literal[True]
+
+    @model_validator(mode="after")
+    def content_required(self):
+        if not self.raw_text and not self.product_id and not self.media_ids:
+            raise ValueError("Inquiry text, product or image required")
+        return self
 
 
 class ReplyInput(StrictModel):
@@ -88,6 +97,9 @@ def customer_reservation(row, session, detail=False):
         "updated_at",
     )
     value = {name: source[name] for name in allowed}
+    value["attachments"] = attachments_json(
+        session, row.tenant_id, reservation_id=row.id, customer=True
+    )
     if detail:
         events = session.scalars(
             select(RecordEvent)
@@ -116,6 +128,9 @@ def inquiry_json(row, session, customer=False, detail=False):
         "version": row.version,
         "created_at": row.created_at.isoformat(),
     }
+    value["attachments"] = attachments_json(
+        session, row.tenant_id, inquiry_id=row.id, customer=customer
+    )
     converted = session.scalar(
         select(Reservation.id).where(
             Reservation.tenant_id == row.tenant_id, Reservation.source_inquiry_id == row.id
@@ -263,6 +278,7 @@ def build_router(access):
             )
             session.add(row)
             session.flush()
+            link_private(session, store_id, uid, payload.media_ids, inquiry_id=row.id, visible=True)
             record_event(session, row, uid, None, "CREATED")
             return inquiry_json(row, session, customer=True, detail=True)
 
@@ -473,9 +489,10 @@ def build_router(access):
                 source_inquiry_id=row.id,
                 privacy_version=row.privacy_version,
             )
+            copy_inquiry_attachments(session, tenant_id, row.id, UUID(result["id"]))
             row.version += 1
             record_event(session, row, uid, row.status, "CONVERTED")
-            return result
+            return reservation_json(session.get(Reservation, UUID(result["id"])), session)
 
         return idempotent(
             session,
