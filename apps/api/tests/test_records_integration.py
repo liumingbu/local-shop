@@ -203,7 +203,7 @@ def test_decimal_units_and_no_customer_auto_binding(api):
         {"items": [{"name": "x", "quantity": "0.0001", "unit": "斤"}]},
         {"items": [{"name": "x", "quantity": "1", "unit": ""}]},
         {"items": [{"name": "x", "quantity": "NaN", "unit": "斤"}]},
-        {"items": [{"name": "x", "quantity": "1", "unit": "斤", "product_id": str(uuid4())}]},
+        {"items": [{"name": "x", "quantity": "1", "unit": "斤", "product_id": "not-a-uuid"}]},
     ],
 )
 def test_invalid_payloads(api, patch):

@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from decimal import Decimal
 
 from sqlalchemy import (
     CheckConstraint,
@@ -8,6 +9,7 @@ from sqlalchemy import (
     ForeignKeyConstraint,
     Index,
     Integer,
+    Numeric,
     String,
     Text,
     UniqueConstraint,
@@ -59,7 +61,60 @@ class Store(Base):
     tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"), primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
     description: Mapped[str] = mapped_column(Text, default="")
+    published: Mapped[bool] = mapped_column(default=False)
+    public_contact: Mapped[str] = mapped_column(String(200), default="")
+    public_address: Mapped[str] = mapped_column(String(300), default="")
+    business_hours: Mapped[str] = mapped_column(String(200), default="")
+    delivery_note: Mapped[str] = mapped_column(String(500), default="")
+    allow_pickup: Mapped[bool] = mapped_column(default=False)
+    allow_delivery: Mapped[bool] = mapped_column(default=False)
     version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class Category(Base):
+    __tablename__ = "categories"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    name: Mapped[str] = mapped_column(String(100))
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    status: Mapped[str] = mapped_column(String(20), default="ACTIVE")
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id", name="uq_category_tenant_id"),
+        CheckConstraint("status IN ('ACTIVE','ARCHIVED')", name="ck_category_status"),
+        CheckConstraint("version >= 1", name="ck_category_version"),
+    )
+
+
+class Product(Base):
+    __tablename__ = "products"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    category_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    name: Mapped[str] = mapped_column(String(120))
+    description: Mapped[str] = mapped_column(Text, default="")
+    unit: Mapped[str] = mapped_column(String(20))
+    spec: Mapped[str] = mapped_column(String(120), default="")
+    reference_price: Mapped[Decimal | None] = mapped_column(Numeric(12, 2), nullable=True)
+    supply_status: Mapped[str] = mapped_column(String(20), default="CONFIRM")
+    status: Mapped[str] = mapped_column(String(20), default="DRAFT")
+    sort_order: Mapped[int] = mapped_column(Integer, default=0)
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id", name="uq_product_tenant_id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"],
+            ["categories.tenant_id", "categories.id"],
+            name="fk_product_same_tenant_category",
+        ),
+        CheckConstraint("status IN ('DRAFT','PUBLISHED','ARCHIVED')", name="ck_product_status"),
+        CheckConstraint(
+            "supply_status IN ('REGULAR','CONFIRM','UNAVAILABLE')", name="ck_product_supply"
+        ),
+        CheckConstraint("reference_price IS NULL OR reference_price >= 0", name="ck_product_price"),
+        CheckConstraint("version >= 1", name="ck_product_version"),
+        Index("ix_products_tenant_status", "tenant_id", "status"),
+    )
 
 
 class Reservation(Base):

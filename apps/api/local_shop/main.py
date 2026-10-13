@@ -9,6 +9,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 
+from .access import build_access
+from .catalog import build_router as catalog_router
 from .config import Settings
 from .db import build_engine, probe_database
 from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
@@ -98,5 +100,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 raise HTTPException(401, "INVALID_TOKEN") from None
             return {"user_id": claims["sub"], "development_only": True}
 
-    app.include_router(build_router(settings, engine))
+    access = build_access(settings, engine)
+    app.include_router(build_router(access))
+    app.include_router(catalog_router(access))
     return app

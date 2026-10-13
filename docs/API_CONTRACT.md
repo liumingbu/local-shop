@@ -90,3 +90,12 @@
 - 当前无附件/导出/顾客本人入口，不能由上述商户测试推导那些接口已安全实现。
 - 原文、明细不可直接修改；确认结果当前为同一不可变明细与确认事件。后续调整确认明细需新增保留原文的显式版本接口。
 - `expected_time_note`是未解析原文备注；绝不将“明天”推断成已核实交付日期。正式结构化时间字段留后续顾客需求模块。
+
+## M3a 已实现接口（图片仍未实现）
+
+- 商户类别：GET/POST /api/v1/merchant/tenants/{tenant_id}/categories；PUT .../categories/{id}（expected_version）。status=ARCHIVED软归档，恢复ACTIVE可重新展示；不删除历史。
+- 商户商品：GET/POST .../products；GET/PUT .../products/{id}。POST需要Idempotency-Key，PUT需要expected_version。单个默认规格：名称、单位、spec、可空reference_price（Decimal12,2）、supply_status=REGULAR/CONFIRM/UNAVAILABLE；status=DRAFT/PUBLISHED/ARCHIVED。没有库存/应付金额字段。
+- 公开：GET /api/v1/stores/{store_id}、/products、/products/{id}。只有启用租户、明确published店铺、PUBLISHED商品和ACTIVE分类可读，已归档/其他店商品404。列表有page/limit与稳定排序。
+- 店铺PUT增加published/public_contact/public_address/business_hours/delivery_note/allow_pickup/allow_delivery；未显式开放交付方式时默认均false。更新未指定字段保留现值，避免旧客户端无意撤销发布。
+- 代记items.product_id现可为本店公开商品ID；服务器读取名称/单位/规格/参考价格快照，客户端不能伪造。商品之后改名/归档不改历史快照；自由明细仍可不指定商品。
+- 图片、多规格组合、平台范围搜索、真实扫码尚未实现。
