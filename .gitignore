@@ -46,3 +46,5 @@ Thumbs.db
 # Local browser test outputs
 test-results/
 playwright-report/
+
+var/media/

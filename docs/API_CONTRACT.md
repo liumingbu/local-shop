@@ -99,3 +99,15 @@
 - 店铺PUT增加published/public_contact/public_address/business_hours/delivery_note/allow_pickup/allow_delivery；未显式开放交付方式时默认均false。更新未指定字段保留现值，避免旧客户端无意撤销发布。
 - 代记items.product_id现可为本店公开商品ID；服务器读取名称/单位/规格/参考价格快照，客户端不能伪造。商品之后改名/归档不改历史快照；自由明细仍可不指定商品。
 - 图片、多规格组合、平台范围搜索、真实扫码尚未实现。
+
+## M3b 图片已实现（界面与微信上传适配未实现）
+
+- POST /api/v1/merchant/tenants/{tenant_id}/media?purpose=PRODUCT|LOGO：原始二进制体，限定Content-Type与2MiB，必需认证和Idempotency-Key。
+- GET .../media/{id}/content：仅本租户有效成员；不返回存储路径；无token查询参数。
+- PATCH .../media/{id}：status=ACTIVE|ARCHIVED，expected_version；可恢复，不物理删除。
+- PUT .../products/{id}/images：media_ids有序不重复、最多8、expected_version；仅本店PRODUCT图片。
+- 店铺PUT logo_media_id仅本店LOGO；公开店铺返回logo_url。
+- GET /api/v1/stores/{store_id}/products/{product_id}/images/{media_id} 与 /stores/{store_id}/logo：检查租户有效、店铺发布、商品/分类有效、当前关联和图片状态。未关联上传物不可公开读取。
+- PNG/JPEG/WebP真实解码、动画与像素限制、清理EXIF并统一JPEG。随机UUID文件名，路径不来自用户文件名。
+- 提交失败清理本次新建文件；进程被强杀时可能产生未关联孤立文件，但无公开可访问关联，不自动清理未知旧文件。上线前纳入备份/恢复与维护说明。
+- 这里只接受商户公开用途候选图片。顾客咨询私图还未实现，不复用上述公开用途作为私图入口。

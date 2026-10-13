@@ -19,7 +19,7 @@
 | M0-04 | main基线和文档PR | DONE | PR #1已合并，ccac6eb6 |
 | M1 | 工程初始化 | DONE | PR #2已合并，main 3fd71df5；33项测试证据见evidence/m1/RESULT_20261013.md |
 | M2 | 老板代记闭环 | IN_PROGRESS（后端已测，浏览器BLOCKED） | PR #3已合并，main d63ee77a；代码751dc278；干净检出56项测试、真实HTTP及重启持久化PASS；浏览器BLOCKED；evidence/m2/RESULT_20261013.md |
-| M3 | 商品与店铺 | IN_PROGRESS | M3a PR #4代码5889f341干净检出74项测试与HTTP/构建PASS，见evidence/m3a/RESULT_20261013.md；多图和维护界面未完成 |
+| M3 | 商品与店铺 | IN_PROGRESS | M3a PR #4已合并；M3b PR #5代码1338e9a4干净检出90项测试和HTTP重启图片字节验证PASS，见evidence/m3b/RESULT_20261013.md；维护界面与浏览器未验收 |
 | M4 | 顾客与小程序 | TODO | 无业务测试 |
 | M5 | 微信真实接入 | BLOCKED_EXTERNAL | AppID/运行条件与主体待确定 |
 | M6 | 集成交付 | TODO | 无部署 |
@@ -27,12 +27,12 @@
 ## 本轮基准与证据
 
 - M2起点main：3fd71df522643bf015013061ac1eed0b79af8e9a；初始工作树干净。
-- 工作分支：feat/m3-catalog。
+- 工作分支：feat/m3-product-media。
 - M1合并已核验，旧验证与原包归档保留。
 - 用户授权Dot自行审查和测试后合并常规PR；生产/权限/费用仍需单独授权。
 - 后端使用真实PG测试，不使用SQLite。浏览器启动失败不计为业务断言失败，也不计PASS。
 
 ## 下一步
 
-M2 PR #3已合并；保留浏览器BLOCKED。M3a保存和干净检出回归后自查合并，随后增加图片处理及商品维护界面。
+M2 PR #3已合并；保留浏览器BLOCKED。M3a PR #4已合并，main c41fb90d。M3b图片完成后端测试，保存和复验后合并；继续商品维护/原生小程序与顾客闭环。
 两客户本人隔离在M4实现与测试，不从当前两商户隔离推导。

@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 
 @pytest.fixture()
-def pg_settings():
+def pg_settings(tmp_path):
     name = "local_shop_test_" + uuid4().hex
     with psycopg.connect(ADMIN_URL, autocommit=True) as admin:
         admin.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(name)))
@@ -31,6 +31,7 @@ def pg_settings():
         database_url=db.render_as_string(hide_password=False),
         app_secret_key=secrets.token_urlsafe(32),
         dev_auth_enabled=True,
+        media_root=tmp_path / "media",
     )
     migrate(settings, "upgrade", "head")
     seed(settings)
