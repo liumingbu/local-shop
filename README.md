@@ -195,3 +195,11 @@ HTTP脚本已包含上传、归一化、排序、公开下载及重启后图片�
 ### 等待上限
 
 图片总接收默认15秒（MEDIA_RECEIVE_TIMEOUT_SECONDS），数据库每条语句默认10000ms（DB_STATEMENT_TIMEOUT_MS）、锁等待3000ms（DB_LOCK_TIMEOUT_MS）、连接池等待5秒（DB_POOL_TIMEOUT_SECONDS）。零值/无限值配置会拒绝启动。图片408后重试原请求，数据库503不代表可以自动换幂等键。以上不是完整限流或全请求CPU截止时间；正式部署仍须入口请求体/连接/超时限制。
+
+### 离线备份恢复演练
+
+```bash
+PG_BIN=/path/to/trusted/postgresql-16/bin .venv/bin/python scripts/backup_restore_drill.py
+```
+
+只创建临时合成PG和图片，真实pg_dump/pg_restore到另一空库并重新验证HTTP，不接受现有库地址。可复用离线工具为`PYTHONPATH=apps/api .venv/bin/python -m local_shop.recovery`；停写、目标保护、可信备份、凭据与失败处理必须先读[docs/RECOVERY.md](docs/RECOVERY.md)。真实备份不得上传仓库；生产执行和恢复切换另需授权。

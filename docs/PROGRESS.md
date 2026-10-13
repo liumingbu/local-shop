@@ -1,42 +1,40 @@
 # PROGRESS｜任务状态唯一台账
 
-更新时间：2026-10-13。更新者：Dot；原包记录已归档，以下区分基础验证和业务开发。
+更新时间：2026-10-13 UTC。以实际代码、远端和测试为依据；原包历史检查记录保留在evidence/package-original。
 
-## 当前摘要
+## 当前基准
 
-PR #1–#15已合并；M2代记闭环、M3商品/图片与M4顾客/询货/私图后端已有真实测试。完整业务界面仍在开发，浏览器交互BLOCKED；微信真机和部署未完成。
+- PR #1–#16已自查、合并并fetch核对；main：98daed9c191254a4c6e11442144b84432a0d68c7。
+- 当前分支：feat/backup-restore-delivery，从上述main干净创建。
+- 用户已授权Dot自行测试审查后合并常规PR，阶段性回报。生产、凭据/权限、费用和环境变更仍需确认。
+- 仅Dot自身云电脑；未使用Mac、Codex任务、Actions、Codespaces或其他云。未部署。
+- GitHub API提交/PR/合并可用且fetch树核验；终端直接push认证未建立，不能混称终端push通过。
 
-## 状态约定
+## 阶段状态
 
-`TODO` 未开始；`IN_PROGRESS` 在做；`BLOCKED` 条件缺失；`READY_FOR_REVIEW` 代码/文档及证据已推送待审；`DONE` 完成该项验收且需要时已合并。测试另外用PASS/FAIL/SKIP/NOT_RUN，不从任务状态推导。
-
-| ID | 事项 | 当前状态 | 证据/说明 |
+| 阶段 | 当前状态 | 已实现与证据 | 尚缺条件 |
 |---|---|---|---|
-| DOC-01 | 初始化文档包 | DONE | PR #1已合并，main基准ccac6eb6 |
-| M0-01 | 仓库检查 | DONE | main 62be6e58；旧验证分支 7bd637bf；任务分支开始时不存在；初始无打开 PR |
-| M0-02 | Dot开发环境验证 | DONE（开发范围） | 本机TCP运行PG与33项测试通过；微信/生产另验 |
-| M0-03 | Dot真实提交/PR验证 | DONE | 远端导入提交 1e1aa561 及草稿 PR #1 已实际创建；55文件逐字节核验通过 |
-| M0-04 | main基线和文档PR | DONE | PR #1已合并，ccac6eb6 |
-| M1 | 工程初始化 | DONE | PR #2已合并，main 3fd71df5；33项测试证据见evidence/m1/RESULT_20261013.md |
-| M2 | 老板代记闭环 | IN_PROGRESS（后端已测，浏览器BLOCKED） | PR #3已合并，main d63ee77a；代码751dc278；干净检出56项测试、真实HTTP及重启持久化PASS；浏览器BLOCKED；evidence/m2/RESULT_20261013.md |
-| M3 | 商品与店铺 | IN_PROGRESS | M3a PR #4已合并；M3b PR #5代码1338e9a4干净检出90项测试和HTTP重启图片字节验证PASS，见evidence/m3b/RESULT_20261013.md；原生维护代码/逻辑已测；WXML/浏览器未验收 |
-| M4 | 顾客与小程序 | IN_PROGRESS | M4a PR #6已合并；M4b PR #7已合并，main89e7a595；代码e1b94a7d干净检出122项测试及HTTP私图/重启PASS，见evidence/m4b/RESULT_20261013.md；取消与确认修订后端已测；原生顾客逻辑已测，商户原生页面代码/逻辑已测，真机未完成 |
-| M5 | 微信真实接入 | BLOCKED_EXTERNAL | AppID/运行条件与主体待确定 |
-| M6 | 集成交付 | IN_PROGRESS | 上传/数据库等待加固中；备份恢复待做，无部署 |
+| 文档基线 | DONE | PR #1，导入原包及隐藏配置，保留原记录 | 无 |
+| M0 | DONE（开发范围） | 终端/运行时/文件/最小程序、真实PG及GitHub读写，ENVIRONMENT_CHECK | 不含微信/生产 |
+| M1 | DONE | PR #2工程/配置/迁移/健康检查/合成身份，evidence/m1 | 无 |
+| M2 | IN_PROGRESS（后端闭环通过） | PR #3及后续修订：代记→确认→备货→交付历史；租户/版本/幂等/事件；evidence/m2、m4c、m4d、m4f | 浏览器/原生UI实际运行未验收 |
+| M3 | IN_PROGRESS（后端与原生逻辑通过） | PR #4/#5/#12/#15：分类/商品/多图/Logo/公开店铺/Web批量维护；evidence/m3a、m3b、m4g、web-catalog | DOM/WXML/真机未验收 |
+| M4 | IN_PROGRESS（代码与协议逻辑通过） | PR #6–#14：顾客询货/需求/本人历史/私图/取消/修订；13原生页面；商户端与平台邀请审核/启停/审计；evidence/m4a–m4g、platform、platform-ui | 浏览器/微信真实运行、真实身份 |
+| M5 | BLOCKED_EXTERNAL | 模拟身份隔离、分享路径与网络封装有代码；没有声称微信实测通过 | 新项目AppID/凭据、正式身份接入、微信工具/真机、主体类目隐私/消息/域名条件；见EXTERNAL_DEPENDENCIES |
+| M6 | IN_PROGRESS | PR #16上传/DB等待限时，evidence/bounded-io；数据库+图片离线工具和合成恢复演练本地已执行 | 恢复工具远端复核、Linux交付模板、最终包；生产/异机灾备另验 |
 
-## 本轮基准与证据
+## 本轮恢复工具进度
 
-- M2起点main：3fd71df522643bf015013061ac1eed0b79af8e9a；初始工作树干净。
-- 工作分支：fix/bounded-upload-and-database-waits。
-- M1合并已核验，旧验证与原包归档保留。
-- 用户授权Dot自行审查和测试后合并常规PR；生产/权限/费用仍需单独授权。
-- 后端使用真实PG测试，不使用SQLite。浏览器启动失败不计为业务断言失败，也不计PASS。
+- 新离线工具：备份数据库和规范图片；哈希/迁移/表计数/媒体数据库清单核对；仅可信自生成包；新目录/独占文件与私有权限。
+- 恢复仅接受独立空数据库、尚不存在图片目录；不自动drop/clean或覆盖；PG同主版本；失败保留目标、维持停服，不假装DB与文件跨资源原子。
+- 本地全套206项Python（154真实PG、52非PG）、18项Web控制器、54项原生模拟wx与Ruff/TS/构建/真实HTTP/PG重启和恢复演练通过；补充CLI级备份/verify/恢复也退出0：恢复21张表、92行合成记录、3个图片文件。远端被测SHA及证据待补。
+- 原始/确认需求、状态、取消、平台审计、幂等、公开与私有图片及权限都在新恢复库经HTTP复核；真实备份和图片未上传。
+
+## 测试与未验收
+
+真实测试索引统一在TESTING.md；历史结果不覆盖。当前PG16.15，旧16.2报告保留其原始时间与范围。
+浏览器DOM受当前浏览器运行/连接条件阻塞；原生测试使用模拟wx生命周期，真实HTTP仅证明协议和服务端往返。没有运行WXML编译/微信开发者工具/真机，没有真实微信登录、扫码、消息、审核或发布。
 
 ## 下一步
 
-M2 PR #3已合并；保留浏览器BLOCKED。M3a PR #4已合并，main c41fb90d。M3b PR #5已合并，main 93b6afda。M4a PR #6已合并，main 09fe8a74。M4b PR #7已合并，main89e7a595。PG16.15编译后122项及HTTP重启回归通过。M4c PR #8已合并main b722d2d3，代码c812e496干净检出139项测试及HTTP/构建通过。M4d PR #9已合并main10a512d8；代码af376a55干净检出152项/HTTP重启/构建通过。M4e原生顾客7页、分身份/店铺草稿和网络重试已实现；23项模拟wx逻辑测试及真实HTTP/PG客户端流程初验通过，PR #10代码812a2d02干净检出152项Python+23项Node及构建/真实HTTP复核通过，见evidence/m4e/RESULT_20261013.md；已合并main 2a4dd1b6。M4f商户工作台/处理详情/店铺资料三页实现，PR #11代码a8b05853独立远端检出152项Python、37项Node与TS/构建/真实HTTP及重启复核全部通过，见evidence/m4f/RESULT_20261013.md，已合并main e355ac91。M4g目录/多图/Logo维护代码完成，PR #12代码b50e5e51远端干净检出152项Python+50项Node、Ruff/TS/构建与真实HTTP/PG重启复核全部通过，见evidence/m4g/RESULT_20261013.md，已合并main 1da285fd。平台邀请审核/启停/审计后端与0009迁移已实现，PR #13代码99d41f55远端干净检出171项Python（145真实PG）+50项Node及Ruff/TS/构建/HTTP重启全部通过，见evidence/platform/RESULT_20261013.md，已合并main 2eb23d87；Web平台控制台/原生本人邀请页已实现，PR #14代码3e23f683远端171项Python、10项Web控制器Node、54项原生逻辑与Ruff/TS/构建/真实HTTP及重启全通过，见evidence/platform-ui/RESULT_20261013.md，已合并main 05929d7a；Web批量维护实现中，随后M5/M6。
-两顾客本人记录与商户边界已有专门测试，身份仍为开发模拟，真实微信另验。
-
-Web商品批量维护：每页20件/每批最多50项，逐件保存、部分成功明确显示，POST/PUT同键重放、冲突停批；PR #15代码0d9de702远端干净检出175 Python（149真实PG）、18 Web、54原生逻辑及Ruff/TS/构建/真实HTTP与PG重启全部退出0，见evidence/web-catalog/RESULT_20261013.md；已合并main 1d1e3ffe。
-
-M6等待限时加固：图片接收总截止时间、数据库语句/锁/池等待上限已实现；PR #16远端代码58b38b40独立干净检出193 Python（154真实PG）、18 Web、54原生逻辑与Ruff/TS/构建/真实TCP慢上传/HTTP/PG重启全部退出0，见evidence/bounded-io/RESULT_20261013.md；待自查合并。
+完成恢复工具远端独立检出与证据、合并；补Linux服务/反向代理/迁移回滚交付文件及可执行验证，汇总源码验收包。M5外部条件缺失保留阻塞，不沿用旧佳琪配置，不让这项阻塞替代独立模块开发。
