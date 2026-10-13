@@ -1,6 +1,6 @@
 # local-shop｜实体商户店铺与预订备货助手
 
-**开发准备文档包 v0.1 · 2026-10-12**
+**开发验证源码 · 生产与微信真实能力尚未验收**
 
 仓库：`https://github.com/liumingbu/local-shop`
 
@@ -8,9 +8,11 @@
 
 ## 当前开发范围
 
-M1工程、老板代记闭环、商品分类与多图、顾客询货/本人记录、私有附件已有后端实现和真实PostgreSQL/HTTP验证。Web有基础老板代记工作台；原生顾客页已进入实现与客户端逻辑测试，商户手机页、平台管理与真实微信仍待完善。各模块最新状态与代码证据只在[PROGRESS](docs/PROGRESS.md)和[TESTING](docs/TESTING.md)维护。
+后端已实现老板代记闭环、商品分类与多图、顾客询货/本人记录、私有附件与基础平台管理，并经真实PostgreSQL/HTTP验证。原生顾客与商户页面、Web平台管理和商品批量维护已有代码与客户端逻辑测试；正式身份、浏览器DOM、微信工具/真机仍待验收。各模块最新状态与代码证据只在[PROGRESS](docs/PROGRESS.md)和[TESTING](docs/TESTING.md)维护。
 
 开发数据库现使用同一Dot云电脑从官方源码编译的PostgreSQL16.15，构建和实际回归见[环境证据](docs/evidence/pg1615/RESULT_20261013.md)。浏览器交互受环境限制，微信开发者工具/真机与生产部署未验收。
+
+阶段验收与复现入口见[ACCEPTANCE](docs/ACCEPTANCE.md)。
 
 ## 先读这些文档
 
@@ -203,3 +205,7 @@ PG_BIN=/path/to/trusted/postgresql-16/bin .venv/bin/python scripts/backup_restor
 ```
 
 只创建临时合成PG和图片，真实pg_dump/pg_restore到另一空库并重新验证HTTP，不接受现有库地址。可复用离线工具为`PYTHONPATH=apps/api .venv/bin/python -m local_shop.recovery`；停写、目标保护、可信备份、凭据与失败处理必须先读[docs/RECOVERY.md](docs/RECOVERY.md)。真实备份不得上传仓库；生产执行和恢复切换另需授权。
+
+## Linux交付候选
+
+服务、TLS代理和配置模板见[DEPLOYMENT](docs/DEPLOYMENT.md#8-linux候选交付2026-10-13)。真实登录未完成，生产门禁主动拒绝启动；不代表已部署。合成组件检查：`PG_BIN=<PG16 bin> NGINX_BIN=<nginx 1.30.5> .venv/bin/python scripts/linux_delivery_check.py`；systemd验证受限时可明确使用`--skip-systemd`，该项仍NOT_RUN。

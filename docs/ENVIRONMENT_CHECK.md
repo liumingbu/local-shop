@@ -115,3 +115,11 @@ Unix socket失败历史保留。本轮实际Uvicorn在127.0.0.1监听、HTTP存�
 
 在同一Dot云电脑从官方16.15源码校验、编译、安装成功；新二进制在本机TCP上跑通122项测试（其中96项PG）和全部既有真实HTTP/重启检查，退出0。后续开发改用16.15，旧16.2结果不修改。
 被测main SHA 89e7a595d04a49a12604e8335436f196e7eb5a77；来源/校验/构建命令与完整日志见[evidence/pg1615/RESULT_20261013.md](evidence/pg1615/RESULT_20261013.md)。浏览器和微信条件未因数据库升级改变。
+
+## 2026-10-13补查：Nginx/TLS与systemd边界
+
+同一Dot云电脑从官方源码编译Nginx1.30.5，openssl3.5.7/gcc14.2；启用http_ssl/http_v2模块。源码SHA256为6c20565aa2325cb82216ae804f4a4ff1875179014759a381c42ddc8e11c4906d。官方签名经隔离GPG验证退出0，匹配官方列出的Sergey Kandaurov公钥D6786CE303D9A9022998DC6CC8464D549AF75C0A；未改变全局信任，UID未有独立信任链认证。导入公钥曾因gpg-agent不可启动返回2，随后no-autostart签名校验成功，两者不混淆。
+
+实际本机TCP运行Nginx+API+PG并分别握手TLS1.2/1.3，使用临时测试证书且仅本进程显式信任。代理权限/私图/幂等、HTTP固定域名跳转、正文413、限流429与查询串不落访问日志通过。单进程运行只证明组件，不证明正式服务管理。
+
+systemd-analyze257.13已存在，但真实verify失败：Failed to create directory '/run/systemd/': Read-only file system。静态验证BLOCKED，systemd启停/开机启动NOT_RUN；未绕过文件系统限制。测试脚本可明确--skip-systemd重跑其他组件，必须保留这一遗漏。未部署、未新建外部计算环境。
