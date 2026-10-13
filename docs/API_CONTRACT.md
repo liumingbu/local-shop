@@ -144,3 +144,13 @@
 - 商户GET .../reservations?cancellation_pending=true|false：同租户分页筛选。商户和本人需求DTO包含cancellation_requests，不含处理人/申请人账号标识；record_events新增action便于区分同状态变更。
 - 停店本人仍可留下取消意向，但无新增需求；客户端不能宣称已通知/已处理。完成和取消为终态，不受理新申请。
 - 0007迁移遇取消历史拒绝破坏性降级；无需物理删除。
+
+## M4d 确认详情修订（实现与测试状态见TESTING）
+
+- POST /api/v1/merchant/tenants/{tenant_id}/reservations/{id}/confirmation-revisions：expected_version、summary或items、可空带时区fulfillment_at、time_note、change_reason；必需Idempotency-Key、本店有效成员。
+- 原始raw_text/items/expected_at保持不变。每次候选完整快照追加为confirmation_revisions，包含商品服务端快照、小数数量和单位；前版不会被覆盖。
+- 仅待确认/已确认且无待处理取消申请可改候选；每次改动将状态回到PENDING_CONFIRMATION，必须重新确认后才能备货。进入备货后不直接改明细，先沟通取消/重新建单；不静默改已执行任务。
+- 存在候选时，原transitions→CONFIRMED还必须带当前confirmation_revision_id及customer_agreed=true。该字段表示商户明确记录已与顾客达成一致，不是经过微信验证的顾客电子确认。旧候选ID/未明确同意409。
+- 本人与商户DTO均有confirmation_revisions，不含actor账号；包含提议版本/快照、确认版本/时间、agreement_recorded_by=MERCHANT。顾客期望时间与候选最终时间分开；未确认候选不得显示成承诺。
+- 原confirmed_text仍是从询货转换时保存的文字，历史保持原值；有修订时界面以最新候选及其confirmed_version区分“待确认/已确认”，不能把旧字段误当最新确认结果。
+- 迁移0008遇确认历史拒绝破坏性降级。

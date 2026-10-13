@@ -13,6 +13,7 @@ from .access import build_access
 from .cancellations import build_router as cancellation_router
 from .catalog import build_router as catalog_router
 from .config import Settings
+from .confirmations import build_router as confirmation_router
 from .customers import build_router as customer_router
 from .db import build_engine, probe_database
 from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
@@ -109,4 +110,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(media_router(access, settings))
     app.include_router(customer_router(access))
     app.include_router(cancellation_router(access))
+    app.include_router(confirmation_router(access))
     return app

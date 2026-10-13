@@ -80,3 +80,8 @@ READY → OUT_FOR_DELIVERY → COMPLETED       # 商家配送完成
 
 cancellation_requests：tenant_id+reservation_id复合FK、requester、reason、REQUESTED/ACCEPTED/REJECTED、对客response_note、决策actor/time、申请与决策的需求版本。每个需求至多一个REQUESTED（PG部分唯一索引）。决策非空与版本递增有CHECK。
 所有申请、决策与常规状态变更先锁同一reservation行；record_events新增action，申请/拒绝可同状态但仍递增版本。幂等结果与事件事务一致。尚无结构化确认明细修订接口，原始items仍不可变。
+
+## M4d 确认修订
+
+confirmation_revisions以tenant_id+reservation_id复合FK绑定原需求，proposed_version唯一，details JSONB保存完整候选快照。confirmed_version/by/at须同时为空或全部存在且确认版本大于提议版本。普通API只允许追加候选及对当前未确认候选记录确认，不能覆盖旧details。
+原需求文本/明细/期望时间不更新；最终时间存在候选details.fulfillment_at。修改确认内容回到待确认，既有状态机阻止直接备货，服务端要求精确候选ID与商户明确确认。
