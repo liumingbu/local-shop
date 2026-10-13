@@ -26,6 +26,7 @@ export interface Category {
     status: string;
 }
 export interface Product {
+    sort_order?: number;
     id: string;
     name: string;
     description: string;

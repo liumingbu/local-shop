@@ -25,7 +25,7 @@ export async function run(screen: Screen, action: (commit: (data: Record<string,
         commit({ error: errorText(e) });
     }
     finally {
-        if (alive(screen) && (screen.view || 0) === view)
+        if (alive(screen) && (screen.view || 0) === view && (!sessionGuard || current === auth().generation))
             screen.setData({ busy: false });
     }
 }
