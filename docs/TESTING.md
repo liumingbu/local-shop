@@ -83,4 +83,4 @@ run_id:
 
 - 2026-10-12 14:58 UTC：[PG预检查](evidence/POSTGRES_PREFLIGHT_20261012.md)，启动BLOCKED；无数据库集成测试执行，业务测试仍NOT_RUN。
 
-- 2026-10-13 M1：33项Python测试、PG重启持久化、真实HTTP、前端与小程序类型/构建初验通过。正式SHA与完整日志待最终回归保存。
+- 2026-10-13 M1：33项Python测试、PG重启持久化、真实HTTP、前端与小程序类型/构建初验通过。正式结果：evidence/m1/RESULT_20261013.md，远端被测SHA cddfd9b6，干净检出33/33通过，无跳过。
