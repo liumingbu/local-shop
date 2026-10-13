@@ -1,0 +1,149 @@
+812a2d02923e63653e506219800909ab40d1e0d8
+All checks passed!
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:native
+> npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 23 native assets; this is NOT a WeChat runtime test.
+✔ development login is disabled by configuration and always refused for trial/release (3.413728ms)
+✔ origin and path are fail-closed; remote plaintext, userinfo and arbitrary URLs refused (0.876777ms)
+✔ invalid share entry does not fall back to a recent store (1.211791ms)
+✔ login keeps credentials in memory; authenticated identity comes from server me response (0.513021ms)
+✔ late private response after account switch is discarded (5.496857ms)
+✔ drafts are isolated by user and store, and units/specifications never merge (1.222296ms)
+✔ storage failure prevents sending an unrepeatable business request (0.493462ms)
+✔ uncertain retry uses immutable original payload/key and survives success before draft acknowledgement (0.86536ms)
+✔ validation rejection releases draft, but expired login preserves pending operation (0.517938ms)
+✔ busy and view generation protect double clicks and late results after hide/show (0.391718ms)
+✔ decimal validation and explicit UTC+08 display do not invent quantities or dates (0.744598ms)
+✔ native page registrations, assets and event handlers exist (static, not WXML rendering) (4.025387ms)
+✔ compose sends only this store draft and clears it only after confirmed success (7.234993ms)
+✔ compose double-click plus network retry does not replace the original payload (6.206854ms)
+✔ leaving compose before response keeps the original pending request and does not navigate later (6.214945ms)
+✔ explicit date+time becomes a timezone-aware value; date-only stays a note (7.133155ms)
+✔ private detail rejects store mismatch and clears private content on hide (5.776151ms)
+✔ private images send authentication as a header, never a query token (0.421834ms)
+✔ image picker cancellation sends no upload and preserves draft (0.443136ms)
+✔ a different product entry does not silently mix an existing inquiry draft (0.427432ms)
+✔ leaving the login page interrupts the pending identity switch (0.402334ms)
+✔ date-only input remains a note and is not silently assigned midnight (5.926873ms)
+✔ source default has no API origin or enabled fake login (0.272008ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 139.109447
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 typecheck
+> npm run typecheck --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> @local-shop/miniprogram@0.1.0 typecheck
+> tsc --noEmit
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 build
+> vue-tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 13 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  0.36 kB │ gzip:  0.28 kB
+dist/assets/index-DzxXMGFL.css   1.26 kB │ gzip:  0.62 kB
+dist/assets/index--O-OFrUZ.js   73.02 kB │ gzip: 28.79 kB
+
+✓ built in 119ms
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 23 native assets; this is NOT a WeChat runtime test.
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+........................................................................ [ 47%]
+........................................................................ [ 94%]
+........                                                                 [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /workspace/scratch/d168cc482c3f/local-shop-m2-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+152 passed, 1 warning in 105.77s (0:01:45)
+waiting for server to shut down.... done
+server stopped
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 23 native assets; this is NOT a WeChat runtime test.
+PASS compiled native customer logic + REAL HTTP/PG: store/product/decimal draft/private image/submit/history/cancel/tenant isolation/inquiry
+SIMULATED wx transport, picker/compression and page lifecycle; NOT WeChat runtime, WXML, sharing or real identity validation.
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-13 14:04:46.100 JST [1555] LOG:  starting PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-13 14:04:46.100 JST [1555] LOG:  listening on IPv4 address "127.0.0.1", port 60579
+2026-10-13 14:04:46.102 JST [1558] LOG:  database system was shut down at 2026-10-13 14:04:45 JST
+2026-10-13 14:04:46.104 JST [1555] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: cancellation decision/audit/idempotency durable
+PASS real HTTP after restart: original and confirmed revisions remain distinct
+waiting for server to shut down....2026-10-13 14:04:47.231 JST [1555] LOG:  received fast shutdown request
+2026-10-13 14:04:47.231 JST [1555] LOG:  aborting any active transactions
+2026-10-13 14:04:47.233 JST [1555] LOG:  background worker "logical replication launcher" (PID 1561) exited with exit code 1
+2026-10-13 14:04:47.234 JST [1556] LOG:  shutting down
+2026-10-13 14:04:47.234 JST [1556] LOG:  checkpoint starting: shutdown immediate
+2026-10-13 14:04:47.234 JST [1556] LOG:  checkpoint complete: wrote 9 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=6, longest=0.001 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/1561018, redo lsn=0/1561018
+2026-10-13 14:04:47.236 JST [1555] LOG:  database system is shut down
+ done
+server stopped

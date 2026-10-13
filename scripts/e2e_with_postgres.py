@@ -24,6 +24,11 @@ parser.add_argument(
     action="store_true",
     help="Exercise real HTTP and restart persistence without a browser",
 )
+parser.add_argument(
+    "--native-client",
+    action="store_true",
+    help="Compiled native logic with simulated wx transport against real HTTP",
+)
 args = parser.parse_args()
 
 root = Path(__file__).resolve().parents[1]
@@ -133,6 +138,25 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                 private = exercise_private_media("http://127.0.0.1:8000")
                 cancellation = exercise_cancellation("http://127.0.0.1:8000")
                 confirmation = exercise_confirmation("http://127.0.0.1:8000")
+                if args.native_client:
+                    from PIL import Image
+
+                    fixture = folder / "native-fixture.png"
+                    Image.new("RGB", (16, 16), color=(80, 140, 100)).save(fixture)
+                    subprocess.run(
+                        ["npm", "run", "build", "-w", "apps/miniprogram"], cwd=root, check=True
+                    )
+                    subprocess.run(
+                        [
+                            "node",
+                            "scripts/native_customer_http.cjs",
+                            "http://127.0.0.1:8000",
+                            str(fixture),
+                            str(folder),
+                        ],
+                        cwd=root,
+                        check=True,
+                    )
                 api.terminate()
                 api.wait(timeout=10)
                 subprocess.run(
