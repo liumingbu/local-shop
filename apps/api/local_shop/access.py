@@ -80,4 +80,13 @@ def build_access(settings, engine):
         except ValueError:
             raise HTTPException(422, "INVALID_IDEMPOTENCY_KEY") from None
 
-    return SimpleNamespace(database=database, actor=actor, authorize=authorize, key_value=key_value)
+    def optional_key_value(idempotency_key: str | None = Header(None, alias="Idempotency-Key")):
+        return key_value(idempotency_key) if idempotency_key is not None else None
+
+    return SimpleNamespace(
+        database=database,
+        actor=actor,
+        authorize=authorize,
+        key_value=key_value,
+        optional_key_value=optional_key_value,
+    )

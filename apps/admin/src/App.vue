@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import PlatformPanel from './PlatformPanel.vue';
+import CatalogPanel from './CatalogPanel.vue';
 import { ApiError, request, transitions, type Tenant, type RecordItem, type Store } from './api';
 const alias = ref('merchant-a');
 const token = ref('');
 const userId=ref(''),platformRole=ref(false),platformLocked=ref(false),platformBusy=ref(false);
 const tenant = ref<Tenant>();
+const members=ref<Tenant[]>([]),catalogLocked=ref(false),catalogBusy=ref(false),activeAlias=ref('');
 const store = ref<Store>({name:'',description:'',version:0});
 const records = ref<RecordItem[]>([]);
 const busy = ref(false);
+const sessionVersion=ref(0);
 const error = ref('');
 const filter = ref('');
 const total = ref(0);
@@ -31,25 +34,37 @@ async function load() {
   if (current === generation) { records.value = data.items; total.value = data.total; }
 }
 async function login() {
-  if (busy.value || platformBusy.value || (platformLocked.value && alias.value!=='platform-admin')) return;
-  generation++;userId.value='';platformRole.value=false; token.value=''; tenant.value=undefined; records.value=[]; detail.value=null;
-  store.value={name:'',description:'',version:0};pending.value=null;customer.value='';raw.value='';page.value=1;filter.value='';
+  if (busy.value || platformBusy.value || catalogBusy.value || ((platformLocked.value || catalogLocked.value || pending.value) && alias.value!==activeAlias.value)) return;
+  const savedTenant=tenant.value?.id, savedUser=userId.value;
   busy.value=true;error.value='';
   try {
+    // Stage authentication and membership reads before replacing the active context.
+    // A failed same-user refresh must not lose an unresolved request or its tenant.
     const session=await request<{access_token:string}>('/api/v1/dev/session','','POST',{identity:alias.value});
-    token.value=session.access_token;
-    userId.value=(await request<{user_id:string}>('/api/v1/dev/me',token.value)).user_id;
-    try {platformRole.value=(await request<{role:string}>('/api/v1/platform/me',token.value)).role==='PLATFORM_ADMIN';}
+    const nextUser=(await request<{user_id:string}>('/api/v1/dev/me',session.access_token)).user_id;
+    if((pending.value||platformLocked.value||catalogLocked.value)&&nextUser!==savedUser)throw new Error('Pending identity changed');
+    let isPlatform=false;
+    try {isPlatform=(await request<{role:string}>('/api/v1/platform/me',session.access_token)).role==='PLATFORM_ADMIN';}
     catch(e){if(!(e instanceof ApiError&&e.status===403))throw e;}
-    if(platformRole.value)return;
-    const result=await request<{items:Tenant[]}>('/api/v1/merchant/tenants',token.value);
-    if (!result.items[0]) throw new Error('No tenant');
-    tenant.value=result.items[0];
-    try { store.value=await request<Store>(`${base()}/store`,token.value); }
-    catch (e) { if (!(e instanceof ApiError && e.status===404)) throw e; }
+    const nextMembers=isPlatform?[]:(await request<{items:Tenant[]}>('/api/v1/merchant/tenants',session.access_token)).items;
+    const nextTenant=nextMembers.find(x=>x.id===savedTenant)||nextMembers[0];
+    if(!isPlatform&&!nextTenant)throw new Error('No tenant');
+    if(pending.value&&nextTenant?.id!==savedTenant)throw new Error('Pending tenant unavailable');
+    generation++;sessionVersion.value++;token.value=session.access_token;userId.value=nextUser;activeAlias.value=alias.value;
+    platformRole.value=isPlatform;members.value=nextMembers;tenant.value=nextTenant;
+    records.value=[];detail.value=null;store.value={name:'',description:'',version:0};page.value=1;filter.value='';
+    if(!pending.value){customer.value='';raw.value='';}
+    if(isPlatform)return;
+    try {store.value=await request<Store>(`${base()}/store`,token.value);}
+    catch(e){if(!(e instanceof ApiError&&e.status===404))throw e;}
     await load();
-  } catch(e) { token.value='';userId.value='';platformRole.value=false;tenant.value=undefined;showError(e); }
-  finally { busy.value=false; }
+  }catch(e){showError(e);}finally{busy.value=false;}
+}
+async function chooseTenant(event:Event){
+  if(busy.value||catalogBusy.value||catalogLocked.value||pending.value)return;
+  const chosen=members.value.find(x=>x.id===(event.target as HTMLSelectElement).value);if(!chosen)return;
+  tenant.value=chosen;records.value=[];detail.value=null;store.value={name:'',description:'',version:0};page.value=1;filter.value='';busy.value=true;error.value='';
+  try{try{store.value=await request<Store>(`${base()}/store`,token.value);}catch(e){if(!(e instanceof ApiError&&e.status===404))throw e;}await load();}catch(e){showError(e);}finally{busy.value=false;}
 }
 async function saveStore() {
   if(busy.value) return;busy.value=true;error.value='';
@@ -63,7 +78,7 @@ async function submit() {
   try {
     await request(`${base()}/reservations`,token.value,'POST',pending.value.body,pending.value.key);
     pending.value=null;customer.value='';raw.value='';filter.value='';page.value=1;await load();
-  } catch(e) { if(e instanceof ApiError && e.status<500) pending.value=null;showError(e); }
+  } catch(e) { if(e instanceof ApiError && e.status>=400 && e.status<500 && ![401,403,408,429].includes(e.status)) pending.value=null;showError(e); }
   finally{busy.value=false;}
 }
 async function transition(record:RecordItem,target:string) {
@@ -83,14 +98,15 @@ async function refresh(nextPage=1) {
 <template>
   <main>
     <header><span>local-shop · 开发验证工作台</span><h1>记下需求，安排备货</h1><p>仅供本机合成账号测试，尚未接入微信真实登录。</p></header>
-    <section class="login"><label>演示身份<select v-model="alias" :disabled="busy || !!pending || platformLocked || platformBusy"><option value="merchant-a">商户 A</option><option value="merchant-b">商户 B</option><option value="platform-admin">平台合成管理员</option></select></label><button :disabled="busy || !!pending || platformBusy" @click="login">{{platformLocked?'重新登录同一身份，保留原请求':'进入工作台'}}</button></section>
+    <section class="login"><label>演示身份<select v-model="alias" :disabled="busy || !!pending || platformLocked || platformBusy || catalogLocked || catalogBusy"><option value="merchant-a">商户 A</option><option value="merchant-b">商户 B</option><option value="customer-a">受邀账号 A</option><option value="customer-b">受邀账号 B</option><option value="platform-admin">平台合成管理员</option></select></label><button :disabled="busy || platformBusy || catalogBusy" @click="login">{{(platformLocked||catalogLocked||pending)?'重新登录同一身份，保留原请求':'进入工作台'}}</button></section>
     <p v-if="error" role="alert" class="error">{{error}}</p>
-    <PlatformPanel v-if="platformRole && userId && token" :key="userId" :token="token" :user-id="userId" @locked="platformLocked=$event" @busy="platformBusy=$event" />
+    <PlatformPanel v-if="platformRole && userId && token" :key="userId+sessionVersion" :token="token" :user-id="userId" @locked="platformLocked=$event" @busy="platformBusy=$event" />
     <template v-if="tenant">
-      <h2>{{tenant.name}}</h2>
+      <h2>{{tenant.name}}</h2><label v-if="members.length>1">当前已授权店铺<select :value="tenant.id" :disabled="busy || catalogBusy || catalogLocked || !!pending" @change="chooseTenant"><option v-for="member in members" :key="member.id" :value="member.id">{{member.name}}</option></select></label>
+      <CatalogPanel v-if="userId && token" :key="userId+'.'+tenant.id+'.'+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenant.id" @locked="catalogLocked=$event" @busy="catalogBusy=$event" />
       <section><h3>店铺资料</h3><label>店名<input v-model="store.name" :disabled="busy" maxlength="100"></label><button :disabled="busy || !store.name.trim()" @click="saveStore">保存店铺</button></section>
       <section><h3>快速代记</h3><p>没有商品库也能直接保存。</p>
-        <form @submit.prevent="submit"><fieldset :disabled="busy || !!pending || platformLocked || platformBusy">
+        <form @submit.prevent="submit"><fieldset :disabled="busy || !!pending || platformLocked || platformBusy || catalogLocked || catalogBusy">
           <label>顾客称呼<input v-model="customer" required maxlength="100"></label>
           <label>原始需求<textarea v-model="raw" required maxlength="4000" placeholder="例如：半斤干贝分两袋，周三下午自提"></textarea></label>
           <div class="row"><label>来源<select v-model="source"><option value="MERCHANT_PHONE">电话</option><option value="MERCHANT_WECHAT">微信</option><option value="MERCHANT_IN_STORE">到店</option></select></label><label>交付意向<select v-model="method"><option value="PICKUP">自提</option><option value="DELIVERY">商家配送</option></select></label></div>

@@ -192,6 +192,11 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                         cwd=root,
                         check=True,
                     )
+                    subprocess.run(
+                        ["node", "scripts/catalog_console_http.cjs", "http://127.0.0.1:8000"],
+                        cwd=root,
+                        check=True,
+                    )
                 platform_state = exercise_platform("http://127.0.0.1:8000")
                 api.terminate()
                 api.wait(timeout=10)
