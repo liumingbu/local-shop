@@ -12,7 +12,8 @@
   "scripts": {
     "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspaces",
-    "test:native": "npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs"
+    "test:native": "npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs",
+    "test:admin": "tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.0",

@@ -12,6 +12,7 @@ def exercise_platform(base_url):
             ]
             auth[alias] = {"Authorization": "Bearer " + token}
         admin, owner = auth["platform-admin"], auth["customer-b"]
+        before_audit_total = client.get("/api/v1/platform/audit", headers=admin).json()["total"]
         payload = {
             "owner_user_id": "00000000-0000-4000-8000-000000000004",
             "proposed_name": "HTTP合成受邀店",
@@ -94,11 +95,13 @@ def exercise_platform(base_url):
         )
         assert response.status_code == 200
         audit = client.get("/api/v1/platform/audit", headers=admin).json()
-        assert audit["total"] == 5 and all("response" not in x for x in audit["items"])
+        assert audit["total"] == before_audit_total + 5 and all(
+            "response" not in x for x in audit["items"]
+        )
         print(
             "PASS real HTTP: invitation/recipient consent/review/"
-        "unpublished tenant/owner manual record/"
-        "separate platform role/suspend/resume/audit",
+            "unpublished tenant/owner manual record/"
+            "separate platform role/suspend/resume/audit",
             flush=True,
         )
         return {
