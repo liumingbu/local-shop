@@ -129,6 +129,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                 from customer_http import exercise_customer, verify_customer_after_restart
                 from media_http import exercise_media, verify_media_after_restart
                 from owner_http import exercise, verify_after_restart
+                from platform_http import exercise_platform, verify_platform_after_restart
                 from private_media_http import exercise_private_media, verify_private_after_restart
 
                 state = exercise("http://127.0.0.1:8000")
@@ -179,6 +180,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                         cwd=root,
                         check=True,
                     )
+                platform_state = exercise_platform("http://127.0.0.1:8000")
                 api.terminate()
                 api.wait(timeout=10)
                 subprocess.run(
@@ -196,6 +198,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                 verify_private_after_restart("http://127.0.0.1:8000", private)
                 verify_cancellation_after_restart("http://127.0.0.1:8000", cancellation)
                 verify_confirmation_after_restart("http://127.0.0.1:8000", confirmation)
+                verify_platform_after_restart("http://127.0.0.1:8000", platform_state)
                 result = subprocess.CompletedProcess([], 0)
             elif args.serve_for:
                 print("ISOLATED_SERVICES_READY http://127.0.0.1:5173", flush=True)

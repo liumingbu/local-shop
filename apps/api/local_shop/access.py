@@ -68,6 +68,7 @@ def build_access(settings, engine):
                 Tenant.status == "ACTIVE",
                 TenantMember.role.in_(["OWNER", "STAFF"]),
             )
+            .with_for_update(read=True, of=Tenant)
         ).first()
         if row is None:
             raise HTTPException(404, "TENANT_NOT_FOUND")

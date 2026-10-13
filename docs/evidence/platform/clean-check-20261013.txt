@@ -1,0 +1,194 @@
+Tue Oct 13 06:03:27 UTC 2026
+99d41f559735c9eaa24216b4a59137449aa01a83
+All checks passed!
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:native
+> npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 38 native assets; this is NOT a WeChat runtime test.
+✔ catalog numeric input permits empty reference but rejects fake quantity/price normalization (4.183644ms)
+✔ category picker loads all pages instead of silently truncating after first 100 (1.994315ms)
+✔ explicit unauthorized catalog entry cannot load or create categories (7.024611ms)
+✔ category unknown creation survives hide/show and replays original name and key (12.625698ms)
+✔ category stale update is locked until refreshed, with no automatic overwrite (6.129126ms)
+✔ product create retries immutable request; blank reference remains null and status starts draft (14.88442ms)
+✔ post-response storage failure retains create lock instead of allowing a second product (6.223698ms)
+✔ image ordering/removal updates association only and advances the product version (6.647339ms)
+✔ image upload limit and uncertain ordering both block unsafe continuation (6.906918ms)
+✔ switching identity while picker is open prevents file upload under the new account (0.827573ms)
+✔ leaving product image picker prevents upload after page dismissal (5.24023ms)
+✔ logo uploads with LOGO purpose then requires explicit versioned store save (6.946373ms)
+✔ old session completion cannot clear a newer session busy state (0.373211ms)
+✔ development login is disabled by configuration and always refused for trial/release (3.727018ms)
+✔ origin and path are fail-closed; remote plaintext, userinfo and arbitrary URLs refused (0.727222ms)
+✔ invalid share entry does not fall back to a recent store (1.7645ms)
+✔ login keeps credentials in memory; authenticated identity comes from server me response (0.878549ms)
+✔ late private response after account switch is discarded (5.498579ms)
+✔ drafts are isolated by user and store, and units/specifications never merge (1.28539ms)
+✔ storage failure prevents sending an unrepeatable business request (1.136778ms)
+✔ uncertain retry uses immutable original payload/key and survives success before draft acknowledgement (0.858359ms)
+✔ validation rejection releases draft, but expired login preserves pending operation (0.535093ms)
+✔ busy and view generation protect double clicks and late results after hide/show (0.406861ms)
+✔ decimal validation and explicit UTC+08 display do not invent quantities or dates (1.056897ms)
+✔ native page registrations, assets and event handlers exist (static, not WXML rendering) (13.528209ms)
+✔ compose sends only this store draft and clears it only after confirmed success (7.711202ms)
+✔ compose double-click plus network retry does not replace the original payload (7.521538ms)
+✔ leaving compose before response keeps the original pending request and does not navigate later (6.028545ms)
+✔ explicit date+time becomes a timezone-aware value; date-only stays a note (5.829846ms)
+✔ private detail rejects store mismatch and clears private content on hide (5.833682ms)
+✔ private images send authentication as a header, never a query token (0.71197ms)
+✔ image picker cancellation sends no upload and preserves draft (0.511318ms)
+✔ a different product entry does not silently mix an existing inquiry draft (0.605369ms)
+✔ leaving the login page interrupts the pending identity switch (0.449926ms)
+✔ date-only input remains a note and is not silently assigned midnight (5.761143ms)
+✔ source default has no API origin or enabled fake login (0.258449ms)
+✔ merchant tenant selection never falls back from an unauthorized explicit tenant (4.798307ms)
+✔ merchant workbench invalid route remains invalid onShow and does not issue requests (3.590994ms)
+✔ customer with no merchant membership cannot load workbench records (5.799591ms)
+✔ manual record requires no catalog, preserves raw text and retries original uncertain operation (7.233179ms)
+✔ leaving workbench during membership lookup does not restore private draft (3.44534ms)
+✔ merchant transitions reflect fulfillment method and pending cancellation gate (0.464428ms)
+✔ merchant detail rejects route mismatch and hides private payload (6.73167ms)
+✔ confirmation requires explicit latest agreement and sends only allowed transition (6.563128ms)
+✔ unknown detail write locks other operations and retries original key after reload failure (6.967064ms)
+✔ proposal copies free snapshots without live product reference and retains fractional units (7.113394ms)
+✔ inquiry reply defaults private and never implicitly converts (5.978449ms)
+✔ shop settings require owner and do not send an unauthorized write (7.029217ms)
+✔ new store uses version zero, existing logo is preserved, unknown PUT requires refresh (6.491264ms)
+✔ refresh clears previous candidate consent; hiding clears private unsubmitted edits (6.570459ms)
+ℹ tests 50
+ℹ suites 0
+ℹ pass 50
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 176.37223
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 typecheck
+> npm run typecheck --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> @local-shop/miniprogram@0.1.0 typecheck
+> tsc --noEmit
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 build
+> vue-tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 13 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  0.36 kB │ gzip:  0.28 kB
+dist/assets/index-DzxXMGFL.css   1.26 kB │ gzip:  0.62 kB
+dist/assets/index--O-OFrUZ.js   73.02 kB │ gzip: 28.79 kB
+
+✓ built in 113ms
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 38 native assets; this is NOT a WeChat runtime test.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+........................................................................ [ 42%]
+........................................................................ [ 84%]
+...........................                                              [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /workspace/scratch/d168cc482c3f/local-shop-m2-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+171 passed, 1 warning in 132.40s (0:02:12)
+waiting for server to shut down.... done
+server stopped
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 38 native assets; this is NOT a WeChat runtime test.
+PASS compiled native customer logic + REAL HTTP/PG: store/product/decimal draft/private image/submit/history/cancel/tenant isolation/inquiry
+SIMULATED wx transport, picker/compression and page lifecycle; NOT WeChat runtime, WXML, sharing or real identity validation.
+PASS compiled native merchant logic + REAL HTTP/PG: store version update/manual phone record/decimal confirmation/explicit agreement/prepare/ready/complete/history/tenant read+write denial/inquiry reply+convert/cancel decision
+SIMULATED wx transport and page lifecycle; NOT WeChat runtime, WXML, real identity, device or sharing validation.
+PASS native catalog logic + REAL HTTP/PG: category create/archive/restore, product draft/publish/archive, null reference price, two images/order/unlink/public access, stale version rejection, Logo upload/remove, cross-tenant product/media denial
+SIMULATED wx media picker/compression and page lifecycle; WXML and real WeChat device remain NOT_RUN.
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-13 15:05:58.123 JST [1801] LOG:  starting PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-13 15:05:58.123 JST [1801] LOG:  listening on IPv4 address "127.0.0.1", port 40901
+2026-10-13 15:05:58.124 JST [1804] LOG:  database system was shut down at 2026-10-13 15:05:58 JST
+2026-10-13 15:05:58.126 JST [1801] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: cancellation decision/audit/idempotency durable
+PASS real HTTP after restart: original and confirmed revisions remain distinct
+PASS real HTTP after restart: invitation identity/idempotency/status audit and separate platform scope durable
+waiting for server to shut down....2026-10-13 15:05:59.324 JST [1801] LOG:  received fast shutdown request
+2026-10-13 15:05:59.324 JST [1801] LOG:  aborting any active transactions
+2026-10-13 15:05:59.325 JST [1801] LOG:  background worker "logical replication launcher" (PID 1807) exited with exit code 1
+2026-10-13 15:05:59.325 JST [1802] LOG:  shutting down
+2026-10-13 15:05:59.325 JST [1802] LOG:  checkpoint starting: shutdown immediate
+2026-10-13 15:05:59.326 JST [1802] LOG:  checkpoint complete: wrote 12 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=11, longest=0.001 s, average=0.000 s; distance=1 kB, estimate=1 kB; lsn=0/158FB30, redo lsn=0/158FB30
+2026-10-13 15:05:59.328 JST [1801] LOG:  database system is shut down
+ done
+server stopped
+Tue Oct 13 06:05:59 UTC 2026

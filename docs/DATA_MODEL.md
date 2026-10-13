@@ -85,3 +85,10 @@ cancellation_requests：tenant_id+reservation_id复合FK、requester、reason、
 
 confirmation_revisions以tenant_id+reservation_id复合FK绑定原需求，proposed_version唯一，details JSONB保存完整候选快照。confirmed_version/by/at须同时为空或全部存在且确认版本大于提议版本。普通API只允许追加候选及对当前未确认候选记录确认，不能覆盖旧details。
 原需求文本/明细/期望时间不更新；最终时间存在候选details.fulfillment_at。修改确认内容回到待确认，既有状态机阻止直接备货，服务端要求精确候选ID与商户明确确认。
+
+## 平台基础管理实际补充
+
+0009_platform：tenants增加version；platform_admins独立角色（无商户成员隐式继承）；shop_invitations绑定明确owner_user_id，INVITED→ACCEPTED/DECLINED，ACCEPTED经管理员APPROVED或REJECTED，批准时才关联唯一tenant_id。
+platform_operations存actor+key唯一、action、payload_hash、原始response以及目标租户/邀请、前后状态、reason和时间；普通API只追加，未提供修改/删除审计接口。不是防DB管理员篡改的承诺。
+租户状态变更锁定Tenant行；商户鉴权与公开店铺新业务持有Tenant共享行锁到事务结束，避免授权检查和暂停提交间穿透。历史顾客权限路径保持独立。
+存在邀请/操作历史时0009降级主动拒绝，不能靠降级删除历史；需要审查备份恢复方案。真实资料保留政策另确认。

@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from .config import Settings
 from .db import build_engine
 from .identity import DEMO_USERS
-from .models import Tenant, TenantMember, User
+from .models import PlatformAdmin, Tenant, TenantMember, User
 
 
 def seed(settings: Settings):
@@ -17,7 +17,8 @@ def seed(settings: Settings):
     engine = build_engine(settings)
     try:
         with Session(engine) as session, session.begin():
-            for index, (alias, value) in enumerate(DEMO_USERS.items(), start=1):
+            for alias, value in DEMO_USERS.items():
+                index = 1 if alias == "merchant-a" else 2
                 uid = UUID(value)
                 tid = UUID(f"10000000-0000-4000-8000-{index:012d}")
                 user = session.get(User, uid)
@@ -25,6 +26,10 @@ def seed(settings: Settings):
                     session.add(User(id=uid, identity_type="DEVELOPMENT", display_name=alias))
                 elif user.identity_type != "DEVELOPMENT":
                     raise RuntimeError("Existing identity collision; no data overwritten")
+                if alias == "platform-admin":
+                    session.flush()
+                    if session.get(PlatformAdmin, uid) is None:
+                        session.add(PlatformAdmin(user_id=uid))
                 if not alias.startswith("merchant-"):
                     continue
                 tenant = session.get(Tenant, tid)
