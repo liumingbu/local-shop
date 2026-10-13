@@ -104,3 +104,7 @@ run_id:
 - 2026-10-13 M4d：代码af376a55干净检出152项（126真实PG16.15）及确认修订HTTP/重启、TS/构建PASS，evidence/m4d/RESULT_20261013.md。业务原生UI/微信/浏览器未验收。
 
 - 2026-10-13 M4e：代码812a2d02干净检出152项Python/23项Node、TS与构建通过；原生TS通过模拟wx调用真实HTTP/PG完成顾客流程，evidence/m4e/RESULT_20261013.md。严格不等同WXML/微信工具/真机/分享验收。
+
+## M4f 商户原生页面逻辑（2026-10-13）
+
+代码a8b05853远端干净检出：152项Python（126真实PG）+37项Node、Ruff/TS/构建、原生商户页面通过模拟wx传输调用真实HTTP/PG闭环及旧重启回归均PASS。见[evidence/m4f/RESULT_20261013.md](evidence/m4f/RESULT_20261013.md)。WXML/微信真机仍未测；首次HTTP断言措辞不符已修复并复核。

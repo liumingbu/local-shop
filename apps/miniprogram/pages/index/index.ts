@@ -33,6 +33,7 @@ Page({
     },
     onHide() { this.view++; this.alive = false; if (this.data.busy) logout(); this.setData({busy:false}); },
     onUnload() { if (this.data.busy) logout(); this.alive = false; },
+    workbench(){wx.navigateTo({url:'/pages/merchant/merchant'});},
     input(event: WechatMiniprogram.Input) { this.setData({ storeInput: event.detail.value }); },
     chooseIdentity(event: WechatMiniprogram.PickerChange) { this.setData({ aliasIndex: Number(event.detail.value) }); },
     signIn() { return run(this, async (commit) => { await login(this.data.aliases[this.data.aliasIndex]); commit({ identity: auth().identity }); }, false); },

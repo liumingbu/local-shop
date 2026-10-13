@@ -79,6 +79,7 @@ export interface RecordData {
     raw_text: string;
     status: string;
     version: number;
+    internal_note?: string;
     source?: string;
     customer_label?: string;
     items?: Item[];
@@ -114,6 +115,9 @@ export interface Draft {
     fulfillment_method: 'PICKUP' | 'DELIVERY';
     expected_time_note: string;
     privacy_accepted: boolean;
+    source?: string;
+    internal_note?: string;
+    mark_confirmed?: boolean;
     product_id?: string;
     expected_date?: string;
     expected_clock?: string;

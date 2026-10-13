@@ -157,6 +157,17 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                         cwd=root,
                         check=True,
                     )
+                    subprocess.run(
+                        [
+                            "node",
+                            "scripts/native_merchant_http.cjs",
+                            "http://127.0.0.1:8000",
+                            str(fixture),
+                            str(folder),
+                        ],
+                        cwd=root,
+                        check=True,
+                    )
                 api.terminate()
                 api.wait(timeout=10)
                 subprocess.run(
