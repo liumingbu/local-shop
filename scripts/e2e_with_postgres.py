@@ -84,6 +84,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
             "API_PORT": "8000",
             "PYTHONPATH": str(root / "apps/api"),
             "MEDIA_ROOT": str(folder / "media"),
+            "MEDIA_RECEIVE_TIMEOUT_SECONDS": "1",
         }
         subprocess.run(
             [str(root / ".venv/bin/alembic"), "-c", "apps/api/alembic.ini", "upgrade", "head"],
@@ -131,7 +132,9 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                 from owner_http import exercise, verify_after_restart
                 from platform_http import exercise_platform, verify_platform_after_restart
                 from private_media_http import exercise_private_media, verify_private_after_restart
+                from timeout_http import exercise_upload_timeout
 
+                exercise_upload_timeout("http://127.0.0.1:8000")
                 state = exercise("http://127.0.0.1:8000")
                 exercise_catalog("http://127.0.0.1:8000")
                 images = exercise_media("http://127.0.0.1:8000")

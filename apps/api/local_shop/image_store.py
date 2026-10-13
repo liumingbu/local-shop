@@ -1,5 +1,6 @@
 """Decode/re-encode bounded images; only generated keys address local storage."""
 
+import asyncio
 import io
 import warnings
 from pathlib import Path
@@ -8,11 +9,34 @@ from uuid import UUID
 from fastapi import HTTPException
 from PIL import Image, ImageOps, UnidentifiedImageError
 from sqlalchemy import select
+from starlette.requests import ClientDisconnect
 
 from .models import MediaObject, ProductMedia
 
 MAX_UPLOAD = 2 * 1024 * 1024
 MAX_PIXELS = 12_000_000
+
+
+async def read_bounded_image(request, timeout_seconds):
+    """Total body receipt deadline, not reset on each slow chunk."""
+    declared = request.headers.get("content-length")
+    if declared is not None:
+        if not declared.isascii() or not declared.isdigit():
+            raise HTTPException(400, "INVALID_CONTENT_LENGTH")
+        if len(declared) > 10 or int(declared) > MAX_UPLOAD:
+            raise HTTPException(413, "IMAGE_TOO_LARGE_OR_EMPTY")
+    data = bytearray()
+    try:
+        async with asyncio.timeout(timeout_seconds):
+            async for chunk in request.stream():
+                if len(data) + len(chunk) > MAX_UPLOAD:
+                    raise HTTPException(413, "IMAGE_TOO_LARGE_OR_EMPTY")
+                data.extend(chunk)
+    except TimeoutError:
+        raise HTTPException(408, "IMAGE_UPLOAD_TIMEOUT") from None
+    except ClientDisconnect:
+        raise HTTPException(400, "IMAGE_UPLOAD_INTERRUPTED") from None
+    return bytes(data)
 
 
 def normalize_image(content):

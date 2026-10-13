@@ -8,7 +8,14 @@ def build_engine(settings: Settings) -> Engine:
     return create_engine(
         settings.database_url.get_secret_value(),
         pool_pre_ping=True,
-        connect_args={"connect_timeout": 3},
+        pool_timeout=settings.db_pool_timeout_seconds,
+        connect_args={
+            "connect_timeout": 3,
+            "options": (
+                f"-c statement_timeout={settings.db_statement_timeout_ms} "
+                f"-c lock_timeout={settings.db_lock_timeout_ms}"
+            ),
+        },
         hide_parameters=True,
     )
 

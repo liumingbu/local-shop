@@ -14,7 +14,7 @@ from starlette.concurrency import run_in_threadpool
 
 from .attachments import require_customer_private_access, require_merchant_private_access
 from .catalog import find_owned, published_store
-from .image_store import MAX_UPLOAD, active_media, images_json, media_path, normalize_image
+from .image_store import active_media, images_json, media_path, normalize_image, read_bounded_image
 from .models import Category, MediaObject, Product, ProductMedia
 from .records import StrictModel, idempotent
 
@@ -112,12 +112,7 @@ def build_router(access, settings):
             "image/webp",
         }:
             raise HTTPException(415, "UNSUPPORTED_MEDIA_TYPE")
-        data = bytearray()
-        async for chunk in request.stream():
-            if len(data) + len(chunk) > MAX_UPLOAD:
-                raise HTTPException(413, "IMAGE_TOO_LARGE_OR_EMPTY")
-            data.extend(chunk)
-        raw = bytes(data)
+        raw = await read_bounded_image(request, settings.media_receive_timeout_seconds)
         normalized, width, height = await run_in_threadpool(normalize_image, raw)
         payload = {"purpose": purpose, "sha256": hashlib.sha256(raw).hexdigest()}
 
