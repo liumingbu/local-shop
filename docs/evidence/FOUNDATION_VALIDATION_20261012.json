@@ -1,0 +1,11 @@
+{
+  "date_utc": "2026-10-12",
+  "scope": "documentation import only",
+  "original_checksum_entries_verified": 25,
+  "markdown_files_checked": 42,
+  "relative_links_checked": 37,
+  "existing_report_byte_identical": true,
+  "no_workflows": true,
+  "application_tests": "NOT_RUN",
+  "result": "PASS"
+}

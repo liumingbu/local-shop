@@ -1,0 +1,10 @@
+2026-10-12 23:58:04.025 JST [23] LOG:  starting PostgreSQL 16.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 10.2.1 20210130 (Red Hat 10.2.1-11), 64-bit
+2026-10-12 23:58:04.026 JST [23] LOG:  could not create Unix socket for address "[project-tools]/pg-socket/.s.PGSQL.55432": Operation not permitted
+2026-10-12 23:58:04.026 JST [23] WARNING:  could not create Unix-domain socket in directory "[project-tools]/pg-socket"
+2026-10-12 23:58:04.026 JST [23] FATAL:  could not create any Unix-domain sockets
+2026-10-12 23:58:04.027 JST [23] LOG:  database system is shut down
+2026-10-12 23:58:34.085 JST [7] LOG:  starting PostgreSQL 16.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 10.2.1 20210130 (Red Hat 10.2.1-11), 64-bit
+2026-10-12 23:58:34.085 JST [7] LOG:  could not create Unix socket for address "[project-tools]/pg-socket/.s.PGSQL.55432": Operation not permitted
+2026-10-12 23:58:34.085 JST [7] WARNING:  could not create Unix-domain socket in directory "[project-tools]/pg-socket"
+2026-10-12 23:58:34.085 JST [7] FATAL:  could not create any Unix-domain sockets
+2026-10-12 23:58:34.087 JST [7] LOG:  database system is shut down
