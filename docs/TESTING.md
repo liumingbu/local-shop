@@ -120,3 +120,7 @@ run_id:
 ## 平台Web和本人邀请（2026-10-13）
 
 代码3e23f683远端干净检出：171项Python、10项Web控制器Node、54项原生模拟wx、Ruff/TS/构建与真实HTTP/PG及重启通过。见[evidence/platform-ui/RESULT_20261013.md](evidence/platform-ui/RESULT_20261013.md)。浏览器DOM/WXML/真机未验收。
+
+## Web商品批量维护
+
+PR #15远端代码0d9de702独立干净检出175 Python（149真实PG）、18 Web控制器、54原生模拟wx与Ruff/TS/构建/真实HTTP及PG重启均退出0，0失败/跳过；见[evidence/web-catalog/RESULT_20261013.md](evidence/web-catalog/RESULT_20261013.md)。覆盖全批前置校验、部分成功、原请求恢复、版本冲突停止、真实POST/PUT已提交后丢响应重放与租户隔离。Vue父页面完整交互和浏览器DOM未验收。
