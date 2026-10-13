@@ -188,18 +188,33 @@ def build_router(access):
         product_id: UUID,
         payload: ProductUpdate,
         uid: UUID = Depends(actor),
+        key: str | None = Depends(access.optional_key_value),
         session: Session = Depends(database, scope="function"),
     ):
         authorize(session, tenant_id, uid)
-        row = find_owned(session, Product, tenant_id, product_id, lock=True)
-        if row.version != payload.expected_version:
-            raise HTTPException(409, "VERSION_CONFLICT")
-        category_check(session, tenant_id, payload.category_id, payload.status)
-        for name, value in payload.model_dump(exclude={"expected_version"}).items():
-            setattr(row, name, value)
-        row.version += 1
-        session.flush()
-        return product_json(row, session)
+
+        def action():
+            row = find_owned(session, Product, tenant_id, product_id, lock=True)
+            if row.version != payload.expected_version:
+                raise HTTPException(409, "VERSION_CONFLICT")
+            category_check(session, tenant_id, payload.category_id, payload.status)
+            for name, value in payload.model_dump(exclude={"expected_version"}).items():
+                setattr(row, name, value)
+            row.version += 1
+            session.flush()
+            return product_json(row, session)
+
+        if key is None:
+            return action()  # Existing callers still have optimistic version protection.
+        return idempotent(
+            session,
+            tenant_id,
+            uid,
+            f"update-product:{product_id}",
+            key,
+            payload.model_dump(mode="json"),
+            action,
+        )
 
     @router.get("/merchant/tenants/{tenant_id}/products/{product_id}")
     def get_product(
