@@ -142,6 +142,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                 if args.native_client:
                     from PIL import Image
 
+                    subprocess.run(["npm", "run", "test:admin"], cwd=root, check=True)
                     fixture = folder / "native-fixture.png"
                     Image.new("RGB", (16, 16), color=(80, 140, 100)).save(fixture)
                     subprocess.run(
@@ -173,6 +174,17 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                         [
                             "node",
                             "scripts/native_catalog_http.cjs",
+                            "http://127.0.0.1:8000",
+                            str(fixture),
+                            str(folder),
+                        ],
+                        cwd=root,
+                        check=True,
+                    )
+                    subprocess.run(
+                        [
+                            "node",
+                            "scripts/platform_console_http.cjs",
                             "http://127.0.0.1:8000",
                             str(fixture),
                             str(folder),

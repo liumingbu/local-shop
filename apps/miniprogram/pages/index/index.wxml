@@ -17,5 +17,5 @@
     <button bindtap="signOut" disabled="{{busy}}">退出身份</button>
     <view class="muted">切换身份不会带入其他人的草稿、私图或历史。登录令牌仅保存在内存。</view>
   </view>
-  <button bindtap="workbench" disabled="{{busy}}">进入商户工作台</button>
+  <button bindtap="invitations" disabled="{{busy}}">查看本人开店邀请／账号编号</button><button bindtap="workbench" disabled="{{busy}}">进入商户工作台</button>
 </view>

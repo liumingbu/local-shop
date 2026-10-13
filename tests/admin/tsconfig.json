@@ -1,0 +1,1 @@
+{"compilerOptions":{"target":"ES2022","module":"CommonJS","moduleResolution":"Node","strict":true,"lib":["ES2022","DOM"],"types":[],"skipLibCheck":true,"rootDir":"../../apps/admin/src","outDir":".compiled"},"include":["../../apps/admin/src/api.ts","../../apps/admin/src/platform.ts"]}

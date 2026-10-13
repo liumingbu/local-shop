@@ -11,7 +11,8 @@
     "pages/merchantdetail/merchantdetail",
     "pages/shopsettings/shopsettings",
     "pages/catalog/catalog",
-    "pages/productedit/productedit"
+    "pages/productedit/productedit",
+    "pages/invitations/invitations"
   ],
   "window": {
     "navigationBarTitleText": "local-shop",

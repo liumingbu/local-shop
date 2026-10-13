@@ -9,11 +9,12 @@ export interface RecordItem {
   version: number; created_at: string;
 }
 export async function request<T>(path: string, token: string, method = 'GET', body?: unknown, key?: string): Promise<T> {
+  if(!path.startsWith('/api/v1/')||path.includes('..')||path.includes('://')||path.includes('\\'))throw new ApiError(0,'INVALID_API_PATH');
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10000);
   try {
     const response = await fetch(path, {
-      method, signal: controller.signal,
+      method, signal: controller.signal, redirect: 'error',
       headers: { 'Content-Type': 'application/json', ...(token ? {Authorization: `Bearer ${token}`} : {}),
                  ...(key ? {'Idempotency-Key': key} : {}) },
       ...(body === undefined ? {} : {body: JSON.stringify(body)}),

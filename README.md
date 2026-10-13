@@ -178,3 +178,11 @@ HTTP脚本已包含上传、归一化、排序、公开下载及重启后图片�
 ## 原生顾客页面
 
 代码与执行边界见[MINIPROGRAM](docs/MINIPROGRAM.md)。`npm run test:native`验证编译后页面逻辑（模拟wx）；`e2e_with_postgres.py --http-only --native-client`将同一逻辑连接真实HTTP/PG。两者都不代表微信工具、WXML渲染或真机验收通过。默认API未配置、开发登录关闭。
+
+## 平台开发控制台与本人邀请
+
+受控本机Web入口新增platform-admin演示选项，经服务端/platform/me确认角色后显示邀请、审核、商户启停和审计。管理员填写已存在账号UUID；收件人可在原生小程序“本人开店邀请”页接受/谢绝，接受后管理员才能批准。批准不自动公开店铺。
+
+控制台POST在本机localStorage按已验证账号保存原请求，未知结果可同键重试；不保存登录令牌。存储失败不发送写请求，身份过期时允许重新登录同一账号并保留请求。操作理由只用合成说明，不填凭据或证件原文。清除浏览器数据前先核对未确认操作。
+
+`npm run test:admin`运行Web控制器Node逻辑测试，不能替代浏览器DOM测试；`npm run test:native`运行模拟wx逻辑，不替代微信运行时。`scripts/e2e_with_postgres.py --http-only --native-client`还会执行编译后的Web平台控制器和原生邀请页，通过真实HTTP/PG验证往返流程。

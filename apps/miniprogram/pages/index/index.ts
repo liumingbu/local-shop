@@ -33,6 +33,7 @@ Page({
     },
     onHide() { this.view++; this.alive = false; if (this.data.busy) logout(); this.setData({busy:false}); },
     onUnload() { if (this.data.busy) logout(); this.alive = false; },
+    invitations(){wx.navigateTo({url:'/pages/invitations/invitations'});},
     workbench(){wx.navigateTo({url:'/pages/merchant/merchant'});},
     input(event: WechatMiniprogram.Input) { this.setData({ storeInput: event.detail.value }); },
     chooseIdentity(event: WechatMiniprogram.PickerChange) { this.setData({ aliasIndex: Number(event.detail.value) }); },

@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import PlatformPanel from './PlatformPanel.vue';
 import { ApiError, request, transitions, type Tenant, type RecordItem, type Store } from './api';
 const alias = ref('merchant-a');
 const token = ref('');
+const userId=ref(''),platformRole=ref(false),platformLocked=ref(false),platformBusy=ref(false);
 const tenant = ref<Tenant>();
 const store = ref<Store>({name:'',description:'',version:0});
 const records = ref<RecordItem[]>([]);
@@ -29,20 +31,24 @@ async function load() {
   if (current === generation) { records.value = data.items; total.value = data.total; }
 }
 async function login() {
-  if (busy.value) return;
-  generation++; token.value=''; tenant.value=undefined; records.value=[]; detail.value=null;
+  if (busy.value || platformBusy.value || (platformLocked.value && alias.value!=='platform-admin')) return;
+  generation++;userId.value='';platformRole.value=false; token.value=''; tenant.value=undefined; records.value=[]; detail.value=null;
   store.value={name:'',description:'',version:0};pending.value=null;customer.value='';raw.value='';page.value=1;filter.value='';
   busy.value=true;error.value='';
   try {
     const session=await request<{access_token:string}>('/api/v1/dev/session','','POST',{identity:alias.value});
     token.value=session.access_token;
+    userId.value=(await request<{user_id:string}>('/api/v1/dev/me',token.value)).user_id;
+    try {platformRole.value=(await request<{role:string}>('/api/v1/platform/me',token.value)).role==='PLATFORM_ADMIN';}
+    catch(e){if(!(e instanceof ApiError&&e.status===403))throw e;}
+    if(platformRole.value)return;
     const result=await request<{items:Tenant[]}>('/api/v1/merchant/tenants',token.value);
     if (!result.items[0]) throw new Error('No tenant');
     tenant.value=result.items[0];
     try { store.value=await request<Store>(`${base()}/store`,token.value); }
     catch (e) { if (!(e instanceof ApiError && e.status===404)) throw e; }
     await load();
-  } catch(e) { token.value='';tenant.value=undefined;showError(e); }
+  } catch(e) { token.value='';userId.value='';platformRole.value=false;tenant.value=undefined;showError(e); }
   finally { busy.value=false; }
 }
 async function saveStore() {
@@ -77,13 +83,14 @@ async function refresh(nextPage=1) {
 <template>
   <main>
     <header><span>local-shop · 开发验证工作台</span><h1>记下需求，安排备货</h1><p>仅供本机合成账号测试，尚未接入微信真实登录。</p></header>
-    <section class="login"><label>演示身份<select v-model="alias" :disabled="busy || !!pending"><option value="merchant-a">商户 A</option><option value="merchant-b">商户 B</option></select></label><button :disabled="busy || !!pending" @click="login">进入工作台</button></section>
+    <section class="login"><label>演示身份<select v-model="alias" :disabled="busy || !!pending || platformLocked || platformBusy"><option value="merchant-a">商户 A</option><option value="merchant-b">商户 B</option><option value="platform-admin">平台合成管理员</option></select></label><button :disabled="busy || !!pending || platformBusy" @click="login">{{platformLocked?'重新登录同一身份，保留原请求':'进入工作台'}}</button></section>
     <p v-if="error" role="alert" class="error">{{error}}</p>
+    <PlatformPanel v-if="platformRole && userId && token" :key="userId" :token="token" :user-id="userId" @locked="platformLocked=$event" @busy="platformBusy=$event" />
     <template v-if="tenant">
       <h2>{{tenant.name}}</h2>
       <section><h3>店铺资料</h3><label>店名<input v-model="store.name" :disabled="busy" maxlength="100"></label><button :disabled="busy || !store.name.trim()" @click="saveStore">保存店铺</button></section>
       <section><h3>快速代记</h3><p>没有商品库也能直接保存。</p>
-        <form @submit.prevent="submit"><fieldset :disabled="busy || !!pending">
+        <form @submit.prevent="submit"><fieldset :disabled="busy || !!pending || platformLocked || platformBusy">
           <label>顾客称呼<input v-model="customer" required maxlength="100"></label>
           <label>原始需求<textarea v-model="raw" required maxlength="4000" placeholder="例如：半斤干贝分两袋，周三下午自提"></textarea></label>
           <div class="row"><label>来源<select v-model="source"><option value="MERCHANT_PHONE">电话</option><option value="MERCHANT_WECHAT">微信</option><option value="MERCHANT_IN_STORE">到店</option></select></label><label>交付意向<select v-model="method"><option value="PICKUP">自提</option><option value="DELIVERY">商家配送</option></select></label></div>
