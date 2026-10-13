@@ -1,0 +1,27 @@
+[Unit]
+Description=local-shop API (release approval required)
+After=network.target postgresql.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=@@SERVICE_USER@@
+Group=@@SERVICE_GROUP@@
+WorkingDirectory=@@APP_ROOT@@
+EnvironmentFile=@@ENV_FILE@@
+Environment=PYTHONPATH=@@APP_ROOT@@/apps/api
+ExecStartPre=@@APP_ROOT@@/.venv/bin/python @@APP_ROOT@@/scripts/production_preflight.py
+ExecStart=@@APP_ROOT@@/.venv/bin/python -m local_shop
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=@@MEDIA_ROOT@@
+
+[Install]
+WantedBy=multi-user.target

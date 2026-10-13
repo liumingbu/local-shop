@@ -1,10 +1,11 @@
 # HANDOFF
 
-2026-10-13 UTC。用户授权Dot自查测试后合并常规PR；环境/费用/生产边界不变。
+2026-10-13 UTC。用户授权Dot自行测试审查后合并常规PR；环境/费用/生产边界不变。
 
-- PR #1–#16已合并并fetch核验；当前main起点98daed9c191254a4c6e11442144b84432a0d68c7，起点工作树干净。
-- feat/backup-restore-delivery：新增local_shop.recovery离线备份/核验/恢复CLI及scripts/backup_restore_drill.py，迁移仍0009。RECOVERY.md明确停写、可信包、独立空库、无覆盖/删除、失败保留/不启服。
-- 206 Python（154真实PG）+18 Web+54原生及Ruff/TS/构建/HTTP/PG重启/恢复演练本地通过；PR #17代码ca64e8a5独立远端干净检出全部复核通过，CLI恢复21表/92合成行/3图片；见evidence/recovery/RESULT_20261013.md，待自查合并。
-- 备份包含PG custom archive和规范UUID图片，检查DB中的大小/哈希；恢复到另一库及新图片目录，再重启PG/API检验记录/私图权限/幂等。临时包不上传。
-- 浏览器DOM/WXML/微信真实能力、正式身份与生产部署仍未验收。没有沿用旧项目AppID；官方微信文档访问返回不可用页面，不能据此称M5验证通过。
-- 下一步完成当前分支远端检出/证据/合并，补Linux交付与真实可执行检查，再形成源码验收包；保持真实微信和生产阻塞。
+- PR #1–#17已合并并fetch核验；当前main基准e70eddabe526c915edf99c7711407f19b93fd5ac。
+- 当前feat/linux-delivery-validation：Nginx/TLS代理、systemd候选、配置样例、发布硬门禁和真实合成组件检查；迁移仍0009_platform。
+- Nginx1.30.5同一Dot官方源码构建并签名核验；真实TLS1.2/1.3、代理鉴权/私图/幂等、413/429和无查询串访问日志专项PASS；全量及远端独立检出待完成。
+- systemd-analyze verify失败：/run/systemd只读。--skip-systemd明确只重跑其他组件；systemd服务启停/生产master-worker生命周期未测。
+- 正式身份适配器尚未实现，production_preflight主动退出2；不得移除门禁发布开发版。浏览器DOM、微信WXML/工具/真机仍未验收。
+- 恢复工具PR #17已真实CLI恢复21表92合成行3图，原报告保留；不上传真实/合成数据库备份。
+- 下一步完成当前PR远端测试与合并、生成可核对源码验收包。真实微信和生产条件需用户安全配置/授权，不沿用旧佳琪资料。
