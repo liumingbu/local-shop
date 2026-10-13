@@ -1,8 +1,19 @@
 import uuid
 from datetime import datetime
 
-from sqlalchemy import CheckConstraint, DateTime, ForeignKey, String, func
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import (
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    ForeignKeyConstraint,
+    Index,
+    Integer,
+    String,
+    Text,
+    UniqueConstraint,
+    func,
+)
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -41,3 +52,78 @@ class TenantMember(Base):
         CheckConstraint("role IN ('OWNER', 'STAFF')", name="ck_members_role"),
         CheckConstraint("status IN ('ACTIVE', 'DISABLED')", name="ck_members_status"),
     )
+
+
+class Store(Base):
+    __tablename__ = "stores"
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"), primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))
+    description: Mapped[str] = mapped_column(Text, default="")
+    version: Mapped[int] = mapped_column(Integer, default=1)
+
+
+class Reservation(Base):
+    __tablename__ = "reservations"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
+    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
+    source: Mapped[str] = mapped_column(String(30))
+    customer_label: Mapped[str] = mapped_column(String(100))
+    raw_text: Mapped[str] = mapped_column(Text)
+    items: Mapped[list] = mapped_column(JSONB, default=list)
+    fulfillment_method: Mapped[str] = mapped_column(String(20))
+    expected_time_note: Mapped[str] = mapped_column(String(200), default="")
+    internal_note: Mapped[str] = mapped_column(Text, default="")
+    status: Mapped[str] = mapped_column(String(30), default="PENDING_CONFIRMATION")
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id", name="uq_reservation_tenant_id"),
+        CheckConstraint("version >= 1", name="ck_reservation_version"),
+        CheckConstraint(
+            "source IN ('MERCHANT_PHONE','MERCHANT_WECHAT','MERCHANT_IN_STORE')",
+            name="ck_reservation_source",
+        ),
+        CheckConstraint(
+            "fulfillment_method IN ('PICKUP','DELIVERY')", name="ck_reservation_method"
+        ),
+        CheckConstraint(
+            "status IN ('PENDING_CONFIRMATION','CONFIRMED','PREPARING','READY',"
+            "'OUT_FOR_DELIVERY','COMPLETED','CANCELLED')",
+            name="ck_reservation_status",
+        ),
+        Index("ix_reservation_tenant_status_created", "tenant_id", "status", "created_at"),
+    )
+
+
+class RecordEvent(Base):
+    __tablename__ = "record_events"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    reservation_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    version: Mapped[int] = mapped_column(Integer)
+    from_status: Mapped[str | None] = mapped_column(String(30), nullable=True)
+    to_status: Mapped[str] = mapped_column(String(30))
+    note: Mapped[str] = mapped_column(Text, default="")
+    visible_to_customer: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "reservation_id"],
+            ["reservations.tenant_id", "reservations.id"],
+            name="fk_event_same_tenant",
+        ),
+    )
+
+
+class IdempotencyKey(Base):
+    __tablename__ = "idempotency_keys"
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"), primary_key=True)
+    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), primary_key=True)
+    endpoint: Mapped[str] = mapped_column(String(160), primary_key=True)
+    key: Mapped[str] = mapped_column(String(100), primary_key=True)
+    payload_hash: Mapped[str] = mapped_column(String(64))
+    response: Mapped[dict] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())

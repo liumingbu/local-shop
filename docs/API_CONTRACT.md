@@ -1,6 +1,6 @@
 # API 草案与验收契约
 
-状态：接口规划，不是已实现文档。实施时生成 OpenAPI 并以接口测试保持一致；这里的路径可小幅调整并同步记录，不要空报接口已通。
+状态：下方“已实现 M1/M2”有真实测试；其余清单仍为接口规划。实施时生成 OpenAPI 并以接口测试保持一致；这里的路径可小幅调整并同步记录，不要空报接口已通。
 
 ## 1. 公共约定
 
@@ -74,3 +74,19 @@
 其他租户ID、其他顾客ID、私有图片地址猜测、已冻结店铺提交、重复提交、同键不同载荷、跨店商品关联、负数/过多数量、非法状态、旧版本更新、公开API泄露手机号、未登录/假登录生产开启。
 
 开发完成后补充真实请求与响应、错误码、OpenAPI位置、契约测试命令，不仅保留成功curl示例。
+
+## 已实现 M1/M2（2026-10-13）
+
+- GET /health/live、/health/ready；GET /openapi.json 提供实际契约。
+- POST /api/v1/dev/session，GET /api/v1/dev/me：仅回环、非生产、显式开启。
+- GET /api/v1/merchant/tenants：当前有效成员租户。
+- GET/PUT /api/v1/merchant/tenants/{tenant_id}/store：PUT需OWNER与expected_version；首次为0。
+- POST/GET /api/v1/merchant/tenants/{tenant_id}/reservations：创建需要Idempotency-Key（8–100位ASCII字母数字或-_.）；列表page/limit/status，稳定排序。
+- GET /api/v1/merchant/tenants/{tenant_id}/reservations/{id}：原文与有序事件。
+- POST .../{id}/transitions：target_status、expected_version、note、visible_to_customer；必需Idempotency-Key。
+- 同键同载荷返回首次快照，同键不同载荷409。事务提交在响应发送之前；提交失败503不冒充已保存。
+- 创建不允许指定customer_user_id、tenant_id或非空product_id；当前无商品关联。不会凭称呼绑定顾客。
+- 确认→备货→READY；自提READY可完成，配送READY先OUT_FOR_DELIVERY；完成/取消为终态。
+- 当前无附件/导出/顾客本人入口，不能由上述商户测试推导那些接口已安全实现。
+- 原文、明细不可直接修改；确认结果当前为同一不可变明细与确认事件。后续调整确认明细需新增保留原文的显式版本接口。
+- `expected_time_note`是未解析原文备注；绝不将“明天”推断成已核实交付日期。正式结构化时间字段留后续顾客需求模块。

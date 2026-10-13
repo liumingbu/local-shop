@@ -42,3 +42,7 @@ backups/
 Thumbs.db
 .idea/
 .vscode/
+
+# Local browser test outputs
+test-results/
+playwright-report/
