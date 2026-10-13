@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def test_real_migration_idempotent(pg_settings):
     migrate(pg_settings, "upgrade", "head")
-    assert "0004_media" in migrate(pg_settings, "current").stdout
+    assert "0005_customers" in migrate(pg_settings, "current").stdout
 
 
 def test_real_seed_idempotent(pg_settings):
@@ -32,7 +32,9 @@ def test_real_seed_idempotent(pg_settings):
     try:
         with Session(engine) as session:
             for model in (Tenant, User, TenantMember):
-                assert session.scalar(select(func.count()).select_from(model)) == 2
+                assert session.scalar(select(func.count()).select_from(model)) == (
+                    4 if model is User else 2
+                )
     finally:
         engine.dispose()
 

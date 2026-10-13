@@ -25,6 +25,8 @@ def seed(settings: Settings):
                     session.add(User(id=uid, identity_type="DEVELOPMENT", display_name=alias))
                 elif user.identity_type != "DEVELOPMENT":
                     raise RuntimeError("Existing identity collision; no data overwritten")
+                if not alias.startswith("merchant-"):
+                    continue
                 tenant = session.get(Tenant, tid)
                 if tenant is None:
                     session.add(Tenant(id=tid, display_name=f"合成演示店{index}"))

@@ -6,7 +6,7 @@ from typing import Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
@@ -54,6 +54,7 @@ class NewReservation(StrictModel):
     expected_time_note: str = Field(default="", max_length=200)
     internal_note: str = Field(default="", max_length=2000)
     mark_confirmed: bool = False
+    expected_at: AwareDatetime | None = None
 
 
 class Transition(StrictModel):
@@ -93,8 +94,12 @@ def lock_scope(session, scope: str):
 def reservation_json(record):
     return {key: str(getattr(record, key)) for key in ("id", "tenant_id", "actor_id")} | {
         "source": record.source,
+        "customer_user_id": str(record.customer_user_id) if record.customer_user_id else None,
+        "source_inquiry_id": str(record.source_inquiry_id) if record.source_inquiry_id else None,
+        "expected_at": record.expected_at.isoformat() if record.expected_at else None,
         "customer_label": record.customer_label,
         "raw_text": record.raw_text,
+        "confirmed_text": record.confirmed_text,
         "items": record.items,
         "fulfillment_method": record.fulfillment_method,
         "expected_time_note": record.expected_time_note,
@@ -129,6 +134,85 @@ def idempotent(session, tenant, actor, endpoint, key, payload, action):
     )
     session.flush()
     return response
+
+
+def create_reservation(
+    session,
+    tenant_id,
+    uid,
+    data,
+    customer_user_id=None,
+    source_inquiry_id=None,
+    privacy_version=None,
+):
+    data = dict(data)
+    if data.get("expected_at") is not None and isinstance(data["expected_at"], str):
+        data["expected_at"] = datetime.fromisoformat(data["expected_at"])
+    snapshots = []
+    for item in data["items"]:
+        snapshot = dict(item)
+        if item["product_id"]:
+            product = session.scalar(
+                select(Product)
+                .join(
+                    Category,
+                    (Product.category_id == Category.id)
+                    & (Product.tenant_id == Category.tenant_id),
+                )
+                .where(
+                    Product.id == UUID(item["product_id"]),
+                    Product.tenant_id == tenant_id,
+                    Product.status == "PUBLISHED",
+                    Category.status == "ACTIVE",
+                )
+            )
+            if product is None:
+                raise HTTPException(404, "PRODUCT_NOT_FOUND")
+            snapshot |= {
+                "name": product.name,
+                "unit": product.unit,
+                "spec": product.spec,
+                "reference_price": str(product.reference_price)
+                if product.reference_price is not None
+                else None,
+            }
+        snapshots.append(snapshot)
+    record = Reservation(
+        tenant_id=tenant_id,
+        actor_id=uid,
+        customer_user_id=customer_user_id,
+        source_inquiry_id=source_inquiry_id,
+        privacy_version=privacy_version,
+        **{k: v for k, v in data.items() if k not in {"mark_confirmed", "items"}},
+        items=snapshots,
+    )
+    record.status = "CONFIRMED" if data.get("mark_confirmed", False) else "PENDING_CONFIRMATION"
+    record.version = 2 if data.get("mark_confirmed", False) else 1
+    session.add(record)
+    session.flush()
+    session.add(
+        RecordEvent(
+            tenant_id=tenant_id,
+            reservation_id=record.id,
+            actor_id=uid,
+            version=1,
+            from_status=None,
+            to_status="PENDING_CONFIRMATION",
+        )
+    )
+    if data.get("mark_confirmed", False):
+        session.add(
+            RecordEvent(
+                tenant_id=tenant_id,
+                reservation_id=record.id,
+                actor_id=uid,
+                version=2,
+                from_status="PENDING_CONFIRMATION",
+                to_status="CONFIRMED",
+            )
+        )
+    session.flush()
+    return reservation_json(record)
 
 
 def build_router(access):
@@ -211,68 +295,7 @@ def build_router(access):
         data = payload.model_dump(mode="json")
 
         def action():
-            snapshots = []
-            for item in data["items"]:
-                snapshot = dict(item)
-                if item["product_id"]:
-                    product = session.scalar(
-                        select(Product)
-                        .join(
-                            Category,
-                            (Product.category_id == Category.id)
-                            & (Product.tenant_id == Category.tenant_id),
-                        )
-                        .where(
-                            Product.id == UUID(item["product_id"]),
-                            Product.tenant_id == tenant_id,
-                            Product.status == "PUBLISHED",
-                            Category.status == "ACTIVE",
-                        )
-                    )
-                    if product is None:
-                        raise HTTPException(404, "PRODUCT_NOT_FOUND")
-                    snapshot |= {
-                        "name": product.name,
-                        "unit": product.unit,
-                        "spec": product.spec,
-                        "reference_price": str(product.reference_price)
-                        if product.reference_price is not None
-                        else None,
-                    }
-                snapshots.append(snapshot)
-            record = Reservation(
-                tenant_id=tenant_id,
-                actor_id=uid,
-                **{k: v for k, v in data.items() if k not in {"mark_confirmed", "items"}},
-                items=snapshots,
-            )
-            record.status = "CONFIRMED" if payload.mark_confirmed else "PENDING_CONFIRMATION"
-            record.version = 2 if payload.mark_confirmed else 1
-            session.add(record)
-            session.flush()
-            session.add(
-                RecordEvent(
-                    tenant_id=tenant_id,
-                    reservation_id=record.id,
-                    actor_id=uid,
-                    version=1,
-                    from_status=None,
-                    to_status="PENDING_CONFIRMATION",
-                )
-            )
-            if payload.mark_confirmed:
-                session.add(
-                    RecordEvent(
-                        tenant_id=tenant_id,
-                        reservation_id=record.id,
-                        actor_id=uid,
-                        version=2,
-                        from_status="PENDING_CONFIRMATION",
-                        to_status="CONFIRMED",
-                    )
-                )
-            session.flush()
-            return reservation_json(record)
+            return create_reservation(session, tenant_id, uid, data)
 
         return idempotent(session, tenant_id, uid, "create-reservation", key, data, action)
 

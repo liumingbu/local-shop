@@ -82,11 +82,15 @@ def verify_after_restart(base_url, state):
     with httpx.Client(base_url=base_url, timeout=10, trust_env=False) as client:
         response = client.get(state["url"], headers=state["headers"])
         assert response.status_code == 200 and response.json() == state["detail"]
+        before_total = client.get(state["create_url"], headers=state["headers"]).json()["total"]
         response = client.post(
             state["create_url"], headers=state["create_headers"], json=state["payload"]
         )
         assert response.status_code == 201 and response.json() == state["original"]
-        assert client.get(state["create_url"], headers=state["headers"]).json()["total"] == 1
+        assert (
+            client.get(state["create_url"], headers=state["headers"]).json()["total"]
+            == before_total
+        )
     print(
         "PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable",
         flush=True,

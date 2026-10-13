@@ -130,6 +130,13 @@ class Reservation(Base):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"), nullable=False)
     actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), nullable=False)
+    customer_user_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    source_inquiry_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
+    expected_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    privacy_version: Mapped[str | None] = mapped_column(String(40), nullable=True)
+    confirmed_text: Mapped[str] = mapped_column(Text, default="")
     source: Mapped[str] = mapped_column(String(30))
     customer_label: Mapped[str] = mapped_column(String(100))
     raw_text: Mapped[str] = mapped_column(Text)
@@ -142,10 +149,17 @@ class Reservation(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     __table_args__ = (
+        UniqueConstraint("tenant_id", "source_inquiry_id", name="uq_inquiry_single_conversion"),
+        ForeignKeyConstraint(
+            ["tenant_id", "source_inquiry_id"],
+            ["inquiries.tenant_id", "inquiries.id"],
+            name="fk_reservation_inquiry_tenant",
+        ),
         UniqueConstraint("tenant_id", "id", name="uq_reservation_tenant_id"),
         CheckConstraint("version >= 1", name="ck_reservation_version"),
         CheckConstraint(
-            "source IN ('MERCHANT_PHONE','MERCHANT_WECHAT','MERCHANT_IN_STORE')",
+            "source IN ('MERCHANT_PHONE','MERCHANT_WECHAT','MERCHANT_IN_STORE',"
+            "'CUSTOMER_MINIAPP','INQUIRY_CONVERSION')",
             name="ck_reservation_source",
         ),
         CheckConstraint(
@@ -232,4 +246,63 @@ class ProductMedia(Base):
             name="fk_image_same_media_tenant",
         ),
         UniqueConstraint("tenant_id", "product_id", "sort_order", name="uq_product_image_order"),
+    )
+
+
+class Inquiry(Base):
+    __tablename__ = "inquiries"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("tenants.id"))
+    customer_user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    raw_text: Mapped[str] = mapped_column(Text)
+    product_snapshot: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    status: Mapped[str] = mapped_column(String(20), default="NEW")
+    version: Mapped[int] = mapped_column(Integer, default=1)
+    privacy_version: Mapped[str] = mapped_column(String(40))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id", name="uq_inquiry_tenant_id"),
+        CheckConstraint("status IN ('NEW','REPLIED','CLOSED')", name="ck_inquiry_status"),
+        Index("ix_inquiry_tenant_customer_created", "tenant_id", "customer_user_id", "created_at"),
+    )
+
+
+class InquiryReply(Base):
+    __tablename__ = "inquiry_replies"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    inquiry_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    text: Mapped[str] = mapped_column(Text)
+    visible_to_customer: Mapped[bool] = mapped_column(default=False)
+    version: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "inquiry_id"],
+            ["inquiries.tenant_id", "inquiries.id"],
+            name="fk_reply_same_tenant",
+        ),
+        UniqueConstraint("tenant_id", "inquiry_id", "version", name="uq_reply_version"),
+    )
+
+
+class InquiryEvent(Base):
+    __tablename__ = "inquiry_events"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    inquiry_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    actor_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    from_status: Mapped[str | None] = mapped_column(String(20), nullable=True)
+    to_status: Mapped[str] = mapped_column(String(20))
+    action: Mapped[str] = mapped_column(String(20))
+    version: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "inquiry_id"],
+            ["inquiries.tenant_id", "inquiries.id"],
+            name="fk_inquiry_event_tenant",
+        ),
+        UniqueConstraint("tenant_id", "inquiry_id", "version", name="uq_inquiry_event_version"),
     )
