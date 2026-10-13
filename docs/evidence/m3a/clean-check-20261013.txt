@@ -1,0 +1,79 @@
+Tue Oct 13 03:21:18 UTC 2026
+5889f341e56dfab95e723a369eb345150238eba8
+All checks passed!
+postgres (PostgreSQL) 16.2
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+........................................................................ [ 97%]
+..                                                                       [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /workspace/scratch/d168cc482c3f/local-shop-m2-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+74 passed, 1 warning in 34.46s
+waiting for server to shut down.... done
+server stopped
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-13 12:21:57.514 JST [602] LOG:  starting PostgreSQL 16.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 10.2.1 20210130 (Red Hat 10.2.1-11), 64-bit
+2026-10-13 12:21:57.514 JST [602] LOG:  listening on IPv4 address "127.0.0.1", port 56543
+2026-10-13 12:21:57.515 JST [605] LOG:  database system was shut down at 2026-10-13 12:21:57 JST
+2026-10-13 12:21:57.516 JST [602] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+waiting for server to shut down....2026-10-13 12:21:58.519 JST [602] LOG:  received fast shutdown request
+2026-10-13 12:21:58.519 JST [602] LOG:  aborting any active transactions
+2026-10-13 12:21:58.520 JST [602] LOG:  background worker "logical replication launcher" (PID 608) exited with exit code 1
+2026-10-13 12:21:58.520 JST [603] LOG:  shutting down
+2026-10-13 12:21:58.520 JST [603] LOG:  checkpoint starting: shutdown immediate
+2026-10-13 12:21:58.520 JST [603] LOG:  checkpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=3, longest=0.001 s, average=0.001 s; distance=0 kB, estimate=0 kB; lsn=0/1508318, redo lsn=0/1508318
+2026-10-13 12:21:58.522 JST [602] LOG:  database system is shut down
+ done
+server stopped
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 typecheck
+> npm run typecheck --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> @local-shop/miniprogram@0.1.0 typecheck
+> tsc --noEmit
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 build
+> vue-tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 13 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  0.36 kB │ gzip:  0.28 kB
+dist/assets/index-DzxXMGFL.css   1.26 kB │ gzip:  0.62 kB
+dist/assets/index--O-OFrUZ.js   73.02 kB │ gzip: 28.79 kB
+
+✓ built in 111ms
+
+> @local-shop/miniprogram@0.1.0 build
+> tsc && node build-assets.cjs
+
+Assets copied; this is not a WeChat runtime test.

@@ -5,14 +5,21 @@ from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
-import jwt
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, Request
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
-from .identity import DEMO_USERS, read_demo_token, require_local
-from .models import IdempotencyKey, RecordEvent, Reservation, Store, Tenant, TenantMember, User
+from .models import (
+    Category,
+    IdempotencyKey,
+    Product,
+    RecordEvent,
+    Reservation,
+    Store,
+    Tenant,
+    TenantMember,
+)
 
 Status = Literal[
     "PENDING_CONFIRMATION",
@@ -34,7 +41,7 @@ class FreeItem(StrictModel):
     quantity: Decimal = Field(gt=0, max_digits=12, decimal_places=3)
     unit: str = Field(min_length=1, max_length=20)
     spec: str = Field(default="", max_length=120)
-    product_id: None = None
+    product_id: UUID | None = None
 
 
 class NewReservation(StrictModel):
@@ -59,17 +66,19 @@ class StoreInput(StrictModel):
     name: str = Field(min_length=1, max_length=100)
     description: str = Field(default="", max_length=2000)
     expected_version: int = Field(ge=0)
+    published: bool = False
+    public_contact: str = Field(default="", max_length=200)
+    public_address: str = Field(default="", max_length=300)
+    business_hours: str = Field(default="", max_length=200)
+    delivery_note: str = Field(default="", max_length=500)
+    allow_pickup: bool = False
+    allow_delivery: bool = False
 
 
-class IdempotencyInput(StrictModel):
-    key: str = Field(min_length=8, max_length=100)
-
-    @field_validator("key")
-    @classmethod
-    def validate_key(cls, value):
-        if not value.isascii() or not all(c.isalnum() or c in "-_." for c in value):
-            raise ValueError("Invalid idempotency key")
-        return value
+def store_json(row):
+    return {"tenant_id": str(row.tenant_id), "version": row.version} | {
+        key: getattr(row, key) for key in StoreInput.model_fields if key != "expected_version"
+    }
 
 
 def lock_scope(session, scope: str):
@@ -120,53 +129,15 @@ def idempotent(session, tenant, actor, endpoint, key, payload, action):
     return response
 
 
-def build_router(settings, engine):
+def build_router(access):
     router = APIRouter(prefix="/api/v1/merchant")
 
-    def database():
-        with Session(engine) as session, session.begin():
-            yield session
-
-    def actor(request: Request, session: Session = Depends(database, scope="function")):
-        if not settings.dev_auth_enabled:
-            raise HTTPException(401, "AUTHENTICATION_REQUIRED")
-        require_local(request)
-        bearer = request.headers.get("Authorization", "")
-        if not bearer.startswith("Bearer "):
-            raise HTTPException(401, "INVALID_TOKEN")
-        try:
-            claims = read_demo_token(bearer[7:], settings)
-            if claims["kind"] != "development" or claims["sub"] not in DEMO_USERS.values():
-                raise HTTPException(401, "INVALID_TOKEN")
-            uid = UUID(claims["sub"])
-        except (jwt.InvalidTokenError, ValueError):
-            raise HTTPException(401, "INVALID_TOKEN") from None
-        user = session.get(User, uid)
-        if user is None or user.status != "ACTIVE" or user.identity_type != "DEVELOPMENT":
-            raise HTTPException(401, "INVALID_IDENTITY")
-        return uid
-
-    def authorize(session, tenant_id, uid):
-        row = session.execute(
-            select(TenantMember, Tenant)
-            .join(Tenant)
-            .where(
-                TenantMember.tenant_id == tenant_id,
-                TenantMember.user_id == uid,
-                TenantMember.status == "ACTIVE",
-                Tenant.status == "ACTIVE",
-                TenantMember.role.in_(["OWNER", "STAFF"]),
-            )
-        ).first()
-        if row is None:
-            raise HTTPException(404, "TENANT_NOT_FOUND")
-        return row[0]
-
-    def key_value(idempotency_key: str = Header(..., alias="Idempotency-Key")):
-        try:
-            return IdempotencyInput(key=idempotency_key).key
-        except ValueError:
-            raise HTTPException(422, "INVALID_IDEMPOTENCY_KEY") from None
+    database, actor, authorize, key_value = (
+        access.database,
+        access.actor,
+        access.authorize,
+        access.key_value,
+    )
 
     @router.get("/tenants")
     def tenants(uid: UUID = Depends(actor), session: Session = Depends(database, scope="function")):
@@ -200,20 +171,17 @@ def build_router(settings, engine):
             raise HTTPException(409, "VERSION_CONFLICT")
         if row is None:
             row = Store(
-                tenant_id=tenant_id, name=payload.name, description=payload.description, version=1
+                tenant_id=tenant_id, **payload.model_dump(exclude={"expected_version"}), version=1
             )
             session.add(row)
         else:
-            row.name = payload.name
-            row.description = payload.description
+            for field, value in payload.model_dump(
+                exclude={"expected_version"}, exclude_unset=True
+            ).items():
+                setattr(row, field, value)
             row.version += 1
         session.flush()
-        return {
-            "tenant_id": str(tenant_id),
-            "name": row.name,
-            "description": row.description,
-            "version": row.version,
-        }
+        return store_json(row)
 
     @router.get("/tenants/{tenant_id}/store")
     def get_store(
@@ -225,12 +193,7 @@ def build_router(settings, engine):
         row = session.get(Store, tenant_id)
         if not row:
             raise HTTPException(404, "STORE_NOT_FOUND")
-        return {
-            "tenant_id": str(tenant_id),
-            "name": row.name,
-            "description": row.description,
-            "version": row.version,
-        }
+        return store_json(row)
 
     @router.post("/tenants/{tenant_id}/reservations", status_code=201)
     def create_record(
@@ -244,10 +207,40 @@ def build_router(settings, engine):
         data = payload.model_dump(mode="json")
 
         def action():
+            snapshots = []
+            for item in data["items"]:
+                snapshot = dict(item)
+                if item["product_id"]:
+                    product = session.scalar(
+                        select(Product)
+                        .join(
+                            Category,
+                            (Product.category_id == Category.id)
+                            & (Product.tenant_id == Category.tenant_id),
+                        )
+                        .where(
+                            Product.id == UUID(item["product_id"]),
+                            Product.tenant_id == tenant_id,
+                            Product.status == "PUBLISHED",
+                            Category.status == "ACTIVE",
+                        )
+                    )
+                    if product is None:
+                        raise HTTPException(404, "PRODUCT_NOT_FOUND")
+                    snapshot |= {
+                        "name": product.name,
+                        "unit": product.unit,
+                        "spec": product.spec,
+                        "reference_price": str(product.reference_price)
+                        if product.reference_price is not None
+                        else None,
+                    }
+                snapshots.append(snapshot)
             record = Reservation(
                 tenant_id=tenant_id,
                 actor_id=uid,
-                **{k: v for k, v in data.items() if k != "mark_confirmed"},
+                **{k: v for k, v in data.items() if k not in {"mark_confirmed", "items"}},
+                items=snapshots,
             )
             record.status = "CONFIRMED" if payload.mark_confirmed else "PENDING_CONFIRMATION"
             record.version = 2 if payload.mark_confirmed else 1
