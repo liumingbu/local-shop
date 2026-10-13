@@ -39,6 +39,7 @@
 | CAT-01 | 分类商品多图、上下架、跨租户引用拒绝 | PASS（后端，M3a/M3b；维护UI未验收） |
 | FILE-01 | 类型/大小/访问、公开与私有图分开、恶意路径拒绝 | PASS（已实现公图/私图后端，M3b/M4b；微信上传未测） |
 | UI-01 | 商户Web记单、待办筛选、详情与异常恢复 | BLOCKED（Chromium Unix socket权限/云浏览器连接限制） |
+| UI-02 | 原生顾客TS逻辑、草稿/中断/网络契约 | PASS（23项模拟wx；真实HTTP/PG协议流程）；WXML/真机NOT_RUN |
 | WX-01 | 微信真实登录、过期/拒绝/缺凭据失败处理 | NOT_RUN |
 | WX-02 | 分享/码带店铺、无效店铺不串店、草稿隔离 | NOT_RUN |
 | WX-03 | 请求/图片真机网络、iOS/Android基础流程 | NOT_RUN |
@@ -101,3 +102,5 @@ run_id:
 - 2026-10-13 M4c：代码c812e496干净检出139项（113真实PG16.15）及取消HTTP/重启、TS/构建PASS，见evidence/m4c/RESULT_20261013.md；不是微信/浏览器验收。
 
 - 2026-10-13 M4d：代码af376a55干净检出152项（126真实PG16.15）及确认修订HTTP/重启、TS/构建PASS，evidence/m4d/RESULT_20261013.md。业务原生UI/微信/浏览器未验收。
+
+- 2026-10-13 M4e：代码812a2d02干净检出152项Python/23项Node、TS与构建通过；原生TS通过模拟wx调用真实HTTP/PG完成顾客流程，evidence/m4e/RESULT_20261013.md。严格不等同WXML/微信工具/真机/分享验收。
