@@ -1,0 +1,96 @@
+from contextlib import asynccontextmanager
+from typing import Literal
+from uuid import uuid4
+
+import jwt
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from sqlalchemy.exc import SQLAlchemyError
+
+from .config import Settings
+from .db import build_engine, probe_database
+from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
+
+
+class DemoSessionRequest(BaseModel):
+    identity: Literal["merchant-a", "merchant-b"]
+
+
+def create_app(settings: Settings | None = None) -> FastAPI:
+    settings = settings or Settings()
+    engine = build_engine(settings)
+
+    @asynccontextmanager
+    async def lifespan(app):
+        yield
+        engine.dispose()
+
+    app = FastAPI(title="local-shop", version="0.1.0", lifespan=lifespan)
+
+    @app.middleware("http")
+    async def request_id(request: Request, call_next):
+        request.state.request_id = str(uuid4())
+        response = await call_next(request)
+        response.headers["X-Request-ID"] = request.state.request_id
+        response.headers["Cache-Control"] = "no-store"
+        return response
+
+    def error(request, status, code, message):
+        return JSONResponse(
+            status_code=status,
+            content={
+                "code": code,
+                "message": message,
+                "request_id": request.state.request_id,
+            },
+        )
+
+    @app.exception_handler(HTTPException)
+    async def http_error(request, exc):
+        return error(request, exc.status_code, str(exc.detail), "请求未被允许")
+
+    @app.exception_handler(RequestValidationError)
+    async def validation_error(request, exc):
+        return error(request, 422, "INVALID_INPUT", "请求参数不符合要求")
+
+    @app.get("/health/live")
+    def live():
+        return {"status": "ok"}
+
+    @app.get("/health/ready")
+    def ready(request: Request):
+        try:
+            probe_database(engine)
+        except SQLAlchemyError:
+            return error(request, 503, "DATABASE_UNAVAILABLE", "数据库尚未就绪")
+        return {"status": "ready"}
+
+    if settings.dev_auth_enabled:
+
+        @app.post("/api/v1/dev/session")
+        def demo_session(payload: DemoSessionRequest, request: Request):
+            require_local(request)
+            return {
+                "access_token": issue_demo_token(payload.identity, settings),
+                "token_type": "bearer",
+                "expires_in": 900,
+                "development_only": True,
+            }
+
+        @app.get("/api/v1/dev/me")
+        def demo_me(request: Request):
+            require_local(request)
+            authorization = request.headers.get("Authorization", "")
+            if not authorization.startswith("Bearer "):
+                raise HTTPException(401, "INVALID_TOKEN")
+            try:
+                claims = read_demo_token(authorization[7:], settings)
+                if claims["kind"] != "development" or claims["sub"] not in DEMO_USERS.values():
+                    raise HTTPException(401, "INVALID_TOKEN")
+            except jwt.InvalidTokenError:
+                raise HTTPException(401, "INVALID_TOKEN") from None
+            return {"user_id": claims["sub"], "development_only": True}
+
+    return app

@@ -1,0 +1,9 @@
+{
+  "appid": "touristappid",
+  "projectname": "local-shop",
+  "compileType": "miniprogram",
+  "miniprogramRoot": "dist/",
+  "setting": {
+    "es6": true
+  }
+}

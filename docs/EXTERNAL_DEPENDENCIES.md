@@ -4,7 +4,7 @@
 
 | 编号 | 事项 | 何时需要 | 当前状态/动作 |
 |---|---|---|---|
-| E01 | Dot终端/Git/运行时/数据库 | 开始开发 | 终端/Git/运行时基础通过；数据库 NOT_RUN，见 ENVIRONMENT_CHECK |
+| E01 | Dot终端/Git/运行时/数据库 | 开始开发 | 开发工具与PG本机TCP集成通过；生产版本/微信另验，见 ENVIRONMENT_CHECK |
 | E02 | GitHub写入与main基线 | 成果持久化 | main 已初始化；Dot GitHub 接口提交已验证；终端 push 认证未通过 |
 | E03 | 仓库Public/Private | 导入前 | 检查时Public；由用户决定，禁止自动改 |
 | E04 | 最终品牌、平台名称与主体 | 微信申请/审核 | 待用户确定；开发代号local-shop |

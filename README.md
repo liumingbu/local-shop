@@ -6,16 +6,13 @@
 
 一个微信小程序承载多个商户，各店独立展示、管理询货和需求登记、安排备货与交付。顾客可以自行提交，老板也可以代记微信、电话、到店产生的需求。**不接入在线支付。**
 
-## 当前状态：文档基线，不是可运行的软件
+## 当前状态：M1 工程基础已实现，业务闭环未实现
 
-本包已生成产品需求、开发约束、架构建议和验收计划；没有业务源码、依赖锁文件或真实应用运行结果。
+文档 PR #1 已按用户授权合并，基准 main：ccac6eb6bf9ca5c7acaf72c817e6dfb750db4e1f。
 
-- main 基准已核验：`62be6e588b375c2cab90364472322b96f8c5f9e8`。
-- Dot 云电脑文件操作、程序运行及六项 Python/Node 测试通过；GitHub 接口提交已回读验证。见 [真实环境报告](docs/ENVIRONMENT_CHECK.md)。
-- 原环境验证分支 `env-check/20261012` 及其提交 `7bd637bf3b0c90852285048ed08d76db0c7ddb44` 保留。
-- 本轮仅在 `chore/project-foundation` 导入文档，未实现业务程序、未部署、未合并 main。
-- 数据库、依赖安装、微信、浏览器和业务测试仍为 NOT_RUN；终端直接 git push 认证仍未通过，发布使用 GitHub 接口。
-- 包生成时的旧状态保留于 [原始记录](docs/evidence/package-original/README.md)，不能作为当前状态。
+M1 提供 FastAPI 健康检查、严格配置校验、固定开发演示身份、用户/租户/成员模型与 Alembic 迁移、合成演示数据、Vue 工作台骨架及原生小程序 TypeScript 工程。当前分支 feat/m1-engineering-foundation，提交/合并结果以 PROGRESS 为准。
+
+PostgreSQL 已在同一云电脑通过本机回环 TCP 运行；此前 Unix socket 失败记录保留。基础测试与数据库集成已执行，正式结果见 docs/TESTING.md。微信开发者工具、真机与生产部署仍 NOT_RUN。
 
 ## 先读这些文档
 
@@ -53,7 +50,57 @@
 
 ## 如何运行
 
-目前没有可运行程序。Dot 在 M1 实现工程后，必须用真实执行结果替换本节，提供依赖安装、数据库迁移、启动、测试和演示数据初始化命令。不要猜测不存在的 `npm run` 或脚本。
+要求 Python 3.12、Node.js 24（实测24.19.0）；依赖锁文件已实际生成。
+
+```sh
+python3 -m venv .venv
+.venv/bin/pip install -r apps/api/requirements.lock
+npm ci
+```
+
+在仓库根目录复制 .env.example 为 .env，填写自己的隔离开发数据库地址（postgresql+psycopg://...）和至少32位随机 APP_SECRET_KEY，禁止将凭据提交或发进聊天。默认开发身份关闭。可在本机生成密钥：
+
+```sh
+python3 -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+准备好实际 PostgreSQL 数据库后，在仓库根目录执行：
+
+```sh
+.venv/bin/alembic -c apps/api/alembic.ini upgrade head
+PYTHONPATH=apps/api .venv/bin/python -m local_shop
+npm run dev -w apps/admin
+```
+
+API 默认只监听127.0.0.1:8000；工作台代理健康检查到此地址。/health/live 仅表示API存活；/health/ready 需要数据库SELECT 1成功，否则503，不表示业务或微信可用。
+
+需要合成身份时，仅在本机开发 .env 中开启 DEV_AUTH_ENABLED=true，然后执行：
+
+```sh
+PYTHONPATH=apps/api .venv/bin/python -m local_shop.seed
+```
+
+种子仅生成商户A/B及两店租户成员，不包含真实顾客；生产/未显式开启开发身份时拒绝执行。开发会话 /api/v1/dev/session 只接受 merchant-a 或 merchant-b，15分钟到期，不代表微信登录。官方启动入口关闭代理头信任，部署不得擅自放开开发身份。
+
+### 实际测试入口
+
+```sh
+.venv/bin/ruff check apps/api scripts
+.venv/bin/python scripts/http_smoke.py
+.venv/bin/pytest -q
+npm run typecheck
+npm run build
+```
+
+无 TEST_DATABASE_ADMIN_URL 时，7项真实PG测试明确跳过，不能视为全通过。完整验证用已安装可信PostgreSQL二进制路径：
+
+```sh
+PG_BIN=/absolute/path/to/postgresql/bin .venv/bin/python scripts/test_with_postgres.py
+```
+
+该脚本在同一进程生命周期内创建临时数据库簇，仅监听127.0.0.1，测试重启持久化、迁移和接口，最后停止并清理自身临时数据。使用本机trust认证仅限无真实数据的隔离开发测试，不可用于生产。
+
+小程序构建产物在 apps/miniprogram/dist；工程配置暂用 touristappid，占位不代表有效AppID。TS编译不等于微信工具/真机通过。Web也只有工程骨架，没有记单业务。
 
 ## 数据和许可证
 

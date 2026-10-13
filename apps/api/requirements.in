@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+SQLAlchemy>=2,<3
+alembic
+psycopg[binary]
+pydantic-settings
+PyJWT
+pytest
+httpx
+ruff
