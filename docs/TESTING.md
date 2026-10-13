@@ -112,3 +112,7 @@ run_id:
 ## M4g 原生目录维护（2026-10-13）
 
 代码b50e5e51远端干净检出：152项Python（126真实PG）+50项Node、Ruff/TS/构建、目录多图/Logo的真实HTTP与旧重启回归通过。见[evidence/m4g/RESULT_20261013.md](evidence/m4g/RESULT_20261013.md)。微信运行时未验收。
+
+## 平台基础管理（2026-10-13）
+
+代码99d41f55远端干净检出：171项Python（145真实PG，19项平台专项）+50项Node、Ruff/TS/构建、实际HTTP/PG和重启回归均通过。邀请/收件人接受/审核/启停/审计、平台与业务权限分离、并发/回滚/暂停锁验证见[evidence/platform/RESULT_20261013.md](evidence/platform/RESULT_20261013.md)。平台界面和正式身份未完成。
