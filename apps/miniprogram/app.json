@@ -1,0 +1,11 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "local-shop",
+    "navigationBarBackgroundColor": "#f6f4ef",
+    "navigationBarTextStyle": "black"
+  },
+  "style": "v2"
+}

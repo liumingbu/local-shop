@@ -1,0 +1,66 @@
+M1 clean-checkout validation
+2026-10-13T02:47:35Z
+cddfd9b656092c3b73ae2823a66980688bc54a49
+$ pip check
+WARNING: The directory '/home/agent/.cache/pip' or its parent directory is not owned or is not writable by the current user. The cache has been disabled. Check the permissions and owner of that directory. If executing pip with sudo, you should use sudo's -H flag.
+No broken requirements found.
+$ ruff check apps/api scripts
+All checks passed!
+$ python scripts/http_smoke.py
+PASS: HTTP /health/live=200 and /health/ready=503 with unavailable database
+$ PG_BIN=<local PostgreSQL binaries> python scripts/test_with_postgres.py
+postgres (PostgreSQL) 16.2
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+.................................                                        [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  [cloud-workspace]/local-shop-m1-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+33 passed, 1 warning in 6.36s
+waiting for server to shut down.... done
+server stopped
+$ npm run typecheck
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 typecheck
+> npm run typecheck --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> @local-shop/miniprogram@0.1.0 typecheck
+> tsc --noEmit
+
+$ npm run build
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 build
+> vue-tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 13 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  0.36 kB │ gzip:  0.29 kB
+dist/assets/index-BOlE9YwQ.css   0.35 kB │ gzip:  0.25 kB
+dist/assets/index-fJ36env4.js   62.29 kB │ gzip: 24.88 kB
+
+✓ built in 140ms
+
+> @local-shop/miniprogram@0.1.0 build
+> tsc && node build-assets.cjs
+
+Assets copied; this is not a WeChat runtime test.

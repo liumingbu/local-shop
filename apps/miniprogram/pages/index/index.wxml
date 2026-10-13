@@ -1,0 +1,1 @@
+<view class="page"><text class="title">{{title}}</text><text>{{stage}}</text><text>尚未执行微信开发者工具或真机验证。</text></view>

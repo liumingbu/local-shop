@@ -1,0 +1,1 @@
+.page { padding: 48rpx; display: flex; flex-direction: column; gap: 32rpx; } .title { font-size: 48rpx; font-weight: bold; }
