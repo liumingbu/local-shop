@@ -34,5 +34,5 @@ PR #1–#8已合并；M2代记闭环、M3商品/图片与M4顾客/询货/私图�
 
 ## 下一步
 
-M2 PR #3已合并；保留浏览器BLOCKED。M3a PR #4已合并，main c41fb90d。M3b PR #5已合并，main 93b6afda。M4a PR #6已合并，main 09fe8a74。M4b PR #7已合并，main89e7a595。PG16.15编译后122项及HTTP重启回归通过。M4c PR #8已合并main b722d2d3，代码c812e496干净检出139项测试及HTTP/构建通过。M4d确认修订初验152项测试/HTTP重启/TS构建通过，等待远端干净检出复核。随后确认详情、平台最小管理及界面。
+M2 PR #3已合并；保留浏览器BLOCKED。M3a PR #4已合并，main c41fb90d。M3b PR #5已合并，main 93b6afda。M4a PR #6已合并，main 09fe8a74。M4b PR #7已合并，main89e7a595。PG16.15编译后122项及HTTP重启回归通过。M4c PR #8已合并main b722d2d3，代码c812e496干净检出139项测试及HTTP/构建通过。M4d PR #9代码af376a55干净检出152项/HTTP重启/TS构建通过，evidence/m4d/RESULT_20261013.md；待自查合并。随后确认详情、平台最小管理及界面。
 两顾客本人记录与商户边界已有专门测试，身份仍为开发模拟，真实微信另验。
