@@ -18,7 +18,7 @@
 | M0-03 | Dot真实提交/PR验证 | DONE | 远端导入提交 1e1aa561 及草稿 PR #1 已实际创建；55文件逐字节核验通过 |
 | M0-04 | main基线和文档PR | DONE | PR #1已合并，ccac6eb6 |
 | M1 | 工程初始化 | DONE | PR #2已合并，main 3fd71df5；33项测试证据见evidence/m1/RESULT_20261013.md |
-| M2 | 老板代记闭环 | IN_PROGRESS（后端已测，浏览器BLOCKED） | 代记/状态/历史/租户隔离/事务/幂等/并发；真实HTTP及重启持久化；浏览器启动受环境限制 |
+| M2 | 老板代记闭环 | IN_PROGRESS（后端已测，浏览器BLOCKED） | PR #3代码751dc278；干净检出56项测试、真实HTTP及重启持久化PASS；浏览器BLOCKED；evidence/m2/RESULT_20261013.md |
 | M3 | 商品与店铺 | TODO | 无业务测试 |
 | M4 | 顾客与小程序 | TODO | 无业务测试 |
 | M5 | 微信真实接入 | BLOCKED_EXTERNAL | AppID/运行条件与主体待确定 |

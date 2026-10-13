@@ -85,4 +85,4 @@ run_id:
 
 - 2026-10-13 M1：33项Python测试、PG重启持久化、真实HTTP、前端与小程序类型/构建初验通过。正式结果：evidence/m1/RESULT_20261013.md，远端被测SHA cddfd9b6，干净检出33/33通过，无跳过。
 
-- 2026-10-13 M2：后端真实PG测试、HTTP闭环及API/PG重启持久化通过；Web/小程序类型与构建通过。Chromium启动权限阻塞，三项Playwright测试均未进入页面断言。正式SHA和干净检出日志见后续evidence/m2/记录。
+- 2026-10-13 M2：后端真实PG测试、HTTP闭环及API/PG重启持久化通过；Web/小程序类型与构建通过。Chromium启动权限阻塞，三项Playwright测试均未进入页面断言。被测SHA751dc278；56项测试，正式结果及干净检出日志见evidence/m2/RESULT_20261013.md。
