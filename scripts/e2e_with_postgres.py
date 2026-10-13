@@ -112,6 +112,10 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
             wait_http("http://127.0.0.1:8000/health/ready", api)
             wait_http("http://127.0.0.1:5173", web)
             if args.http_only:
+                from cancellation_http import (
+                    exercise_cancellation,
+                    verify_cancellation_after_restart,
+                )
                 from catalog_http import exercise_catalog
                 from customer_http import exercise_customer, verify_customer_after_restart
                 from media_http import exercise_media, verify_media_after_restart
@@ -123,6 +127,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                 images = exercise_media("http://127.0.0.1:8000")
                 customer = exercise_customer("http://127.0.0.1:8000")
                 private = exercise_private_media("http://127.0.0.1:8000")
+                cancellation = exercise_cancellation("http://127.0.0.1:8000")
                 api.terminate()
                 api.wait(timeout=10)
                 subprocess.run(
@@ -138,6 +143,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                 verify_media_after_restart("http://127.0.0.1:8000", images)
                 verify_customer_after_restart("http://127.0.0.1:8000", customer)
                 verify_private_after_restart("http://127.0.0.1:8000", private)
+                verify_cancellation_after_restart("http://127.0.0.1:8000", cancellation)
                 result = subprocess.CompletedProcess([], 0)
             elif args.serve_for:
                 print("ISOLATED_SERVICES_READY http://127.0.0.1:5173", flush=True)

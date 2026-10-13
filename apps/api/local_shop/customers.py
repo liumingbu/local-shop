@@ -11,6 +11,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from .attachments import attachments_json, copy_inquiry_attachments, link_private
+from .cancellation_data import cancellation_json
 from .catalog import find_owned, published_store
 from .models import (
     Category,
@@ -97,6 +98,7 @@ def customer_reservation(row, session, detail=False):
         "updated_at",
     )
     value = {name: source[name] for name in allowed}
+    value["cancellation_requests"] = cancellation_json(session, row)
     value["attachments"] = attachments_json(
         session, row.tenant_id, reservation_id=row.id, customer=True
     )
@@ -108,6 +110,7 @@ def customer_reservation(row, session, detail=False):
         )
         value["events"] = [
             {
+                "action": event.action,
                 "from_status": event.from_status,
                 "to_status": event.to_status,
                 "note": event.note if event.visible_to_customer else "",

@@ -75,3 +75,8 @@ READY → OUT_FOR_DELIVERY → COMPLETED       # 商家配送完成
 ## 8. 数据生命周期
 
 商品下架与记录归档优先，不因删除商品级联删除需求。真实数据删除、保留期和备份清理须在上线前确定政策；测试合成数据可以在明确隔离测试库中重建。默认不给平台管理员无审计导出全库能力。
+
+## M4c 实际补充
+
+cancellation_requests：tenant_id+reservation_id复合FK、requester、reason、REQUESTED/ACCEPTED/REJECTED、对客response_note、决策actor/time、申请与决策的需求版本。每个需求至多一个REQUESTED（PG部分唯一索引）。决策非空与版本递增有CHECK。
+所有申请、决策与常规状态变更先锁同一reservation行；record_events新增action，申请/拒绝可同状态但仍递增版本。幂等结果与事件事务一致。尚无结构化确认明细修订接口，原始items仍不可变。
