@@ -1,0 +1,83 @@
+Tue Oct 13 03:53:15 UTC 2026
+013e524dbeeb14796b9418ed5adc437ca6152938
+All checks passed!
+postgres (PostgreSQL) 16.2
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+........................................................................ [ 66%]
+.....................................                                    [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /workspace/scratch/d168cc482c3f/local-shop-m2-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+109 passed, 1 warning in 63.91s (0:01:03)
+waiting for server to shut down.... done
+server stopped
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-13 12:54:25.525 JST [924] LOG:  starting PostgreSQL 16.2 on x86_64-pc-linux-gnu, compiled by gcc (GCC) 10.2.1 20210130 (Red Hat 10.2.1-11), 64-bit
+2026-10-13 12:54:25.525 JST [924] LOG:  listening on IPv4 address "127.0.0.1", port 54855
+2026-10-13 12:54:25.527 JST [927] LOG:  database system was shut down at 2026-10-13 12:54:25 JST
+2026-10-13 12:54:25.527 JST [924] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+waiting for server to shut down....2026-10-13 12:54:26.685 JST [924] LOG:  received fast shutdown request
+2026-10-13 12:54:26.685 JST [924] LOG:  aborting any active transactions
+2026-10-13 12:54:26.685 JST [924] LOG:  background worker "logical replication launcher" (PID 930) exited with exit code 1
+2026-10-13 12:54:26.685 JST [925] LOG:  shutting down
+2026-10-13 12:54:26.685 JST [925] LOG:  checkpoint starting: shutdown immediate
+2026-10-13 12:54:26.686 JST [925] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=5, longest=0.001 s, average=0.000 s; distance=0 kB, estimate=0 kB; lsn=0/1538070, redo lsn=0/1538070
+2026-10-13 12:54:26.687 JST [924] LOG:  database system is shut down
+ done
+server stopped
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 typecheck
+> npm run typecheck --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> @local-shop/miniprogram@0.1.0 typecheck
+> tsc --noEmit
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 build
+> vue-tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 13 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  0.36 kB │ gzip:  0.28 kB
+dist/assets/index-DzxXMGFL.css   1.26 kB │ gzip:  0.62 kB
+dist/assets/index--O-OFrUZ.js   73.02 kB │ gzip: 28.79 kB
+
+✓ built in 133ms
+
+> @local-shop/miniprogram@0.1.0 build
+> tsc && node build-assets.cjs
+
+Assets copied; this is not a WeChat runtime test.

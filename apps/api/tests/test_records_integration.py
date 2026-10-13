@@ -189,7 +189,7 @@ def test_decimal_units_and_no_customer_auto_binding(api):
     ).json()
     assert record["items"][0]["quantity"] == "0.5"
     assert [x["unit"] for x in record["items"]] == ["斤", "盒"]
-    assert "customer_user_id" not in record
+    assert record["customer_user_id"] is None
     assert create(api, customer_user_id="00000000-0000-4000-8000-000000000002").status_code == 422
     assert create(api, tenant_id=B).status_code == 422
 

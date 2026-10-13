@@ -111,3 +111,15 @@
 - PNG/JPEG/WebP真实解码、动画与像素限制、清理EXIF并统一JPEG。随机UUID文件名，路径不来自用户文件名。
 - 提交失败清理本次新建文件；进程被强杀时可能产生未关联孤立文件，但无公开可访问关联，不自动清理未知旧文件。上线前纳入备份/恢复与维护说明。
 - 这里只接受商户公开用途候选图片。顾客咨询私图还未实现，不复用上述公开用途作为私图入口。
+
+## M4a 顾客/询货已实现（固定开发身份，非真实微信）
+
+- 开发身份增customer-a/customer-b，无商户成员资格。
+- POST /api/v1/stores/{store_id}/reservations：文本或items至少一个；privacy_accepted=true；Idempotency-Key；后台绑定当前认证用户。不得传source/customer_user_id/status/internal_note。交付方式必须由店铺开放。
+- POST /api/v1/stores/{store_id}/inquiries：原文、可选本店公开product_id、privacy_accepted；幂等。商品快照不随之后改名变化。
+- GET /api/v1/me/records?kind=reservation|inquiry&store_id=...&page=...&limit=...；GET /me/records/reservation/{id}或/inquiry/{id}。只匹配本人归属；停店不删除本人已有历史，不开放新请求。
+- 商户GET .../inquiries、/{id}；POST .../{id}/replies（text、visible_to_customer、expected_version）、/close（expected_version）、/convert（代记字段+expected_version）。写操作均需Idempotency-Key，租户成员与版本在服务端校验。
+- 内部询货备注及其事件不返回顾客；回复有货不创建需求。显式转换锁定原咨询，一个咨询至多一个转换需求；保留咨询原文于raw_text，商户确认文字于confirmed_text；不自动关闭原咨询。
+- expected_at为可空带时区时间；expected_time_note保留备注不猜测精确时间。
+- 当前隐私版本development-draft-v1只用于开发模拟，不代替正式隐私文本/授权/真实身份核验。
+- 私图/取消申请/原生页面尚未实现，未包含在本轮通过范围。
