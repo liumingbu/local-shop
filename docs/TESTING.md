@@ -108,3 +108,7 @@ run_id:
 ## M4f 商户原生页面逻辑（2026-10-13）
 
 代码a8b05853远端干净检出：152项Python（126真实PG）+37项Node、Ruff/TS/构建、原生商户页面通过模拟wx传输调用真实HTTP/PG闭环及旧重启回归均PASS。见[evidence/m4f/RESULT_20261013.md](evidence/m4f/RESULT_20261013.md)。WXML/微信真机仍未测；首次HTTP断言措辞不符已修复并复核。
+
+## M4g 原生目录维护（2026-10-13）
+
+代码b50e5e51远端干净检出：152项Python（126真实PG）+50项Node、Ruff/TS/构建、目录多图/Logo的真实HTTP与旧重启回归通过。见[evidence/m4g/RESULT_20261013.md](evidence/m4g/RESULT_20261013.md)。微信运行时未验收。

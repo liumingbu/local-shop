@@ -1,0 +1,15 @@
+<view class="page"><view class="eyebrow">商户 · 分类与商品</view><view class="title">整理店里的商品</view>
+<view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
+<block wx:if="{{authorized}}"><view class="card"><view class="subtitle">{{form.id?'编辑分类':'新增分类'}}</view>
+<view class="notice" wx:if="{{pendingCreate}}">创建结果未确认，只能重试原分类内容。</view>
+<input value="{{form.name}}" data-field="name" bindinput="input" maxlength="100" placeholder="分类名称" disabled="{{busy || locked}}"/>
+<input value="{{form.sort_order}}" data-field="sort_order" bindinput="input" type="number" placeholder="排序0–100000，越小越靠前" disabled="{{busy || locked}}"/>
+<checkbox-group bindchange="archived"><label><checkbox value="archived" checked="{{form.status==='ARCHIVED'}}" disabled="{{busy || locked}}"/>归档分类（该分类商品将不再公开）</label></checkbox-group>
+<view class="actions"><button bindtap="save" disabled="{{busy || (locked && !pendingCreate)}}">{{pendingCreate?'重试原创建':'保存分类'}}</button><button bindtap="fresh" disabled="{{busy || locked}}">新建另一分类</button></view></view>
+<view class="card"><view class="subtitle">分类列表</view><view class="line" wx:for="{{categories}}" wx:key="id"><view>{{item.name}} · {{item.status==='ACTIVE'?'使用中':'已归档'}}</view><view class="actions"><button data-id="{{item.id}}" bindtap="edit" disabled="{{busy || locked}}">编辑／恢复</button><button data-id="{{item.id}}" bindtap="filter" disabled="{{busy}}">查看该类商品</button></view></view>
+<view class="actions"><button bindtap="catPrevious" disabled="{{busy || catPage<=1}}">分类上一页</button><text>第{{catPage}}页</text><button bindtap="catNext" disabled="{{busy || catPage*20>=catTotal}}">分类下一页</button></view></view>
+<view class="actions"><button bindtap="createProduct" disabled="{{busy}}">新增商品</button><button bindtap="filter" data-id="" disabled="{{busy}}">全部分类商品</button></view>
+<view class="card" wx:for="{{products}}" wx:key="id" data-id="{{item.id}}" bindtap="open"><view class="subtitle">{{item.name}}</view><view>{{item.spec}} · 单位{{item.unit}}</view><view>{{item.status==='PUBLISHED'?'已设为公开':item.status==='ARCHIVED'?'已归档':'草稿'}} · {{item.supply_status==='UNAVAILABLE'?'暂不供应':item.supply_status==='REGULAR'?'常规供应':'供货待确认'}}</view><view class="muted">参考价格：{{item.reference_price===null?'未提供':item.reference_price}}；不表示实时库存或应付金额</view></view>
+<view class="empty" wx:if="{{!products.length && !busy && !error}}">当前范围还没有商品</view>
+<view class="actions"><button bindtap="previous" disabled="{{busy || page<=1}}">商品上一页</button><text>第{{page}}页</text><button bindtap="next" disabled="{{busy || page*20>=total}}">商品下一页</button></view>
+</block><button bindtap="load" disabled="{{busy}}">刷新服务端资料</button><button bindtap="back">工作台</button></view>

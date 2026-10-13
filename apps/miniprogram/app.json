@@ -9,7 +9,9 @@
     "pages/privacy/privacy",
     "pages/merchant/merchant",
     "pages/merchantdetail/merchantdetail",
-    "pages/shopsettings/shopsettings"
+    "pages/shopsettings/shopsettings",
+    "pages/catalog/catalog",
+    "pages/productedit/productedit"
   ],
   "window": {
     "navigationBarTitleText": "local-shop",

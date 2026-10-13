@@ -1,0 +1,16 @@
+<view class="page"><view class="eyebrow">商户 · 商品维护</view><view class="title">{{productId?'编辑商品':'新增商品'}}</view><view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
+<view class="notice" wx:if="{{locked}}">结果或版本待核对。{{pendingCreate?'可重试原创建请求':'请刷新服务端后再编辑'}}</view>
+<block wx:if="{{authorized}}"><view class="card"><view class="subtitle">商品资料</view><input data-field="name" value="{{form.name}}" bindinput="input" maxlength="120" placeholder="商品名" disabled="{{busy || locked}}"/>
+<picker range="{{categoryNames}}" value="{{categoryIndex}}" bindchange="category" disabled="{{busy || locked || !categories.length}}"><view class="field">分类：{{categoryIndex>=0?categoryNames[categoryIndex]:'请选择（没有分类请先创建）'}}</view></picker>
+<textarea data-field="description" value="{{form.description}}" bindinput="input" maxlength="4000" placeholder="商品介绍（纯文本）" disabled="{{busy || locked}}"/>
+<input data-field="unit" value="{{form.unit}}" bindinput="input" maxlength="20" placeholder="单位，如斤、份、盒" disabled="{{busy || locked}}"/>
+<input data-field="spec" value="{{form.spec}}" bindinput="input" maxlength="120" placeholder="规格" disabled="{{busy || locked}}"/>
+<input data-field="reference_price" value="{{form.reference_price}}" bindinput="input" type="digit" maxlength="13" placeholder="参考价格，可留空，最多2位小数" disabled="{{busy || locked}}"/>
+<picker range="{{supplies}}" value="{{supplyIndex}}" bindchange="supply" disabled="{{busy || locked}}"><view class="field">{{supplies[supplyIndex]}}</view></picker>
+<picker range="{{statuses}}" value="{{statusIndex}}" bindchange="status" disabled="{{busy || locked}}"><view class="field">展示状态：{{statuses[statusIndex]}}</view></picker>
+<input data-field="sort_order" value="{{form.sort_order}}" bindinput="input" type="number" placeholder="排序0–100000，越小越靠前" disabled="{{busy || locked}}"/>
+<view class="muted">仅店铺已公开、分类使用中且商品设为公开时，顾客才能看到。归档可恢复，不永久删除；历史需求快照不随改名而改变。</view><button class="primary" bindtap="save" disabled="{{busy || (locked && !pendingCreate)}}">{{pendingCreate?'重试原商品创建':'保存商品资料'}}</button></view>
+<view class="card" wx:if="{{productId}}"><view class="subtitle">商品多图（最多8张）</view><view class="notice">已公开商品保存图片顺序后会更新顾客看到的图片。仅使用可公开的商品照片，不上传顾客私图。</view>
+<view class="line" wx:for="{{images}}" wx:key="id"><image src="{{item.path}}" class="cover" mode="aspectFill" wx:if="{{item.path}}"/><view wx:else>预览未加载，可刷新核验</view><view class="actions"><button data-index="{{index}}" data-delta="-1" bindtap="move" disabled="{{busy || locked || index===0}}">前移</button><button data-index="{{index}}" data-delta="1" bindtap="move" disabled="{{busy || locked || index===images.length-1}}">后移</button><button data-index="{{index}}" bindtap="remove" disabled="{{busy || locked}}">移除关联</button></view></view>
+<view class="actions"><button bindtap="upload" disabled="{{busy || locked || images.length>=8}}">选择并暂存一张</button><button bindtap="saveImages" disabled="{{busy || locked || !imagesDirty}}">保存图片顺序</button></view><view class="muted">未保存的顺序离开即放弃。暂存上传不等于公开；移除关联不永久删除原文件。</view></view></block>
+<button bindtap="load" disabled="{{busy}}">刷新并放弃未保存编辑</button><button bindtap="back">分类与商品</button></view>

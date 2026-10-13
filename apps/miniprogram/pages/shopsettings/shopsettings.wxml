@@ -1,11 +1,11 @@
 <view class="page"><view class="eyebrow">商户 · 店铺资料</view><view class="title">让顾客认识这家店</view>
 <view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
-<view class="card" wx:if="{{form && authorized}}"><input data-field="name" value="{{form.name}}" bindinput="input" maxlength="100" placeholder="店名（必填）" disabled="{{busy || locked}}"/>
+<view class="card" wx:if="{{form && authorized}}"><view class="subtitle">店铺Logo</view><image class="logo" src="{{logoPath}}" wx:if="{{logoPath}}"/><view class="actions"><button bindtap="uploadLogo" disabled="{{busy || locked}}">选择公开Logo</button><button bindtap="removeLogo" disabled="{{busy || locked || !form.logo_media_id}}">移除Logo关联</button></view><input data-field="name" value="{{form.name}}" bindinput="input" maxlength="100" placeholder="店名（必填）" disabled="{{busy || locked}}"/>
 <textarea data-field="description" value="{{form.description}}" bindinput="input" maxlength="2000" placeholder="店铺介绍" disabled="{{busy || locked}}"/>
 <input data-field="public_contact" value="{{form.public_contact}}" bindinput="input" maxlength="200" placeholder="公开联系方式（仅合成演示资料）" disabled="{{busy || locked}}"/>
 <input data-field="public_address" value="{{form.public_address}}" bindinput="input" maxlength="300" placeholder="公开地址" disabled="{{busy || locked}}"/>
 <input data-field="business_hours" value="{{form.business_hours}}" bindinput="input" maxlength="200" placeholder="营业时间" disabled="{{busy || locked}}"/>
 <textarea data-field="delivery_note" value="{{form.delivery_note}}" bindinput="input" maxlength="500" placeholder="自提／配送说明" disabled="{{busy || locked}}"/>
 <checkbox-group bindchange="flags"><label><checkbox value="pickup" checked="{{form.allow_pickup}}" disabled="{{busy || locked}}"/>可登记自提意向</label><label><checkbox value="delivery" checked="{{form.allow_delivery}}" disabled="{{busy || locked}}"/>可登记配送意向</label><label><checkbox value="published" checked="{{form.published}}" disabled="{{busy || locked}}"/>在本项目公开展示店铺</label></checkbox-group>
-<view class="muted">取消公开后不接收新的顾客登记，已有记录仍按权限保留。联系方式、地址、介绍均为公开字段。Logo与目录维护在后续页面实现，已有Logo不会被此表单清空。</view>
+<view class="muted">取消公开后不接收新的顾客登记，已有记录仍按权限保留。联系方式、地址、介绍均为公开字段。上传Logo暂存后仍需点击保存；只使用可公开的店铺图片。</view>
 <button class="primary" bindtap="save" disabled="{{busy || locked}}">保存当前版本</button></view><button bindtap="load" disabled="{{busy}}">重新读取服务端资料（放弃未保存编辑）</button><button bindtap="back">工作台</button></view>

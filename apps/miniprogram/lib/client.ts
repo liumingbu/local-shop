@@ -100,6 +100,7 @@ export function errorText(error: unknown): string {
     if (!(error instanceof ApiError))
         return '操作未完成，请稍后重试';
     const texts: Record<string, string> = {
+        INVALID_SORT_ORDER: '排序须为0至100000的整数', INVALID_REFERENCE_PRICE: '参考价格须非负且最多2位小数；也可留空', SAVE_PRODUCT_FIRST: '请先保存商品并核对当前版本', TOO_MANY_IMAGES: '每件商品最多8张图片', OPERATION_CANCELLED: '页面已离开，本次上传未继续发送', CATEGORY_LIMIT_REQUIRES_WEB: '分类过多，请改用后台维护',
         NO_MERCHANT_MEMBERSHIP: '当前账号没有商户成员资格', OWNER_REQUIRED: '只有店主可以维护店铺资料', TENANT_NOT_FOUND: '该店铺不在当前账号授权范围', DATE_REQUIRED: '设置时刻前请先选择日期',
         OTHER_PRODUCT_DRAFT_EXISTS: '本店已有另一商品的询货草稿，请先处理或明确放弃原草稿',
         PRIVACY_CONSENT_REQUIRED: '请先阅读并确认开发隐私说明', INVALID_QUANTITY: '数量须大于0，最多3位小数',

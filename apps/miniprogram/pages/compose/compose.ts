@@ -107,7 +107,7 @@ Page({
                 throw new ApiError('PRIVACY_CONSENT_REQUIRED');
             if (draft.media_ids.length >= 5)
                 throw new ApiError('MAX_FIVE_IMAGES');
-            const image = await chooseAndUpload(`/api/v1/stores/${this.data.storeId}/private-media?privacy_accepted=true`);
+            const image = await chooseAndUpload(`/api/v1/stores/${this.data.storeId}/private-media?privacy_accepted=true`,()=>this.alive&&this.view===view);
             if (!this.alive || this.view !== view)
                 return;
             const updated = { ...draft, media_ids: [...draft.media_ids, image.id] };
