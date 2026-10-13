@@ -124,3 +124,7 @@ run_id:
 ## Web商品批量维护
 
 PR #15远端代码0d9de702独立干净检出175 Python（149真实PG）、18 Web控制器、54原生模拟wx与Ruff/TS/构建/真实HTTP及PG重启均退出0，0失败/跳过；见[evidence/web-catalog/RESULT_20261013.md](evidence/web-catalog/RESULT_20261013.md)。覆盖全批前置校验、部分成功、原请求恢复、版本冲突停止、真实POST/PUT已提交后丢响应重放与租户隔离。Vue父页面完整交互和浏览器DOM未验收。
+
+## 图片接收与数据库等待限时
+
+PR #16代码58b38b40独立远端干净检出193 Python（154真实PG、39非PG）、18 Web、54原生及Ruff/TS/构建/真实慢TCP上传/HTTP和PG重启全部退出0。新增18项验证总截止时间、超限/断开、真实语句/锁/池超时及恢复、事务回滚/租户锁释放与错误脱敏；见[evidence/bounded-io/RESULT_20261013.md](evidence/bounded-io/RESULT_20261013.md)。不代表完整限流或生产容量验收。

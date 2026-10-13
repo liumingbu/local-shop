@@ -39,4 +39,4 @@ M2 PR #3已合并；保留浏览器BLOCKED。M3a PR #4已合并，main c41fb90d�
 
 Web商品批量维护：每页20件/每批最多50项，逐件保存、部分成功明确显示，POST/PUT同键重放、冲突停批；PR #15代码0d9de702远端干净检出175 Python（149真实PG）、18 Web、54原生逻辑及Ruff/TS/构建/真实HTTP与PG重启全部退出0，见evidence/web-catalog/RESULT_20261013.md；已合并main 1d1e3ffe。
 
-M6等待限时加固：图片接收总截止时间、数据库语句/锁/池等待上限已实现；本地完整193 Python（154真实PG）、18 Web、54原生逻辑与Ruff/TS/构建/真实TCP慢上传/HTTP/PG重启退出0，远端独立复核待补。
+M6等待限时加固：图片接收总截止时间、数据库语句/锁/池等待上限已实现；PR #16远端代码58b38b40独立干净检出193 Python（154真实PG）、18 Web、54原生逻辑与Ruff/TS/构建/真实TCP慢上传/HTTP/PG重启全部退出0，见evidence/bounded-io/RESULT_20261013.md；待自查合并。
