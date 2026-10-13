@@ -133,3 +133,14 @@
 - 既有商户media内容与状态接口对PRIVATE加关联限制：非本人上传且尚未提交的客户图片不可读取/归档；提交到本店后才可处理。
 - 转需求复制原咨询附件与顺序；商户新增内部附件默认不对顾客可见。PRIVATE不能关联商品/Logo或修改用途。
 - 0006降级遇私图拒绝。没有真实资料自动清理任务；保留/删除政策发布前另确认。
+
+## M4c 取消意向（当前实现，测试状态见TESTING）
+
+上方各M1–M4b段落是当时范围说明，诸如“当前无附件/顾客入口”不代表最新状态；实际路由以此后追加段落及OpenAPI为准。
+
+- POST /api/v1/me/reservations/{id}/cancellation-requests：expected_version、reason；必需Idempotency-Key，仅已验证归属本人。非终态统一申请；返回状态不自动变CANCELLED。
+- POST /api/v1/merchant/tenants/{tenant_id}/reservations/{id}/cancellation-requests/{request_id}/decision：expected_version、decision=ACCEPTED|REJECTED、response_note（明确对顾客可见）；必需Idempotency-Key与本店有效成员。
+- 有REQUESTED意向时所有普通状态迁移409 CANCELLATION_REVIEW_REQUIRED。接受才取消，拒绝保留原状态；两者增加需求版本和不可丢失事件，原文/明细不修改。
+- 商户GET .../reservations?cancellation_pending=true|false：同租户分页筛选。商户和本人需求DTO包含cancellation_requests，不含处理人/申请人账号标识；record_events新增action便于区分同状态变更。
+- 停店本人仍可留下取消意向，但无新增需求；客户端不能宣称已通知/已处理。完成和取消为终态，不受理新申请。
+- 0007迁移遇取消历史拒绝破坏性降级；无需物理删除。

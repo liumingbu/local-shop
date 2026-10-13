@@ -10,6 +10,7 @@ from pydantic import BaseModel
 from sqlalchemy.exc import SQLAlchemyError
 
 from .access import build_access
+from .cancellations import build_router as cancellation_router
 from .catalog import build_router as catalog_router
 from .config import Settings
 from .customers import build_router as customer_router
@@ -107,4 +108,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.include_router(catalog_router(access))
     app.include_router(media_router(access, settings))
     app.include_router(customer_router(access))
+    app.include_router(cancellation_router(access))
     return app

@@ -14,6 +14,7 @@ from sqlalchemy import (
     Text,
     UniqueConstraint,
     func,
+    text,
 )
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -183,6 +184,7 @@ class RecordEvent(Base):
     version: Mapped[int] = mapped_column(Integer)
     from_status: Mapped[str | None] = mapped_column(String(30), nullable=True)
     to_status: Mapped[str] = mapped_column(String(30))
+    action: Mapped[str] = mapped_column(String(40), default="STATUS_CHANGED")
     note: Mapped[str] = mapped_column(Text, default="")
     visible_to_customer: Mapped[bool] = mapped_column(default=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -340,5 +342,49 @@ class PrivateAttachment(Base):
         UniqueConstraint("tenant_id", "inquiry_id", "media_id", name="uq_private_inquiry_media"),
         UniqueConstraint(
             "tenant_id", "reservation_id", "media_id", name="uq_private_reservation_media"
+        ),
+    )
+
+
+class CancellationRequest(Base):
+    __tablename__ = "cancellation_requests"
+    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    tenant_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    reservation_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True))
+    requester_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
+    reason: Mapped[str] = mapped_column(Text)
+    status: Mapped[str] = mapped_column(String(20), default="REQUESTED")
+    response_note: Mapped[str] = mapped_column(Text, default="")
+    decision_actor_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    requested_version: Mapped[int] = mapped_column(Integer)
+    decided_version: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    decided_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "reservation_id"],
+            ["reservations.tenant_id", "reservations.id"],
+            name="fk_cancellation_same_tenant",
+        ),
+        CheckConstraint(
+            "status IN ('REQUESTED','ACCEPTED','REJECTED')", name="ck_cancellation_status"
+        ),
+        CheckConstraint("requested_version >= 2", name="ck_cancellation_version"),
+        CheckConstraint(
+            "(status = 'REQUESTED' AND decision_actor_id IS NULL AND decided_at IS NULL "
+            "AND decided_version IS NULL) OR (status <> 'REQUESTED' "
+            "AND decision_actor_id IS NOT NULL "
+            "AND decided_at IS NOT NULL AND decided_version IS NOT NULL "
+            "AND decided_version > requested_version)",
+            name="ck_cancellation_decision",
+        ),
+        Index(
+            "uq_cancellation_pending",
+            "tenant_id",
+            "reservation_id",
+            unique=True,
+            postgresql_where=text("status = 'REQUESTED'"),
         ),
     )

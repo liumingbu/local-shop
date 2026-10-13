@@ -11,8 +11,10 @@ from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
 from .attachments import attachments_json, link_private
+from .cancellation_data import cancellation_json, pending_cancellation
 from .image_store import active_media
 from .models import (
+    CancellationRequest,
     Category,
     IdempotencyKey,
     Product,
@@ -113,6 +115,7 @@ def reservation_json(record, session=None):
     }
     if session is not None:
         value["attachments"] = attachments_json(session, record.tenant_id, reservation_id=record.id)
+        value["cancellation_requests"] = cancellation_json(session, record)
     return value
 
 
@@ -316,6 +319,7 @@ def build_router(access):
     def list_records(
         tenant_id: UUID,
         status: Status | None = None,
+        cancellation_pending: bool | None = None,
         page: int = Query(1, ge=1),
         limit: int = Query(20, ge=1, le=100),
         uid: UUID = Depends(actor),
@@ -325,6 +329,13 @@ def build_router(access):
         condition = [Reservation.tenant_id == tenant_id]
         if status:
             condition.append(Reservation.status == status)
+        if cancellation_pending is not None:
+            pending = select(CancellationRequest.id).where(
+                CancellationRequest.tenant_id == Reservation.tenant_id,
+                CancellationRequest.reservation_id == Reservation.id,
+                CancellationRequest.status == "REQUESTED",
+            ).exists()
+            condition.append(pending if cancellation_pending else ~pending)
         count = session.scalar(select(func.count()).select_from(Reservation).where(*condition))
         rows = session.scalars(
             select(Reservation)
@@ -363,6 +374,7 @@ def build_router(access):
         return reservation_json(record, session) | {
             "events": [
                 {
+                    "action": e.action,
                     "from_status": e.from_status,
                     "to_status": e.to_status,
                     "actor_id": str(e.actor_id),
@@ -395,6 +407,8 @@ def build_router(access):
                 raise HTTPException(404, "RECORD_NOT_FOUND")
             if row.version != payload.expected_version:
                 raise HTTPException(409, "VERSION_CONFLICT")
+            if pending_cancellation(session, row):
+                raise HTTPException(409, "CANCELLATION_REVIEW_REQUIRED")
             allowed = {
                 "PENDING_CONFIRMATION": {"CONFIRMED", "CANCELLED"},
                 "CONFIRMED": {"PREPARING", "CANCELLED"},
