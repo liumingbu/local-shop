@@ -1,12 +1,12 @@
 # HANDOFF
 
-2026-10-13 UTC。长期任务已启动；用户授权Dot自行审查和测试后合并常规PR，阶段性回报。
+2026-10-13 UTC。用户授权Dot自行审查和测试后合并项目常规PR，阶段性回报。
 
-- PR #1已合并；起点main ccac6eb6bf9ca5c7acaf72c817e6dfb750db4e1f。
-- 当前分支feat/m1-engineering-foundation，云工作区local-shop-foundation；启动时干净。
-- 已有FastAPI配置/健康/开发身份、用户租户成员迁移和种子、Vue及原生小程序工程骨架。
-- 33项Python测试初验通过（7项真实PG集成）；PG重启持久化及真实HTTP健康通过；Web/小程序TS构建通过。
-- PG使用同一云电脑本机TCP；必须在同一命令生命周期运行，不能假定上条命令启动的后台服务持续存在。命令见README和scripts/test_with_postgres.py。
-- M1已建立PR #2；被测SHA cddfd9b656092c3b73ae2823a66980688bc54a49。干净检出33项测试、真实HTTP/PG持久化/构建均通过，证据见docs/evidence/m1/RESULT_20261013.md。下一步自行审查并合并，再创建M2分支。
-- 下一步M2老板代记闭环/租户隔离。业务、微信真机和生产部署尚未完成。
-- 所有旧验证目录与分支保留；不复用旧佳琪代码。
+- PR #1与M1 PR #2已合并；M2起点main 3fd71df522643bf015013061ac1eed0b79af8e9a。
+- 当前feat/m2-owner-records：代记独立于商品库、Decimal自由明细、状态机、历史、幂等和版本并发、两商户隔离。
+- 迁移0002_records；数据库事务在响应前提交，提交失败返回脱敏503并回滚。
+- Web最小工作台构建可用，UI浏览器验证BLOCKED：Chromium Unix socket被拒，既有云浏览器访问回环服务连接拒绝。不能声称页面实际通过。
+- 真实HTTP与API/PG重启后记录、事件、幂等结果持久化通过。脚本scripts/e2e_with_postgres.py --http-only。
+- 必须在同一命令生命周期运行服务与测试；不假定后台进程跨命令存在。
+- M2后端覆盖已稳定，PR #3代码751dc278已远端保存，干净检出56项测试与HTTP重启/构建通过，证据evidence/m2/RESULT_20261013.md；自查合并；浏览器阻塞保留，随后推进M3独立模块。
+- 当前仅开发身份，无真实微信登录、真机、部署。PG16.2仅隔离验证工具，非生产安全版本基线。

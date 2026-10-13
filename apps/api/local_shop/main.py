@@ -12,6 +12,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from .config import Settings
 from .db import build_engine, probe_database
 from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
+from .records import build_router
 
 
 class DemoSessionRequest(BaseModel):
@@ -50,6 +51,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     @app.exception_handler(HTTPException)
     async def http_error(request, exc):
         return error(request, exc.status_code, str(exc.detail), "请求未被允许")
+
+    @app.exception_handler(SQLAlchemyError)
+    async def database_error(request, exc):
+        return error(request, 503, "DATABASE_UNAVAILABLE", "数据库操作暂不可用")
 
     @app.exception_handler(RequestValidationError)
     async def validation_error(request, exc):
@@ -93,4 +98,5 @@ def create_app(settings: Settings | None = None) -> FastAPI:
                 raise HTTPException(401, "INVALID_TOKEN") from None
             return {"user_id": claims["sub"], "development_only": True}
 
+    app.include_router(build_router(settings, engine))
     return app

@@ -105,3 +105,22 @@ PG_BIN=/absolute/path/to/postgresql/bin .venv/bin/python scripts/test_with_postg
 ## 数据和许可证
 
 仅提交合成演示数据。不得上传真实客户资料、身份证件、电话地址、AppSecret、数据库备份或令牌。仓库可见性由用户决定，公开仓库也不代表已选定开源许可证；本包未添加开源授权。
+
+## M2 老板代记验证
+
+启动 API、迁移和演示种子后，运行 `npm run dev --workspace apps/admin`，
+浏览器访问本机 Vite 地址。A/B 仅为合成开发身份，令牌只保存在页面内存。
+工作台支持店名、无商品代记、状态流转和历史；不提供真实客户登录。
+代记 API 支持小数数量、单位、规格和原始文本；页面当前使用自由文本表单。
+相对时间保留在原文中并有创建时间，不推断为已确认的交付日期。
+
+独立启动临时 PostgreSQL、API、Vite，并通过真实 HTTP 验证闭环与重启持久化：
+
+```bash
+PG_BIN=/path/to/postgresql/bin .venv/bin/python scripts/e2e_with_postgres.py --http-only
+```
+
+该脚本仅创建临时合成测试库，绑定本机回环地址并在退出时清理。
+浏览器自动化：相同命令去掉 `--http-only`；需要可启动 Chromium。
+当前 Dot 命令环境 Chromium 启动被 Unix socket 权限阻塞；浏览器三项测试未执行到页面断言，
+不能用 HTTP 或构建通过代替浏览器通过。已有云浏览器连接本机服务亦返回连接拒绝。

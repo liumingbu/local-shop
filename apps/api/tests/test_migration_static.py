@@ -9,7 +9,7 @@ from sqlalchemy.schema import CreateTable
 
 
 def test_postgresql_model_constraints_compile():
-    assert set(Base.metadata.tables) == {"users", "tenants", "tenant_members"}
+    assert {"users", "tenants", "tenant_members"}.issubset(Base.metadata.tables)
     sql = "\n".join(
         str(CreateTable(table).compile(dialect=postgresql.dialect()))
         for table in Base.metadata.sorted_tables
