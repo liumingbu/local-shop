@@ -21,13 +21,13 @@
 | M3 | IN_PROGRESS（后端与原生逻辑通过） | PR #4/#5/#12/#15：分类/商品/多图/Logo/公开店铺/Web批量维护；evidence/m3a、m3b、m4g、web-catalog | DOM/WXML/真机未验收 |
 | M4 | IN_PROGRESS（代码与协议逻辑通过） | PR #6–#14：顾客询货/需求/本人历史/私图/取消/修订；13原生页面；商户端与平台邀请审核/启停/审计；evidence/m4a–m4g、platform、platform-ui | 浏览器/微信真实运行、真实身份 |
 | M5 | BLOCKED_EXTERNAL | 模拟身份隔离、分享路径与网络封装有代码；没有声称微信实测通过 | 新项目AppID/凭据、正式身份接入、微信工具/真机、主体类目隐私/消息/域名条件；见EXTERNAL_DEPENDENCIES |
-| M6 | IN_PROGRESS | PR #16上传/DB等待限时，evidence/bounded-io；PR #17恢复工具/演练已合并；本轮Linux组件专项通过 | Linux全量与远端验证、最终包；systemd/生产/异机灾备另验 |
+| M6 | IN_PROGRESS | PR #16上传/DB等待限时，evidence/bounded-io；PR #17恢复工具/演练已合并；本轮Linux组件专项通过 | Linux候选已远端复核，待自查合并/最终源码包；systemd/生产/异机灾备另验 |
 
 ## 本轮Linux交付候选
 
 - PR #17恢复工具已合并核验，真实CLI演练21表/92合成行/3图，206 Python/18 Web/54原生通过，见evidence/recovery。
 - 新增Nginx1.30.5 TLS代理、systemd候选、生产配置样例和fail-closed发布检查；真实身份未完成时服务门禁拒绝启动。
-- 同一Dot源码构建Nginx，真实TLS1.2/1.3、固定域名跳转、私图权限、代理幂等、413/429及无查询串访问日志的组件专项已通过；当前分支全量和独立远端复核进行中。
+- 同一Dot源码构建Nginx，真实TLS1.2/1.3、固定域名跳转、私图权限、代理幂等、413/429及无查询串访问日志的组件专项已通过；213 Python（154真实PG）+18 Web+54原生及Ruff/TS/构建/HTTP/恢复/代理检查在代码b6652736远端干净检出全部通过；见evidence/linux-delivery/RESULT_20261013.md。
 - systemd-analyze实际因/run/systemd只读失败：BLOCKED。组件重跑显式--skip-systemd，不把静态检查/服务启停视为通过。
 
 ## 测试与未验收

@@ -1,0 +1,325 @@
+Tue Oct 13 08:05:26 UTC 2026
+e70eddabe526c915edf99c7711407f19b93fd5ac
+All checks passed!
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:admin
+> tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs
+
+✔ batch validates all rows before any write and preserves decimals and nullable price (2.250507ms)
+✔ batch stops after known version conflict and requires explicit discard without rollback (1.095559ms)
+✔ unknown response resumes original immutable command and remaining commands after reload (1.487188ms)
+✔ batch storage failure prevents writes; acknowledgement persistence failure replays same key (0.442916ms)
+✔ authentication and forbidden results keep original batch pending (1.411143ms)
+✔ persisted batch is scoped to verified identity and tenant; cross-tenant path is rejected (0.736498ms)
+✔ concurrent submit emits one batch and unmount ignores late response while retaining recovery (0.416587ms)
+✔ completed batch is not resent after a read refresh failure (0.386131ms)
+✔ platform role is read from server; a merchant cannot load control data (1.821081ms)
+✔ unknown command retains immutable payload and key across reconstructed controller (1.379496ms)
+✔ storage failure happens before any write is sent (0.383737ms)
+✔ version rejection unlocks command; authentication failures retain it for same-user login (0.580954ms)
+✔ invalid or external stored command is never replayed with credentials (0.277157ms)
+✔ pending storage is isolated by verified account (0.553423ms)
+✔ unmounted panel ignores late success and retains unknown operation for recovery (5.339976ms)
+✔ saved command remains locked if post-write refresh fails (0.375415ms)
+✔ review and tenant status carry displayed versions and explicit reason (0.38542ms)
+✔ web request refuses external paths and forbids automatic redirect forwarding (0.842819ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 97.822619
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:native
+> npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 41 native assets; this is NOT a WeChat runtime test.
+✔ catalog numeric input permits empty reference but rejects fake quantity/price normalization (5.046434ms)
+✔ category picker loads all pages instead of silently truncating after first 100 (2.148914ms)
+✔ explicit unauthorized catalog entry cannot load or create categories (8.809467ms)
+✔ category unknown creation survives hide/show and replays original name and key (13.245653ms)
+✔ category stale update is locked until refreshed, with no automatic overwrite (7.30928ms)
+✔ product create retries immutable request; blank reference remains null and status starts draft (14.317196ms)
+✔ post-response storage failure retains create lock instead of allowing a second product (5.709266ms)
+✔ image ordering/removal updates association only and advances the product version (6.856103ms)
+✔ image upload limit and uncertain ordering both block unsafe continuation (5.61155ms)
+✔ switching identity while picker is open prevents file upload under the new account (0.897801ms)
+✔ leaving product image picker prevents upload after page dismissal (6.204266ms)
+✔ logo uploads with LOGO purpose then requires explicit versioned store save (6.734675ms)
+✔ old session completion cannot clear a newer session busy state (0.371619ms)
+✔ development login is disabled by configuration and always refused for trial/release (3.824025ms)
+✔ origin and path are fail-closed; remote plaintext, userinfo and arbitrary URLs refused (0.83035ms)
+✔ invalid share entry does not fall back to a recent store (1.387548ms)
+✔ login keeps credentials in memory; authenticated identity comes from server me response (0.699453ms)
+✔ late private response after account switch is discarded (6.245449ms)
+✔ drafts are isolated by user and store, and units/specifications never merge (1.325285ms)
+✔ storage failure prevents sending an unrepeatable business request (0.671871ms)
+✔ uncertain retry uses immutable original payload/key and survives success before draft acknowledgement (0.9769ms)
+✔ validation rejection releases draft, but expired login preserves pending operation (3.943254ms)
+✔ busy and view generation protect double clicks and late results after hide/show (0.496417ms)
+✔ decimal validation and explicit UTC+08 display do not invent quantities or dates (0.560613ms)
+✔ native page registrations, assets and event handlers exist (static, not WXML rendering) (9.757393ms)
+✔ compose sends only this store draft and clears it only after confirmed success (6.742783ms)
+✔ compose double-click plus network retry does not replace the original payload (6.322405ms)
+✔ leaving compose before response keeps the original pending request and does not navigate later (5.389851ms)
+✔ explicit date+time becomes a timezone-aware value; date-only stays a note (6.437983ms)
+✔ private detail rejects store mismatch and clears private content on hide (6.79106ms)
+✔ private images send authentication as a header, never a query token (0.486792ms)
+✔ image picker cancellation sends no upload and preserves draft (0.37213ms)
+✔ a different product entry does not silently mix an existing inquiry draft (0.556898ms)
+✔ leaving the login page interrupts the pending identity switch (0.400383ms)
+✔ date-only input remains a note and is not silently assigned midnight (5.657023ms)
+✔ source default has no API origin or enabled fake login (0.288495ms)
+✔ invitation response uses server-listed invitation and current account, not supplied owner ID (12.945111ms)
+✔ invitation unknown result can only replay original response after reopening (12.09327ms)
+✔ switching invitation account clears private rows and pending state from previous user (12.59923ms)
+✔ only approved invitation with server tenant ID opens its merchant workspace (1.204803ms)
+✔ merchant tenant selection never falls back from an unauthorized explicit tenant (3.505245ms)
+✔ merchant workbench invalid route remains invalid onShow and does not issue requests (2.155504ms)
+✔ customer with no merchant membership cannot load workbench records (6.439031ms)
+✔ manual record requires no catalog, preserves raw text and retries original uncertain operation (7.317903ms)
+✔ leaving workbench during membership lookup does not restore private draft (3.311904ms)
+✔ merchant transitions reflect fulfillment method and pending cancellation gate (0.333852ms)
+✔ merchant detail rejects route mismatch and hides private payload (5.909633ms)
+✔ confirmation requires explicit latest agreement and sends only allowed transition (6.147782ms)
+✔ unknown detail write locks other operations and retries original key after reload failure (5.755361ms)
+✔ proposal copies free snapshots without live product reference and retains fractional units (7.013064ms)
+✔ inquiry reply defaults private and never implicitly converts (5.773629ms)
+✔ shop settings require owner and do not send an unauthorized write (6.954085ms)
+✔ new store uses version zero, existing logo is preserved, unknown PUT requires refresh (5.804716ms)
+✔ refresh clears previous candidate consent; hiding clears private unsubmitted edits (6.760925ms)
+ℹ tests 54
+ℹ suites 0
+ℹ pass 54
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 176.753212
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 typecheck
+> npm run typecheck --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> @local-shop/miniprogram@0.1.0 typecheck
+> tsc --noEmit
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 build
+> vue-tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 21 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                  0.36 kB │ gzip:  0.29 kB
+dist/assets/index-B18_402Q.css   1.72 kB │ gzip:  0.77 kB
+dist/assets/index-DX6GamXt.js   96.72 kB │ gzip: 35.82 kB
+
+✓ built in 149ms
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 41 native assets; this is NOT a WeChat runtime test.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+........................................................................ [ 33%]
+........................................................................ [ 67%]
+.....................................................................    [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  <DOT_WORKSPACE>/local-shop-foundation/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+213 passed, 1 warning in 143.52s (0:02:23)
+waiting for server to shut down.... done
+server stopped
+waiting for server to start.... done
+server started
+PASS REAL TCP incomplete image body returns 408 within configured one-second receipt deadline; same-key retry/replay and database readiness succeed
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:admin
+> tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs
+
+✔ batch validates all rows before any write and preserves decimals and nullable price (2.633384ms)
+✔ batch stops after known version conflict and requires explicit discard without rollback (1.198655ms)
+✔ unknown response resumes original immutable command and remaining commands after reload (1.893536ms)
+✔ batch storage failure prevents writes; acknowledgement persistence failure replays same key (0.638336ms)
+✔ authentication and forbidden results keep original batch pending (1.376262ms)
+✔ persisted batch is scoped to verified identity and tenant; cross-tenant path is rejected (0.765507ms)
+✔ concurrent submit emits one batch and unmount ignores late response while retaining recovery (0.426208ms)
+✔ completed batch is not resent after a read refresh failure (0.411686ms)
+✔ platform role is read from server; a merchant cannot load control data (2.424431ms)
+✔ unknown command retains immutable payload and key across reconstructed controller (1.90978ms)
+✔ storage failure happens before any write is sent (0.497495ms)
+✔ version rejection unlocks command; authentication failures retain it for same-user login (0.858896ms)
+✔ invalid or external stored command is never replayed with credentials (0.444907ms)
+✔ pending storage is isolated by verified account (0.724355ms)
+✔ unmounted panel ignores late success and retains unknown operation for recovery (7.292312ms)
+✔ saved command remains locked if post-write refresh fails (0.550013ms)
+✔ review and tenant status carry displayed versions and explicit reason (0.488441ms)
+✔ web request refuses external paths and forbids automatic redirect forwarding (1.150633ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 116.348632
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 41 native assets; this is NOT a WeChat runtime test.
+PASS compiled native customer logic + REAL HTTP/PG: store/product/decimal draft/private image/submit/history/cancel/tenant isolation/inquiry
+SIMULATED wx transport, picker/compression and page lifecycle; NOT WeChat runtime, WXML, sharing or real identity validation.
+PASS compiled native merchant logic + REAL HTTP/PG: store version update/manual phone record/decimal confirmation/explicit agreement/prepare/ready/complete/history/tenant read+write denial/inquiry reply+convert/cancel decision
+SIMULATED wx transport and page lifecycle; NOT WeChat runtime, WXML, real identity, device or sharing validation.
+PASS native catalog logic + REAL HTTP/PG: category create/archive/restore, product draft/publish/archive, null reference price, two images/order/unlink/public access, stale version rejection, Logo upload/remove, cross-tenant product/media denial
+SIMULATED wx media picker/compression and page lifecycle; WXML and real WeChat device remain NOT_RUN.
+PASS compiled Web platform controller + native invitation page with REAL HTTP/PG: invite/recipient isolation/explicit accept/review/default private store/pause/resume/audit
+Node controller and SIMULATED wx page lifecycle only; browser DOM and WXML/device remain NOT_RUN.
+PASS compiled Web catalog controller + REAL HTTP/PG: sequential create/update, lost POST/PUT acknowledgement replay, nullable/decimal reference price, version conflict stops remaining rows, partial results, tenant read/write isolation.
+Browser DOM rendering NOT_RUN; synthetic response loss injected only after real HTTP response.
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-13 17:08:12.997 JST [2001] LOG:  starting PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-13 17:08:12.997 JST [2001] LOG:  listening on IPv4 address "127.0.0.1", port 46299
+2026-10-13 17:08:12.998 JST [2004] LOG:  database system was shut down at 2026-10-13 17:08:12 JST
+2026-10-13 17:08:13.000 JST [2001] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: cancellation decision/audit/idempotency durable
+PASS real HTTP after restart: original and confirmed revisions remain distinct
+PASS real HTTP after restart: invitation identity/idempotency/status audit and separate platform scope durable
+waiting for server to shut down....2026-10-13 17:08:14.215 JST [2001] LOG:  received fast shutdown request
+2026-10-13 17:08:14.215 JST [2001] LOG:  aborting any active transactions
+2026-10-13 17:08:14.216 JST [2001] LOG:  background worker "logical replication launcher" (PID 2007) exited with exit code 1
+2026-10-13 17:08:14.216 JST [2002] LOG:  shutting down
+2026-10-13 17:08:14.216 JST [2002] LOG:  checkpoint starting: shutdown immediate
+2026-10-13 17:08:14.217 JST [2002] LOG:  checkpoint complete: wrote 12 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=11, longest=0.001 s, average=0.000 s; distance=1 kB, estimate=1 kB; lsn=0/1593C68, redo lsn=0/1593C68
+2026-10-13 17:08:14.218 JST [2001] LOG:  database system is shut down
+ done
+server stopped
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+PASS offline bundle: real pg_dump + media hashes/schema/counts; private permissions; no overwrite/source restore
+PASS damaged image/database archives rejected before target restore
+PASS missing referenced image prevents complete backup; existing function-only database preserved
+RESTORE_METRICS {"archive_bytes": 65271, "code_revision": {"dirty": true, "sha": "e70eddabe526c915edf99c7711407f19b93fd5ac"}, "media_files": 3, "rows": 92, "tables": 21}
+PASS real pg_restore into separate empty DB: all table counts/schema/media inventory match; occupied targets refused
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-13 17:08:20.577 JST [2082] LOG:  starting PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-13 17:08:20.577 JST [2082] LOG:  listening on IPv4 address "127.0.0.1", port 36615
+2026-10-13 17:08:20.581 JST [2085] LOG:  database system was shut down at 2026-10-13 17:08:20 JST
+2026-10-13 17:08:20.586 JST [2082] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: cancellation decision/audit/idempotency durable
+PASS real HTTP after restart: original and confirmed revisions remain distinct
+PASS real HTTP after restart: invitation identity/idempotency/status audit and separate platform scope durable
+PASS RESTORED-DB HTTP: original records/revisions/cancellation/platform audit/idempotency/public and private image bytes/identity isolation
+Synthetic offline drill only; no production backups or deployment. Temporary bundle is not uploaded.
+waiting for server to shut down....2026-10-13 17:08:21.809 JST [2082] LOG:  received fast shutdown request
+2026-10-13 17:08:21.809 JST [2082] LOG:  aborting any active transactions
+2026-10-13 17:08:21.810 JST [2082] LOG:  background worker "logical replication launcher" (PID 2088) exited with exit code 1
+2026-10-13 17:08:21.810 JST [2083] LOG:  shutting down
+2026-10-13 17:08:21.810 JST [2083] LOG:  checkpoint starting: shutdown immediate
+2026-10-13 17:08:21.810 JST [2083] LOG:  checkpoint complete: wrote 13 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=6, longest=0.001 s, average=0.000 s; distance=1 kB, estimate=1 kB; lsn=0/1E1DB08, redo lsn=0/1E1DB08
+2026-10-13 17:08:21.812 JST [2082] LOG:  database system is shut down
+ done
+server stopped
+nginx version: nginx/1.30.5
+built by gcc 14.2.0 (Debian 14.2.0-19) 
+built with OpenSSL 3.5.7 9 Jun 2026
+TLS SNI support enabled
+configure arguments: --prefix=<DOT_WORKSPACE>/local-shop-tools/nginx-1.30.5 --with-http_ssl_module --with-http_v2_module
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+nginx: the configuration file /tmp/local-shop-delivery-check-33jcn1t_/nginx.conf syntax is ok
+nginx: configuration file /tmp/local-shop-delivery-check-33jcn1t_/nginx.conf test is successful
+PASS REAL Nginx/TLS1.2+TLS1.3: certificate verified by explicit ephemeral CA, HTTPS fixed-host redirect, health/auth/image/idempotency proxy, blocked dev/static paths, 2MiB limit, 429, query-free JSON access log
+NOT_RUN systemd-analyze verification explicitly skipped; earlier Dot run hit read-only /run/systemd
+PASS fail-closed release guard; systemd activation/production/real WeChat remain NOT_RUN/BLOCKED
+waiting for server to shut down.... done
+server stopped
+Tue Oct 13 08:08:29 UTC 2026

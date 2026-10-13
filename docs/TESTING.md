@@ -132,3 +132,7 @@ PR #16代码58b38b40独立远端干净检出193 Python（154真实PG、39非PG�
 ## 数据库与图片离线恢复
 
 PR #17代码ca64e8a5远端独立干净检出206 Python（154真实PG、52非PG）、18 Web、54原生及Ruff/TS/构建/HTTP重启全部退出0；实际CLI pg_dump/pg_restore到另一个空库，21表/92合成行/3图在重启后通过HTTP、字节与权限/幂等核对。损坏包、缺图、原库/非空库/已有目录均拒绝；见[evidence/recovery/RESULT_20261013.md](evidence/recovery/RESULT_20261013.md)。没有上传备份，生产/异机恢复未测。
+
+## Linux TLS代理与生产发布门禁
+
+PR #18代码b6652736独立远端干净检出213 Python（154真实PG、59非PG）、18 Web、54原生与Ruff/TS/构建/HTTP/恢复通过。真实Nginx1.30.5 TLS1.2和1.3/413/429/访问日志/私图鉴权通过，见[evidence/linux-delivery/RESULT_20261013.md](evidence/linux-delivery/RESULT_20261013.md)。systemd-analyze因/run/systemd只读BLOCKED；全套明确--skip-systemd，并未运行系统服务或生产部署。正式身份/微信/DOM仍未验收。
