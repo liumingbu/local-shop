@@ -19,7 +19,7 @@
 | M0-04 | main基线和文档PR | DONE | PR #1已合并，ccac6eb6 |
 | M1 | 工程初始化 | DONE | PR #2已合并，main 3fd71df5；33项测试证据见evidence/m1/RESULT_20261013.md |
 | M2 | 老板代记闭环 | IN_PROGRESS（后端已测，浏览器BLOCKED） | PR #3已合并，main d63ee77a；代码751dc278；干净检出56项测试、真实HTTP及重启持久化PASS；浏览器BLOCKED；evidence/m2/RESULT_20261013.md |
-| M3 | 商品与店铺 | IN_PROGRESS | M3a PR #4已合并；M3b图片/Logo/受控读取初验90项测试通过；维护界面与浏览器未验收 |
+| M3 | 商品与店铺 | IN_PROGRESS | M3a PR #4已合并；M3b PR #5代码1338e9a4干净检出90项测试和HTTP重启图片字节验证PASS，见evidence/m3b/RESULT_20261013.md；维护界面与浏览器未验收 |
 | M4 | 顾客与小程序 | TODO | 无业务测试 |
 | M5 | 微信真实接入 | BLOCKED_EXTERNAL | AppID/运行条件与主体待确定 |
 | M6 | 集成交付 | TODO | 无部署 |

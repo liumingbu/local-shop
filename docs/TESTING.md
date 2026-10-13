@@ -88,3 +88,5 @@ run_id:
 - 2026-10-13 M2：后端真实PG测试、HTTP闭环及API/PG重启持久化通过；Web/小程序类型与构建通过。Chromium启动权限阻塞，三项Playwright测试均未进入页面断言。被测SHA751dc278；56项测试，正式结果及干净检出日志见evidence/m2/RESULT_20261013.md。
 
 - 2026-10-13 M3a：代码5889f341干净检出74项测试通过（48真实PG），HTTP公开目录/归档与重启持久化、TS/构建PASS；详见evidence/m3a/RESULT_20261013.md。多图/UI/微信未计通过。
+
+- 2026-10-13 M3b：代码1338e9a4干净检出90项测试通过（64真实PG），真实图片文件及HTTP重启字节验证PASS；evidence/m3b/RESULT_20261013.md。UI/顾客私图/真实微信未计通过。
