@@ -34,10 +34,9 @@ export class CatalogConsole {
  private show(batch:Batch|null){this.patch({locked:!!batch,done:batch?.cursor||0,count:batch?.commands.length||0,blocked:batch?.blocked||'',uncertain:!!batch?.uncertain,results:batch?.completed||[]});}
  private async run(fn:()=>Promise<void>){if(!this.alive||this.state.busy)return;this.patch({busy:true,error:''});try{await fn();}catch(e){this.patch({error:e instanceof ApiError?e.code:e instanceof Error?e.message:'NETWORK_UNCERTAIN'});}finally{this.patch({busy:false});}}
  private async rows(){const response=await this.transport<List<Product>>(`${this.root}?page=${this.state.page}&limit=20`);this.patch({total:response.total,rows:response.items.map(x=>({...x,reference_price:x.reference_price??'',sort_order:String(x.sort_order),selected:false,rowKey:x.id}))});}
- load(){return this.run(async()=>{this.patch({ready:false,rows:[],categories:[]});this.show(this.read());const categories:Category[]=[];
-  for(let page=1;page<=100;page++){const response=await this.transport<List<Category>>(`${this.root.replace(/\/products$/,'/categories')}?page=${page}&limit=100`);categories.push(...response.items);if(page*100>=response.total)break;if(page===100)throw Error('TOO_MANY_CATEGORIES');}
-  await this.rows();this.patch({categories,ready:true});
- });}
+ private async categories(){const categories:Category[]=[];for(let page=1;page<=100;page++){const response=await this.transport<List<Category>>(`${this.root.replace(/\/products$/,'/categories')}?page=${page}&limit=100`);categories.push(...response.items);if(page*100>=response.total)break;if(page===100)throw Error('TOO_MANY_CATEGORIES');}return categories;}
+ refreshCategories(){return this.run(async()=>{const categories=await this.categories();this.patch({categories});});}
+ load(){return this.run(async()=>{this.patch({ready:false,rows:[],categories:[]});this.show(this.read());const categories=await this.categories();await this.rows();this.patch({categories,ready:true});});}
  add(){if(this.state.busy||this.state.locked||!this.state.ready||this.state.rows.length>=50)return;this.state.rows.push({id:'',version:0,category_id:this.state.categories.find(x=>x.status==='ACTIVE')?.id||'',name:'',description:'',unit:'',spec:'',reference_price:'',status:'DRAFT',supply_status:'CONFIRM',sort_order:'0',selected:true,rowKey:this.makeKey()});}
  changePage(page:number){if(this.state.busy||this.state.locked||page<1||!Number.isSafeInteger(page))return Promise.resolve();this.state.page=page;return this.load();}
  submit(){return this.run(async()=>{if(!this.state.ready)throw Error('TENANT_NOT_READY');if(this.read())throw Error('BATCH_ALREADY_PENDING');const selected=this.state.rows.filter(x=>x.selected);if(!selected.length||selected.length>50)throw Error('SELECT_ONE_TO_FIFTY_ROWS');

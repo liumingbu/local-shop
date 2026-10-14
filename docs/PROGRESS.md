@@ -4,8 +4,8 @@
 
 ## 当前基准
 
-- PR #1–#20已合并并fetch核对；本阶段起点main：640148dd84d6241eea399ccfc5552d0d324fc001。
-- 当前工作包A分支feat/workbench-interaction-foundation，PR #21；代码916b7554086fcf345900db62cd99f36b32f104ec已推送并核对树；独立检出回归已通过，报告提交后按授权合并。下方旧轮次保留各自历史时间与范围。
+- PR #1–#21已合并并fetch核对；当前起点main：ef174b00fee96e6a5546acf04d4207048edf3785。
+- 当前工作包B分支feat/merchant-daily-loop。A代码916b7554独立检出通过，PR21已合并且树核验；B正在完成最终回归与提交。下方旧轮次仅代表各自时间范围。
 - 用户已授权Dot自行测试审查后合并常规PR，阶段性回报。生产、凭据/权限、费用和环境变更仍需确认。
 - 仅Dot自身云电脑；未使用Mac、Codex任务、Actions、Codespaces或其他云。未部署。
 - GitHub API提交/PR/合并可用且fetch树核验；终端直接push认证未建立，不能混称终端push通过。
@@ -53,10 +53,10 @@
 | F02店铺资料 | records Store、Logo关联 | Web简版店名；原生shopsettings完整字段 | m3b/m4g、真实HTTP/图片 | Web字段入口与保存反馈不足；长名称/失效状态→A |
 | F03商品分类多图 | catalog/media、Category/Product/Media | 原生catalog/productedit；Web批量表 | m3a/m3b/m4g/web-catalog | Web大表移动端可操作性/空分类提示，页面事件覆盖→A；不重做API |
 | F04询货 | customers/inquiries/replies | 顾客compose、商户merchantdetail | m4a/m4f、客户/商户HTTP | 原生真实交互未验收；Web无完整询货处理入口→A/B |
-| F05顾客登记 | CustomerReservation、归属/快照/私图 | compose/records/detail | m4a–m4e、私图HTTP | 联系/配送信息字段和入口需补；日期备注不猜截止→B |
-| F06老板代记 | NewReservation、来源/小数/幂等 | 原生merchant；Web快速代记 | m2/m4f、真实HTTP闭环 | Web草稿刷新丢失、未确认请求持久化不足；联系方式→A/B |
+| F05顾客登记 | CustomerReservation、归属/快照/私图 | compose/records/detail | m4a–m4e、私图HTTP | B已补联系/配送字段与顾客/商户入口、本人隐私隔离测试；正式身份→C，真机另验 |
+| F06老板代记 | NewReservation、来源/小数/幂等 | 原生merchant；Web快速代记 | m2/m4f、真实HTTP闭环 | A已补草稿/原请求恢复；B补联系/配送/明确期望时间及复制核对；原生真机待验 |
 | F07确认交付 | records/confirmations/cancellations、版本事件 | 原生merchantdetail完整；Web仅按钮+事件 | m4c/m4d/m4f、PG并发/回滚 | Web缺确认候选/取消意向入口；需明确二次确认与冲突反馈→A/B |
-| F08待办历史 | 当前只按状态分页；逐状态查询计数 | merchant列表/计数；Web状态筛选 | m2/m4f有限逻辑 | 日期/交付方式/逾期、搜索业务号、复制新需求、刷新计数均缺完整闭环→B/D |
+| F08待办历史 | 状态/日期/方式/搜索分页、一次SQL聚合统计 | merchant列表/计数；Web状态筛选 | m2/m4f有限逻辑 | B已补日期/方式/逾期、文字/LS号搜索、新草稿复制与单次聚合计数；D补规模基准/交付；真机待验 |
 | F09分享 | 原生store/product分享参数、scene路由 | 原生分享/最近浏览；首页UUID为开发入口 | m4e路由/模拟wx | UUID输入须限开发模式→A；真实码/分享/配置边界→C，真测待AppID |
 | F10平台 | platform邀请/接受/审批/启停/审计 | WebPlatformPanel、原生invitations | platform/platform-ui，真实HTTP | 正式平台身份→C；审批/启停DOM交互与空态→A |
 | F11保障 | 错误/幂等/上传DB限时/恢复/候选部署 | 开发错误提示、隐私说明、脚本 | bounded-io/recovery/linux-delivery | 真实页面/正式身份、参考规模性能、统一启动诊断/旧数据升级→A/C/D；systemd/微信另验 |
@@ -66,3 +66,7 @@
 ## 工作包A现有页面交互（2026-10-14）
 
 开发入口「记单与待办」与「商品维护」：持久化代记/原提交恢复、详情与明确确认、完整店铺字段、分类创建、退出与隐藏时私有内容清理。执行与失败修复记录见[evidence/workbench-ui/RESULT_20261014.md](evidence/workbench-ui/RESULT_20261014.md)。Vue/jsdom补充事件验证不等同真实浏览器；浏览器唯一迭代BLOCKED且已停止。后续B/C/D继续；正式身份不能等待AppID才编码。
+
+## 工作包B：日常待办与联系信息
+
+0010迁移、单店日期与交付方式筛选、仅确认精确截止的逾期、历史文字/业务号搜索、复制新草稿、联系/配送字段、聚合计数已实现。Web与原生入口见ACCEPTANCE；Web额外补取消意向处理，分类创建保留商品编辑。正式身份及性能/启动升级C/D仍未完成。真实浏览器不重试，jsdom与模拟wx均不替代微信真机。证据将归档evidence/daily-workbench。

@@ -75,6 +75,7 @@ export interface Cancellation {
     response_note: string;
 }
 export interface RecordData {
+    business_number?:string;contact_name?:string;contact_phone?:string;delivery_address?:string;confirmed_due_at?:string|null;is_overdue?:boolean;
     id: string;
     tenant_id: string;
     raw_text: string;
@@ -109,6 +110,7 @@ export interface RecordData {
     }[];
 }
 export interface Draft {
+    contact_name?:string;contact_phone?:string;delivery_address?:string;copy_review_required?:boolean;
     raw_text: string;
     customer_label: string;
     items: Item[];

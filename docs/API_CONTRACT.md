@@ -177,3 +177,10 @@ Web批量面板复用单商品POST/PUT，不是新的跨商品原子接口。最
 
 上传图片请求默认总接收15秒，超时HTTP408 `IMAGE_UPLOAD_TIMEOUT`，断开可响应时HTTP400 `IMAGE_UPLOAD_INTERRUPTED`；不产生成功快照，允许原键原内容重试。显式长度非法400；声明或实际超过2MiB为413；不能以小Content-Length绕过实际分片累计限制。
 数据库超时仍统一503 `DATABASE_UNAVAILABLE`，错误不返回SQL/凭据。语句/锁/池等待分别有配置上限；503是失败或结果需核实，不自动更换写请求幂等键。
+
+## 日常工作台（0010）
+
+GET /merchant/tenants/{tenant}/reservations保留状态/分页，增加day=today|tomorrow|date|none、on_date=YYYY-MM-DD、method=PICKUP|DELIVERY、overdue=true、q最多100字。日期按Asia/Shanghai，优先已确认承诺，其次顾客明确时间；不解析自然语言。q仅本店称呼/原文/完整LS业务号，通配符按字面匹配，分页最多100。
+GET /merchant/tenants/{tenant}/workbench-summary用一次SQL同快照统计状态、待回复、取消意向和逾期；as_of是统计时间，不代表微信通知。
+GET /merchant/tenants/{tenant}/reservations/{id}/copy-draft只读且须本店鉴权，不创建记录；不复制ID/版本/状态/幂等键/私图/内部备注/账号归属/承诺。返回可编辑草稿与商品核对警告；保存仍走创建接口和商品现状校验。
+创建增加contact_name/contact_phone/delivery_address，均限长、非身份凭据。仅本店商户和本人DTO可读，公开DTO不输出。暂不供应商品拒绝新登记，旧快照保留。

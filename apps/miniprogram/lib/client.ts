@@ -103,7 +103,7 @@ export function errorText(error: unknown): string {
         INVALID_SORT_ORDER: '排序须为0至100000的整数', INVALID_REFERENCE_PRICE: '参考价格须非负且最多2位小数；也可留空', SAVE_PRODUCT_FIRST: '请先保存商品并核对当前版本', TOO_MANY_IMAGES: '每件商品最多8张图片', OPERATION_CANCELLED: '页面已离开，本次上传未继续发送', CATEGORY_LIMIT_REQUIRES_WEB: '分类过多，请改用后台维护',
         NO_MERCHANT_MEMBERSHIP: '当前账号没有商户成员资格', OWNER_REQUIRED: '只有店主可以维护店铺资料', TENANT_NOT_FOUND: '该店铺不在当前账号授权范围', DATE_REQUIRED: '设置时刻前请先选择日期',
         OTHER_PRODUCT_DRAFT_EXISTS: '本店已有另一商品的询货草稿，请先处理或明确放弃原草稿',
-        PRIVACY_CONSENT_REQUIRED: '请先阅读并确认开发隐私说明', INVALID_QUANTITY: '数量须大于0，最多3位小数',
+        PRIVACY_CONSENT_REQUIRED: '请先阅读并确认开发隐私说明', EXISTING_DRAFT:'已有未保存草稿或待确认请求，请先处理后再复制。',COPY_REVIEW_REQUIRED:'请先核对复制的新需求。',PRODUCT_UNAVAILABLE:'商品暂不供应，请重新选货或联系店主。',INVALID_QUANTITY: '数量须大于0，最多3位小数',
         EMPTY_DRAFT: '请填写需求、选择商品或上传图片', IMAGE_OVER_2M: '压缩后图片仍超过2MiB，请换用较小图片',
         IMAGE_SELECTION_CANCELLED: '已取消选择图片，草稿保持不变',
         API_NOT_CONFIGURED: '尚未配置本项目API，当前不能连接服务', LOGIN_REQUIRED: '请先在入口选择受控开发身份',

@@ -3,10 +3,12 @@ from datetime import datetime
 from decimal import Decimal
 
 from sqlalchemy import (
+    BigInteger,
     CheckConstraint,
     DateTime,
     ForeignKey,
     ForeignKeyConstraint,
+    Identity,
     Index,
     Integer,
     Numeric,
@@ -138,6 +140,13 @@ class Reservation(Base):
     )
     source_inquiry_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), nullable=True)
     expected_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    business_number: Mapped[int] = mapped_column(BigInteger, Identity(), unique=True)
+    contact_name: Mapped[str] = mapped_column(String(100), default="", server_default="")
+    contact_phone: Mapped[str] = mapped_column(String(50), default="", server_default="")
+    delivery_address: Mapped[str] = mapped_column(String(500), default="", server_default="")
+    confirmed_due_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     privacy_version: Mapped[str | None] = mapped_column(String(40), nullable=True)
     confirmed_text: Mapped[str] = mapped_column(Text, default="")
     source: Mapped[str] = mapped_column(String(30))
@@ -173,6 +182,9 @@ class Reservation(Base):
             "'OUT_FOR_DELIVERY','COMPLETED','CANCELLED')",
             name="ck_reservation_status",
         ),
+        Index("ix_reservation_tenant_due", "tenant_id", "confirmed_due_at"),
+        Index("ix_reservation_tenant_expected", "tenant_id", "expected_at"),
+        Index("ix_reservation_tenant_number", "tenant_id", "business_number"),
         Index("ix_reservation_tenant_status_created", "tenant_id", "status", "created_at"),
     )
 

@@ -56,7 +56,7 @@ Page({
         if (this.data.busy || this.data.locked || !this.data.draft)
             return;
         const field = String(event.currentTarget.dataset.field);
-        if (!['raw_text', 'customer_label', 'expected_time_note'].includes(field))
+        if (!['raw_text', 'customer_label', 'expected_time_note', 'contact_name','contact_phone','delivery_address'].includes(field))
             return;
         this.persist({ ...this.data.draft, [field]: event.detail.value });
     },
@@ -140,6 +140,7 @@ Page({
             }
             else {
                 body = { ...body, customer_label: draft.customer_label, items: draft.items, fulfillment_method: draft.fulfillment_method,
+                    contact_name:draft.contact_name||'',contact_phone:draft.contact_phone||'',delivery_address:draft.delivery_address||'',
                     expected_time_note: [draft.expected_date && !draft.expected_clock ? draft.expected_date : '', draft.expected_time_note].filter(Boolean).join(' ') };
                 if (draft.expected_date && draft.expected_clock) {
                     if (!/^\d{4}-\d{2}-\d{2}$/.test(draft.expected_date) || !/^\d{2}:\d{2}$/.test(draft.expected_clock))

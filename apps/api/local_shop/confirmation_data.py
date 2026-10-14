@@ -47,3 +47,5 @@ def acknowledge_latest(session, row, uid, revision_id, customer_agreed):
     latest.confirmed_version = row.version + 1
     latest.confirmed_by = uid
     latest.confirmed_at = datetime.now(UTC)
+    value = latest.details.get("fulfillment_at")
+    row.confirmed_due_at = datetime.fromisoformat(value) if value else None

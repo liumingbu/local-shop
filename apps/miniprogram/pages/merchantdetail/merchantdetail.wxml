@@ -1,7 +1,7 @@
 <view class="page"><view class="eyebrow">商户 · 处理详情</view><view class="title">{{label || '需求与询货'}}</view>
 <view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
 <view class="notice" wx:if="{{locked}}">原操作结果未确认，其他操作已锁定。</view><button wx:if="{{locked}}" bindtap="retry" disabled="{{busy}}">重试原操作（同一请求）</button>
-<block wx:if="{{row}}"><view class="card"><view class="subtitle">原始内容 · 保留不覆盖</view><view>{{row.customer_label || '顾客询货'}} · {{time}}</view><view class="pre">{{row.raw_text}}</view>
+<block wx:if="{{row}}"><view class="card"><view>{{row.business_number}}</view><view wx:if="{{row.contact_name || row.contact_phone}}">联系人：{{row.contact_name}} {{row.contact_phone}}</view><view wx:if="{{row.delivery_address}}">配送地址：{{row.delivery_address}}</view><button wx:if="{{kind==='reservation'}}" bindtap="copy" disabled="{{busy || locked}}">复制为新需求（需重新核对）</button><view class="subtitle">原始内容 · 保留不覆盖</view><view>{{row.customer_label || '顾客询货'}} · {{time}}</view><view class="pre">{{row.raw_text}}</view>
 <view wx:for="{{row.items}}" wx:key="index">{{item.name}} {{item.quantity}} {{item.unit}} {{item.spec}}</view>
 <view wx:if="{{row.product_snapshot}}">询货商品：{{row.product_snapshot.name}} {{row.product_snapshot.spec}}</view>
 <view wx:if="{{kind==='reservation'}}">交付：{{row.fulfillment_method==='DELIVERY'?'配送':'自提'}} · 原期望：{{row.expected_time_note || expected}}</view>

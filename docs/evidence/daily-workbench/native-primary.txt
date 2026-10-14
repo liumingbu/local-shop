@@ -1,0 +1,76 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:native
+> npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 41 native assets; this is NOT a WeChat runtime test.
+✔ catalog numeric input permits empty reference but rejects fake quantity/price normalization (5.511554ms)
+✔ category picker loads all pages instead of silently truncating after first 100 (2.344646ms)
+✔ explicit unauthorized catalog entry cannot load or create categories (8.231058ms)
+✔ category unknown creation survives hide/show and replays original name and key (14.433708ms)
+✔ category stale update is locked until refreshed, with no automatic overwrite (6.418694ms)
+✔ product create retries immutable request; blank reference remains null and status starts draft (13.454438ms)
+✔ post-response storage failure retains create lock instead of allowing a second product (5.806883ms)
+✔ image ordering/removal updates association only and advances the product version (5.921394ms)
+✔ image upload limit and uncertain ordering both block unsafe continuation (6.048302ms)
+✔ switching identity while picker is open prevents file upload under the new account (0.849923ms)
+✔ leaving product image picker prevents upload after page dismissal (5.79085ms)
+✔ logo uploads with LOGO purpose then requires explicit versioned store save (7.704595ms)
+✔ old session completion cannot clear a newer session busy state (0.490029ms)
+✔ development login is disabled by configuration and always refused for trial/release (4.410668ms)
+✔ origin and path are fail-closed; remote plaintext, userinfo and arbitrary URLs refused (0.985095ms)
+✔ invalid share entry does not fall back to a recent store (1.37873ms)
+✔ login keeps credentials in memory; authenticated identity comes from server me response (0.7197ms)
+✔ late private response after account switch is discarded (6.774221ms)
+✔ drafts are isolated by user and store, and units/specifications never merge (1.427993ms)
+✔ storage failure prevents sending an unrepeatable business request (0.557679ms)
+✔ uncertain retry uses immutable original payload/key and survives success before draft acknowledgement (1.14361ms)
+✔ validation rejection releases draft, but expired login preserves pending operation (0.662414ms)
+✔ busy and view generation protect double clicks and late results after hide/show (0.61155ms)
+✔ decimal validation and explicit UTC+08 display do not invent quantities or dates (0.708423ms)
+✔ native page registrations, assets and event handlers exist (static, not WXML rendering) (11.87183ms)
+✔ compose sends only this store draft and clears it only after confirmed success (6.890129ms)
+✔ compose double-click plus network retry does not replace the original payload (5.733214ms)
+✔ leaving compose before response keeps the original pending request and does not navigate later (6.577044ms)
+✔ explicit date+time becomes a timezone-aware value; date-only stays a note (5.847824ms)
+✔ private detail rejects store mismatch and clears private content on hide (6.765383ms)
+✔ private images send authentication as a header, never a query token (0.588435ms)
+✔ image picker cancellation sends no upload and preserves draft (0.565591ms)
+✔ a different product entry does not silently mix an existing inquiry draft (0.700541ms)
+✔ leaving the login page interrupts the pending identity switch (0.512082ms)
+✔ date-only input remains a note and is not silently assigned midnight (6.169598ms)
+✔ source default has no API origin or enabled fake login (0.314798ms)
+✔ manual UUID entry is development-only; valid recent/shared route is retained (0.338263ms)
+✔ invitation response uses server-listed invitation and current account, not supplied owner ID (13.459868ms)
+✔ invitation unknown result can only replay original response after reopening (13.060021ms)
+✔ switching invitation account clears private rows and pending state from previous user (11.858527ms)
+✔ only approved invitation with server tenant ID opens its merchant workspace (1.243249ms)
+✔ merchant tenant selection never falls back from an unauthorized explicit tenant (4.461173ms)
+✔ merchant workbench invalid route remains invalid onShow and does not issue requests (2.897198ms)
+✔ customer with no merchant membership cannot load workbench records (7.690804ms)
+✔ manual record requires no catalog, preserves raw text and retries original uncertain operation (8.678603ms)
+✔ leaving workbench during membership lookup does not restore private draft (2.824289ms)
+✔ merchant transitions reflect fulfillment method and pending cancellation gate (0.510088ms)
+✔ merchant detail rejects route mismatch and hides private payload (6.38314ms)
+✔ confirmation requires explicit latest agreement and sends only allowed transition (6.747832ms)
+✔ unknown detail write locks other operations and retries original key after reload failure (6.080931ms)
+✔ proposal copies free snapshots without live product reference and retains fractional units (6.663767ms)
+✔ inquiry reply defaults private and never implicitly converts (6.081021ms)
+✔ shop settings require owner and do not send an unauthorized write (7.285041ms)
+✔ new store uses version zero, existing logo is preserved, unknown PUT requires refresh (7.147808ms)
+✔ refresh clears previous candidate consent; hiding clears private unsubmitted edits (6.47727ms)
+✔ daily queue uses one aggregate count request and passes bounded shop-only filters (6.212707ms)
+✔ copy makes a separate guarded draft with fractional units and no automatic post (12.341469ms)
+ℹ tests 57
+ℹ suites 0
+ℹ pass 57
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 195.436195
