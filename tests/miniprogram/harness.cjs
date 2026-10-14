@@ -35,7 +35,7 @@ function setup(){
   };
   const client=require(path.join(root,'lib/client.js'));
   const {config}=require(path.join(root,'config.js'));
-  client.logout();config.apiOrigin='http://127.0.0.1:8000';config.enableDevelopmentLogin=true;
+  client.logout();config.apiOrigin='http://127.0.0.1:8000';config.enableDevelopmentLogin=true;config.enableWechatLogin=false;
   return {state,client,config,drafts:require(path.join(root,'lib/drafts.js')),ui:require(path.join(root,'lib/ui.js'))};
 }
 function page(name){

@@ -152,6 +152,9 @@ def test_production_has_no_demo_routes(values):
             values
             | {
                 "app_env": "production",
+                "wechat_login_enabled": True,
+                "wechat_appid": "wx0000000000000000",
+                "wechat_app_secret": "SYNTHETIC-TEST-ONLY",
                 "database_url": "postgresql+psycopg://synthetic:placeholder@localhost/placeholder",
             }
         )

@@ -4,8 +4,8 @@
 
 ## 当前基准
 
-- PR #1–#21已合并并fetch核对；当前起点main：ef174b00fee96e6a5546acf04d4207048edf3785。
-- 当前工作包B分支feat/merchant-daily-loop。A代码916b7554独立检出通过，PR21已合并且树核验；B代码a574b0fa独立检出全回归/恢复通过，PR22报告提交后合并。下方旧轮次仅代表各自时间范围。
+- PR #1–#22已合并并fetch核对；当前起点main：4264c4789407c29e59557802db108c32470342fd。
+- 当前工作包C分支feat/verified-identity-sessions。B代码a574b0fa独立检出通过，PR22已合并；C正式身份/会话/工作台确认入口在合成PG完成专项验证，完整复核进行中。
 - 用户已授权Dot自行测试审查后合并常规PR，阶段性回报。生产、凭据/权限、费用和环境变更仍需确认。
 - 仅Dot自身云电脑；未使用Mac、Codex任务、Actions、Codespaces或其他云。未部署。
 - GitHub API提交/PR/合并可用且fetch树核验；终端直接push认证未建立，不能混称终端push通过。
@@ -49,7 +49,7 @@
 
 | 需求 | 已有API/模型 | 现有操作入口 | 已执行证据（历史） | 当前缺口与安排 |
 |---|---|---|---|---|
-| F01租户权限 | access/identity、Tenant/Member、平台启停 | 开发Web登录、原生入口/邀请/选店 | m2、platform、native HTTP：PG隔离/禁用 | 正式微信/管理身份未实现→C；真实页面未验收→A |
+| F01租户权限 | access/identity、Tenant/Member、平台启停 | 开发Web登录、原生入口/邀请/选店 | m2、platform、native HTTP：PG隔离/禁用 | C已实现正式身份/短时会话/工作台确认登录，外部HTTP替身+真实PG专项验证；真实微信/页面另验 |
 | F02店铺资料 | records Store、Logo关联 | Web简版店名；原生shopsettings完整字段 | m3b/m4g、真实HTTP/图片 | Web字段入口与保存反馈不足；长名称/失效状态→A |
 | F03商品分类多图 | catalog/media、Category/Product/Media | 原生catalog/productedit；Web批量表 | m3a/m3b/m4g/web-catalog | Web大表移动端可操作性/空分类提示，页面事件覆盖→A；不重做API |
 | F04询货 | customers/inquiries/replies | 顾客compose、商户merchantdetail | m4a/m4f、客户/商户HTTP | 原生真实交互未验收；Web无完整询货处理入口→A/B |
@@ -58,7 +58,7 @@
 | F07确认交付 | records/confirmations/cancellations、版本事件 | 原生merchantdetail完整；Web仅按钮+事件 | m4c/m4d/m4f、PG并发/回滚 | Web缺确认候选/取消意向入口；需明确二次确认与冲突反馈→A/B |
 | F08待办历史 | 状态/日期/方式/搜索分页、一次SQL聚合统计 | merchant列表/计数；Web状态筛选 | m2/m4f有限逻辑 | B已补日期/方式/逾期、文字/LS号搜索、新草稿复制与单次聚合计数；D补规模基准/交付；真机待验 |
 | F09分享 | 原生store/product分享参数、scene路由 | 原生分享/最近浏览；首页UUID为开发入口 | m4e路由/模拟wx | UUID输入须限开发模式→A；真实码/分享/配置边界→C，真测待AppID |
-| F10平台 | platform邀请/接受/审批/启停/审计 | WebPlatformPanel、原生invitations | platform/platform-ui，真实HTTP | 正式平台身份→C；审批/启停DOM交互与空态→A |
+| F10平台 | platform邀请/接受/审批/启停/审计 | WebPlatformPanel、原生invitations | platform/platform-ui，真实HTTP | C补非演示登录与U-邀请账号码；A已测Vue审核/启停事件；首个真实管理员授予和真机另验 |
 | F11保障 | 错误/幂等/上传DB限时/恢复/候选部署 | 开发错误提示、隐私说明、脚本 | bounded-io/recovery/linux-delivery | 真实页面/正式身份、参考规模性能、统一启动诊断/旧数据升级→A/C/D；systemd/微信另验 |
 
 浏览器本轮有限排障已结束：启动被Unix socket权限拒绝，未放宽sandbox或API认证，见evidence/browser-20261014。之后不重复尝试。第一改进在既有Web工作台实现持久化代记与正确上下文隔离、清晰模式/导航/错误反馈，补实际Vue组件事件测试；不新增另一套系统。
@@ -70,3 +70,7 @@
 ## 工作包B：日常待办与联系信息
 
 0010迁移、单店日期与交付方式筛选、仅确认精确截止的逾期、历史文字/业务号搜索、复制新草稿、联系/配送字段、聚合计数已实现。Web与原生入口见ACCEPTANCE；Web额外补取消意向处理，分类创建保留商品编辑。正式身份及性能/启动升级C/D仍未完成。真实浏览器不重试，jsdom与模拟wx均不替代微信真机。证据将归档evidence/daily-workbench。
+
+## 工作包C正式身份代码
+
+服务端固定HTTPS协议、AppID+openid映射、一次性登录码、仅摘要可撤销会话、禁用/过期/角色和租户检查已实现；原生wx.login与Web本人明确确认登录入口已接线，U-账号码替代正式邀请UUID输入。只有外部微信HTTPS响应模拟，真实PG与HTTP/会话/权限运行。未使用真实AppID，真实二维码/消息/隐私保留未配置；生产门禁仍拒绝外部未验收状态。首个真实管理员的实际权限授予另确认。D性能/启动升级继续。

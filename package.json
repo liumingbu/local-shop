@@ -15,7 +15,8 @@
     "test:native": "npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs",
     "test:admin": "tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs",
     "test:dom": "vitest run --config vitest.config.mts",
-    "test:dom:live": "vitest run --config vitest.live.config.mts"
+    "test:dom:live": "vitest run --config vitest.live.config.mts",
+    "test:dom:formal": "vitest run --config vitest.formal.config.mts"
   },
   "devDependencies": {
     "@playwright/test": "1.64.0",

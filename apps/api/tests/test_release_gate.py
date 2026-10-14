@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[3]
 @pytest.mark.parametrize(
     "patch,reason",
     [
-        ({}, "BLOCKED_REAL_AUTH"),
+        ({}, "BLOCKED_REAL_WECHAT_ACCEPTANCE"),
         ({"APP_ENV": "test"}, "BLOCKED_ENVIRONMENT"),
         ({"DEV_AUTH_ENABLED": "true"}, "BLOCKED_CONFIGURATION"),
         ({"API_HOST": "0.0.0.0"}, "BLOCKED_BINDING"),
@@ -25,6 +25,9 @@ def test_release_gate_never_blesses_current_development_build(tmp_path, patch, r
     env = os.environ | {
         "APP_ENV": "production",
         "DEV_AUTH_ENABLED": "false",
+        "WECHAT_LOGIN_ENABLED": "true",
+        "WECHAT_APPID": "wx0000000000000000",
+        "WECHAT_APP_SECRET": "SYNTHETIC-PREFLIGHT-ONLY",
         "API_HOST": "127.0.0.1",
         "APP_SECRET_KEY": key,
         "DATABASE_URL": "postgresql+psycopg://synthetic:private-placeholder@localhost/unused",

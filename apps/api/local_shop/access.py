@@ -9,6 +9,7 @@ from pydantic import BaseModel, Field, field_validator
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from .formal_auth import resolve
 from .identity import DEMO_USERS, read_demo_token, require_local
 from .models import Tenant, TenantMember, User
 
@@ -39,6 +40,9 @@ def build_access(settings, engine):
                 raise
 
     def actor(request: Request, session: Session = Depends(database, scope="function")):
+        bearer = request.headers.get("Authorization", "")
+        if bearer.startswith("Bearer ls1_"):
+            return resolve(session, settings, bearer[7:])
         if not settings.dev_auth_enabled:
             raise HTTPException(401, "AUTHENTICATION_REQUIRED")
         require_local(request)

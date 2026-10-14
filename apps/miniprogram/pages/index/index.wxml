@@ -14,9 +14,11 @@
   <view class="card"><view>身份：{{identity}}</view>
     <block wx:if="{{devAllowed}}"><picker range="{{aliases}}" value="{{aliasIndex}}" bindchange="chooseIdentity"><view class="field">开发身份：{{aliases[aliasIndex]}}</view></picker>
       <button bindtap="signIn" disabled="{{busy}}">进入受控开发身份</button></block>
-    <view class="muted" wx:else>尚未配置真实微信登录。浏览店铺无需登录。</view>
+    <block wx:else><button bindtap="wechatLogin" disabled="{{busy}}">微信登录</button><view class="muted">浏览店铺无需登录；本项目接入未配置时会明确提示，不使用演示身份。</view></block>
     <button bindtap="signOut" disabled="{{busy}}">退出身份</button>
     <view class="muted">切换身份不会带入其他人的草稿、私图或历史。登录令牌仅保存在内存。</view>
   </view>
+  <view class="card" wx:if="{{!devAllowed && identity!=='未登录'}}"><view class="subtitle">确认自己的Web工作台登录</view><view class="notice">只输入自己正在打开的工作台所显示的确认码。不要代他人确认，确认后该网页可使用你的已有权限；不会新增管理员权限。</view><input value="{{approvalCode}}" bindinput="approvalInput" maxlength="12" placeholder="12位工作台确认码" disabled="{{busy}}"/><checkbox-group bindchange="approvalCheck"><label><checkbox value="confirmed" checked="{{approvalConfirmed}}" disabled="{{busy}}"/>这是我本人正在发起的工作台登录</label></checkbox-group><button bindtap="approveBrowser" disabled="{{busy || !approvalConfirmed}}">明确确认这次登录</button></view>
+  <button bindtap="capabilities" disabled="{{busy}}">查看本项目接入状态</button><view class="notice" wx:if="{{capabilities}}">{{capabilities}}</view>
   <button bindtap="invitations" disabled="{{busy}}">查看本人开店邀请／账号编号</button><button bindtap="workbench" disabled="{{busy}}">进入商户工作台</button>
 </view>

@@ -1,5 +1,5 @@
 <view class="page"><view class="eyebrow">本人 · 开店邀请</view><view class="title">受邀加入试用</view><view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
-<view class="card" wx:if="{{owner}}"><view>当前已验证账号编号</view><text selectable="true">{{owner}}</text><view class="muted">平台通过此账号编号定向邀请。不要发送登录令牌或密钥；不能凭姓名、电话认领邀请。</view></view>
+<view class="card" wx:if="{{owner}}"><view>当前已验证账号编号</view><text selectable="true">{{accountCode}}</text><view class="muted">平台通过此账号编号定向邀请。不要发送登录令牌或密钥；不能凭姓名、电话认领邀请。</view></view>
 <view class="notice" wx:if="{{locked}}">上次回应结果未确认，请重试原请求。</view><button wx:if="{{locked}}" bindtap="retry" disabled="{{busy}}">重试原回应</button>
 <view class="card" wx:for="{{items}}" wx:key="id"><view class="subtitle">{{item.proposed_name}}</view><view>{{item.label}}</view><view class="muted">{{item.time}}</view>
 <view class="actions" wx:if="{{item.status==='INVITED'}}"><button data-id="{{item.id}}" data-decision="ACCEPTED" bindtap="respond" disabled="{{busy || locked}}">本人接受邀请，等待审核</button><button data-id="{{item.id}}" data-decision="DECLINED" bindtap="respond" disabled="{{busy || locked}}">谢绝邀请</button></view><button wx:if="{{item.status==='APPROVED'}}" data-id="{{item.id}}" bindtap="enter">进入受邀店工作台</button></view>

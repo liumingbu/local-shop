@@ -332,7 +332,7 @@ def run():
                             "DEV_AUTH_ENABLED": "false",
                             "DATABASE_URL": "postgresql+psycopg://synthetic:placeholder@127.0.0.1/placeholder",
                         },
-                        "BLOCKED_REAL_AUTH",
+                        "BLOCKED_CONFIGURATION",
                     ),
                 ]:
                     check = subprocess.run(

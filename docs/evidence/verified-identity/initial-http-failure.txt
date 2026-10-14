@@ -1,0 +1,96 @@
+waiting for server to start.... done
+server started
+PASS REAL TCP incomplete image body returns 408 within configured one-second receipt deadline; same-key retry/replay and database readiness succeed
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:admin
+> tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs
+
+✔ batch validates all rows before any write and preserves decimals and nullable price (2.195254ms)
+✔ batch stops after known version conflict and requires explicit discard without rollback (0.99553ms)
+✔ unknown response resumes original immutable command and remaining commands after reload (1.432039ms)
+✔ batch storage failure prevents writes; acknowledgement persistence failure replays same key (0.534675ms)
+✔ authentication and forbidden results keep original batch pending (0.996761ms)
+✔ persisted batch is scoped to verified identity and tenant; cross-tenant path is rejected (0.640913ms)
+✔ concurrent submit emits one batch and unmount ignores late response while retaining recovery (0.34952ms)
+✔ completed batch is not resent after a read refresh failure (1.17696ms)
+✔ platform role is read from server; a merchant cannot load control data (1.74226ms)
+✔ unknown command retains immutable payload and key across reconstructed controller (1.403306ms)
+✔ storage failure happens before any write is sent (0.421397ms)
+✔ version rejection unlocks command; authentication failures retain it for same-user login (0.555656ms)
+✔ invalid or external stored command is never replayed with credentials (0.314167ms)
+✔ pending storage is isolated by verified account (0.583958ms)
+✔ unmounted panel ignores late success and retains unknown operation for recovery (6.539008ms)
+✔ saved command remains locked if post-write refresh fails (0.63889ms)
+✔ review and tenant status carry displayed versions and explicit reason (0.463008ms)
+✔ web request refuses external paths and forbids automatic redirect forwarding (0.838586ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 101.088179
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 41 native assets; this is NOT a WeChat runtime test.
+PASS compiled native customer logic + REAL HTTP/PG: store/product/decimal draft/private image/submit/history/cancel/tenant isolation/inquiry
+SIMULATED wx transport, picker/compression and page lifecycle; NOT WeChat runtime, WXML, sharing or real identity validation.
+PASS compiled native merchant logic + REAL HTTP/PG: store version update/manual phone record/decimal confirmation/explicit agreement/prepare/ready/complete/history/tenant read+write denial/inquiry reply+convert/cancel decision
+SIMULATED wx transport and page lifecycle; NOT WeChat runtime, WXML, real identity, device or sharing validation.
+PASS native catalog logic + REAL HTTP/PG: category create/archive/restore, product draft/publish/archive, null reference price, two images/order/unlink/public access, stale version rejection, Logo upload/remove, cross-tenant product/media denial
+SIMULATED wx media picker/compression and page lifecycle; WXML and real WeChat device remain NOT_RUN.
+PASS compiled Web platform controller + native invitation page with REAL HTTP/PG: invite/recipient isolation/explicit accept/review/default private store/pause/resume/audit
+Node controller and SIMULATED wx page lifecycle only; browser DOM and WXML/device remain NOT_RUN.
+PASS compiled Web catalog controller + REAL HTTP/PG: sequential create/update, lost POST/PUT acknowledgement replay, nullable/decimal reference price, version conflict stops remaining rows, partial results, tenant read/write isolation.
+Browser DOM rendering NOT_RUN; synthetic response loss injected only after real HTTP response.
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:dom:live
+> vitest run --config vitest.live.config.mts
+
+
+ RUN  v5.0.4 <DOT_WORKSPACE>/local-shop-foundation
+
+ ❯ tests/dom-live/workbench.test.ts (5 tests | 1 failed) 2017ms
+   × Vue catalog + real PG: create category, edit one product and verify persisted fields 166ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/dom-live/workbench.test.ts > Vue catalog + real PG: create category, edit one product and verify persisted fields
+TypeError: Cannot read properties of undefined (reading 'attributes')
+ ❯ tests/dom-live/workbench.test.ts:47:292
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  17:14:59
+   Duration  3.03s (tests 70%, environment 19%, transform 9%, import 3%)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+waiting for server to shut down.... done
+server stopped
+Traceback (most recent call last):
+  File "<DOT_WORKSPACE>/local-shop-foundation/scripts/e2e_with_postgres.py", line 209, in <module>
+    subprocess.run(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['npm', 'run', 'test:dom:live']' returned non-zero exit status 1.

@@ -6,10 +6,11 @@ export type Method = 'GET' | 'POST' | 'PUT';
 let token = '';
 let userId = '';
 let identity = '';
+let accountCode = '';
 let generation = 0;
 let sequence = 0;
-export function auth() { return { userId, identity, generation, authenticated: !!token && !!userId }; }
-export function logout() { generation++; token = ''; userId = ''; identity = ''; }
+export function auth() { return { userId, identity, accountCode, generation, authenticated: !!token && !!userId }; }
+export function logout() { generation++; token = ''; userId = ''; identity = ''; accountCode=''; }
 export function validId(value: unknown): value is string {
     return typeof value === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value);
 }
@@ -61,8 +62,10 @@ export function request<T>(path: string, method: Method = 'GET', body?: unknown,
                 }
                 if (result.statusCode >= 200 && result.statusCode < 300)
                     resolve(result.data as T);
-                else
+                else {
+                    if(result.statusCode===401&&token.startsWith('ls1_'))logout();
                     reject(new ApiError(String(result.data?.code || `HTTP_${result.statusCode}`), result.statusCode));
+                }
             },
             fail() { reject(new ApiError(generation === current ? 'NETWORK_UNCERTAIN' : 'SESSION_CHANGED')); },
         });
@@ -94,6 +97,16 @@ export async function login(alias: string): Promise<void> {
         throw e;
     }
 }
+export async function wechatSignIn():Promise<void>{
+    if(!config.enableWechatLogin)throw new ApiError('WECHAT_LOGIN_NOT_CONFIGURED');
+    origin();logout();const current=generation;
+    const code=await new Promise<string>((resolve,reject)=>wx.login({timeout:10000,success:r=>r.code?resolve(r.code):reject(new ApiError('WECHAT_LOGIN_FAILED')),fail:()=>reject(new ApiError('WECHAT_LOGIN_FAILED'))}));
+    if(current!==generation)throw new ApiError('SESSION_CHANGED');
+    try{const result=await request<{access_token:string}>('/api/v1/auth/wechat/session','POST',{code});if(current!==generation)throw new ApiError('SESSION_CHANGED');token=result.access_token;
+      const me=await request<{user_id:string;account_code:string;development_only:boolean}>('/api/v1/auth/me');if(me.development_only)throw new ApiError('INVALID_IDENTITY');userId=requireId(me.user_id);accountCode=me.account_code;identity='微信账号 '+accountCode;
+    }catch(e){if(current===generation)logout();throw e;}
+}
+export async function signOutSession():Promise<void>{try{if(token.startsWith('ls1_'))await request('/api/v1/auth/logout','POST');}finally{logout();}}
 export function needLogin(): void { if (!auth().authenticated)
     throw new ApiError('LOGIN_REQUIRED'); }
 export function errorText(error: unknown): string {
@@ -106,8 +119,8 @@ export function errorText(error: unknown): string {
         PRIVACY_CONSENT_REQUIRED: '请先阅读并确认开发隐私说明', EXISTING_DRAFT:'已有未保存草稿或待确认请求，请先处理后再复制。',COPY_REVIEW_REQUIRED:'请先核对复制的新需求。',PRODUCT_UNAVAILABLE:'商品暂不供应，请重新选货或联系店主。',INVALID_QUANTITY: '数量须大于0，最多3位小数',
         EMPTY_DRAFT: '请填写需求、选择商品或上传图片', IMAGE_OVER_2M: '压缩后图片仍超过2MiB，请换用较小图片',
         IMAGE_SELECTION_CANCELLED: '已取消选择图片，草稿保持不变',
-        API_NOT_CONFIGURED: '尚未配置本项目API，当前不能连接服务', LOGIN_REQUIRED: '请先在入口选择受控开发身份',
-        WECHAT_LOGIN_NOT_CONFIGURED: '真实微信登录尚未配置，不能提交；可先浏览店铺',
+        API_NOT_CONFIGURED: '尚未配置本项目API，当前不能连接服务', LOGIN_REQUIRED: '请先在入口登录当前账号',
+        WECHAT_LOGIN_NOT_CONFIGURED: '本项目微信登录尚未配置，可先浏览店铺。',WECHAT_LOGIN_FAILED:'微信登录未完成，请重试。',SESSION_EXPIRED:'登录已过期，请重新登录同一账号。',WECHAT_CODE_INVALID:'登录凭证已失效，请重新点击微信登录。',AUTH_RATE_LIMITED:'登录操作较频繁，请稍后再试。',BROWSER_APPROVAL_UNAVAILABLE:'工作台确认码已过期或已使用，请核对自己发起的登录。',
         INVALID_STORE_OR_RECORD: '店铺或记录参数无效，请重新从本店入口进入',
         NETWORK_UNCERTAIN: '网络结果未确认。请重试原请求，不要重复新建',
         SESSION_CHANGED: '身份已切换，旧请求结果已丢弃', VERSION_CONFLICT: '记录已有更新，请刷新后再操作',

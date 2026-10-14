@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {computed,onMounted,onUnmounted,ref} from 'vue';
+import VerifiedLogin from './VerifiedLogin.vue';
 import PlatformPanel from './PlatformPanel.vue';
 import CatalogPanel from './CatalogPanel.vue';
 import WorkbenchPanel from './WorkbenchPanel.vue';
@@ -26,17 +27,21 @@ async function login(){
   notice.value=!platform&&!list.length?'当前账号没有已启用的店铺授权。请先由平台邀请并完成审核。':'';
  }catch(e){if(alive&&current===epoch)error.value=errorMessage(e);}finally{if(alive)busy.value=false;}
 }
+async function verifiedLogin(value:string){const current=epoch;busy.value=true;error.value='';try{const me=await request<{user_id:string;development_only:boolean}>('/api/v1/auth/me',value);if(me.development_only)throw Error('INVALID_IDENTITY');let platform=false;try{platform=(await request<{role:string}>('/api/v1/platform/me',value)).role==='PLATFORM_ADMIN';}catch(e){if(!(e instanceof ApiError&&e.status===403))throw e;}const list=platform?[]:(await request<{items:Tenant[]}>('/api/v1/merchant/tenants',value)).items;if(!alive||current!==epoch)return;token.value=value;userId.value=me.user_id;platformRole.value=platform;members.value=list;tenantId.value=list[0]?.id||'';sessionVersion.value++;notice.value=!platform&&!list.length?'当前账号尚无店铺授权，可在小程序查看本人开店邀请。':'';}catch(e){if(alive&&current===epoch)error.value=errorMessage(e);}finally{if(alive)busy.value=false;}}
+async function formalLogout(){const value=token.value;logout();try{await request('/api/v1/auth/logout',value,'POST');}catch{notice.value='本机已退出；服务端退出未确认，原会话会在到期时失效。';}}
+function expired(){if(token.value.startsWith('ls1_')){logout();notice.value='登录已失效，请重新登录同一账号；未确认请求保留，避免重新新建。';}}
 function logout(){epoch++;token.value='';userId.value='';members.value=[];tenantId.value='';platformRole.value=false;error.value='';notice.value='已退出。令牌已清除，未确认请求按账号和店铺保留在本机。';platformBusy.value=catalogBusy.value=workbenchBusy.value=false;platformLocked.value=catalogLocked.value=workbenchLocked.value=false;}
 function choose(event:Event){if(busy.value||childBusy.value||locked.value)return;const value=(event.target as HTMLSelectElement).value;if(members.value.some(x=>x.id===value)){tenantId.value=value;sessionVersion.value++;tab.value='workbench';}}
 function visibility(){concealed.value=document.hidden;}
-onMounted(()=>document.addEventListener('visibilitychange',visibility));onUnmounted(()=>{alive=false;epoch++;document.removeEventListener('visibilitychange',visibility);});
+onMounted(()=>{document.addEventListener('visibilitychange',visibility);window.addEventListener('local-shop-session-expired',expired);});onUnmounted(()=>{alive=false;epoch++;document.removeEventListener('visibilitychange',visibility);window.removeEventListener('local-shop-session-expired',expired);});
 </script>
 <template><main>
-<header><span>local-shop · 商户工作台</span><h1>记下需求，安排备货</h1><p v-if="development">受控开发模式：只用本机合成账号，不用于实际营业。</p><p v-else>正式登录尚未配置。不会自动使用演示身份；请完成接入后使用。</p></header>
+<header><span>local-shop · 商户工作台</span><h1>记下需求，安排备货</h1><p v-if="development">受控开发模式：只用本机合成账号，不用于实际营业。</p><p v-else>正式账号入口：通过本项目小程序明确确认登录。未配置微信接入时会拒绝登录。</p></header>
 <section v-if="development" class="login" aria-label="开发登录"><label>演示身份<select v-model="alias" :disabled="busy||childBusy||locked"><option value="merchant-a">商户 A</option><option value="merchant-b">商户 B</option><option value="customer-a">受邀账号 A</option><option value="customer-b">受邀账号 B</option><option value="platform-admin">平台合成管理员</option></select></label><button :disabled="busy||childBusy" @click="login">{{token?'重新登录同一身份':'进入工作台'}}</button><button v-if="token" class="secondary" @click="logout">退出登录</button></section>
+<VerifiedLogin v-if="!development&&!token&&!concealed" @session="verifiedLogin"/><button v-if="!development&&token" @click="formalLogout" :disabled="busy">退出登录</button>
 <p v-if="error" role="alert" class="error">{{error}}</p><p v-if="notice" role="status" class="notice">{{notice}}</p>
 <template v-if="token&&userId&&!concealed">
-<PlatformPanel v-if="platformRole" :key="userId+sessionVersion" :token="token" :user-id="userId" @busy="platformBusy=$event" @locked="platformLocked=$event"/>
+<PlatformPanel v-if="platformRole" :key="userId+sessionVersion" :token="token" :user-id="userId" :development="development" @busy="platformBusy=$event" @locked="platformLocked=$event"/>
 <template v-else-if="tenant"><div class="row"><h2 class="store-title">{{tenant.name}}</h2><label v-if="members.length>1">当前已授权店铺<select :value="tenantId" :disabled="busy||childBusy||locked" @change="choose"><option v-for="member in members" :key="member.id" :value="member.id">{{member.name}}</option></select></label></div>
 <nav aria-label="工作台功能" class="actions"><button :aria-pressed="tab==='workbench'" @click="tab='workbench'">记单与待办</button><button :aria-pressed="tab==='catalog'" @click="tab='catalog'">商品维护</button></nav>
 <WorkbenchPanel v-show="tab==='workbench'" :key="'workbench'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" :role="tenant.role" :active="tab==='workbench'" @busy="workbenchBusy=$event" @locked="workbenchLocked=$event"/>

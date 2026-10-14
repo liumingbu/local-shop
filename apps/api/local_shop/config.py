@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
@@ -16,6 +17,10 @@ class Settings(BaseSettings):
     database_url: SecretStr
     app_secret_key: SecretStr
     dev_auth_enabled: bool = False
+    wechat_login_enabled: bool = False
+    wechat_appid: str = ""
+    wechat_app_secret: SecretStr = SecretStr("")
+    auth_session_seconds: int = Field(default=900, ge=300, le=3600)
     media_root: Path = Path("var/media")
     media_receive_timeout_seconds: float = Field(default=15, ge=0.05, le=120)
     db_statement_timeout_ms: int = Field(default=10000, ge=100, le=60000)
@@ -45,4 +50,16 @@ class Settings(BaseSettings):
             raise ValueError("Development identity requires non-production loopback binding")
         if self.app_env == "production" and (not url.host or not url.password):
             raise ValueError("Production PostgreSQL configuration requires host and password")
+        if self.app_env == "production" and not self.wechat_login_enabled:
+            raise ValueError(
+                "Production requires configured verified identity; development fallback forbidden"
+            )
+        if self.wechat_login_enabled:
+            if (
+                not re.fullmatch(r"wx[a-fA-F0-9]{16}", self.wechat_appid)
+                or len(self.wechat_app_secret.get_secret_value()) < 16
+            ):
+                raise ValueError(
+                    "WeChat login requires protected project AppID and secret configuration"
+                )
         return self

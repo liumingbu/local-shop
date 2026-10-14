@@ -8,7 +8,7 @@ from typing import Literal
 from uuid import UUID, uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from pydantic import Field
+from pydantic import Field, model_validator
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -25,9 +25,16 @@ from .records import StrictModel, lock_scope
 
 
 class Invite(StrictModel):
-    owner_user_id: UUID
+    owner_user_id: UUID | None = None
+    owner_account_code: str | None = Field(default=None, pattern=r"^U-[A-F0-9]{12}$")
     proposed_name: str = Field(min_length=1, max_length=100)
     reason: str = Field(min_length=1, max_length=500)
+
+    @model_validator(mode="after")
+    def one_recipient(self):
+        if (self.owner_user_id is None) == (self.owner_account_code is None):
+            raise ValueError("Exactly one account locator required")
+        return self
 
 
 class Respond(StrictModel):
@@ -162,9 +169,20 @@ def build_router(access):
 
         def action():
             owner = session.scalar(
-                select(User).where(User.id == payload.owner_user_id).with_for_update(read=True)
+                select(User)
+                .where(
+                    User.account_code == payload.owner_account_code
+                    if payload.owner_account_code
+                    else User.id == payload.owner_user_id
+                )
+                .with_for_update(read=True)
             )
-            if owner is None or owner.status != "ACTIVE":
+            administrator = session.get(User, uid)
+            if (
+                owner is None
+                or owner.status != "ACTIVE"
+                or (administrator.identity_type == "WECHAT" and owner.identity_type != "WECHAT")
+            ):
                 raise HTTPException(404, "INVITATION_OWNER_NOT_FOUND")
             row = ShopInvitation(owner_user_id=owner.id, proposed_name=payload.proposed_name)
             session.add(row)

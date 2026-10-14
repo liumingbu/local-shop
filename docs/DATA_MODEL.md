@@ -96,3 +96,9 @@ platform_operations存actor+key唯一、action、payload_hash、原始response�
 ## 0010 日常待办
 
 reservations新增数据库Identity business_number，展示LS+至少10位数字，仅查找标识；旧行迁移生成稳定编号。新增限长联系方式和confirmed_due_at；截止仅由最新候选明确确认写入，提出新候选清除，旧候选历史保留。迁移仅从最新且已确认的fulfillment_at回填，不解析期望或文字。逾期只覆盖CONFIRMED/PREPARING/READY/OUT_FOR_DELIVERY。新增租户+截止/期望/业务号索引。文本包含查询仍为本店有限页查询，不宣称已有全文索引。存在需求记录时降级拒绝删除这些业务字段；仅空需求表可回退，真实环境仍需审查恢复方案。
+
+## 0011 正式身份与工作台会话
+
+users增加唯一可空account_code；正式账号创建时分配U-开店账号码，旧开发账号不自动转换。wechat_identities以appid+openid联合主键映射新UUID，不读取旧项目配置或凭姓名电话归属。auth_sessions存本项目AppID域隔离HMAC token_hash、user_id、expires_at、revoked；used_login_codes只保存已消费code摘要。重复登录码不能再次创建会话，并发首登使用PG事务锁加唯一键。
+browser_approvals保存查询secret/确认码摘要、期限、确认账号和一次性消费状态，不保存明文会话token。auth_rate_windows存IP的HMAC域隔离分钟桶和计数，登录失败也在独立事务计数；未提供自动删除真实记录任务。保留策略和清理需上线前确认，后续仅提供dry-run检查。
+有正式身份/会话/工作台确认历史时0011拒绝降级；空表可回退。密钥或AppID变化使旧会话摘要失效，需要重新登录，不自动迁移身份。

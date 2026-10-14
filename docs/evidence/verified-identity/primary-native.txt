@@ -1,0 +1,78 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:native
+> npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 41 native assets; this is NOT a WeChat runtime test.
+✔ catalog numeric input permits empty reference but rejects fake quantity/price normalization (5.237086ms)
+✔ category picker loads all pages instead of silently truncating after first 100 (2.471004ms)
+✔ explicit unauthorized catalog entry cannot load or create categories (10.729692ms)
+✔ category unknown creation survives hide/show and replays original name and key (15.142108ms)
+✔ category stale update is locked until refreshed, with no automatic overwrite (7.058059ms)
+✔ product create retries immutable request; blank reference remains null and status starts draft (15.069208ms)
+✔ post-response storage failure retains create lock instead of allowing a second product (5.822462ms)
+✔ image ordering/removal updates association only and advances the product version (6.473079ms)
+✔ image upload limit and uncertain ordering both block unsafe continuation (6.986138ms)
+✔ switching identity while picker is open prevents file upload under the new account (0.9817ms)
+✔ leaving product image picker prevents upload after page dismissal (5.581778ms)
+✔ logo uploads with LOGO purpose then requires explicit versioned store save (6.98247ms)
+✔ old session completion cannot clear a newer session busy state (0.385243ms)
+✔ development login is disabled by configuration and always refused for trial/release (4.643234ms)
+✔ origin and path are fail-closed; remote plaintext, userinfo and arbitrary URLs refused (1.057872ms)
+✔ invalid share entry does not fall back to a recent store (1.866805ms)
+✔ login keeps credentials in memory; authenticated identity comes from server me response (0.904806ms)
+✔ late private response after account switch is discarded (7.595092ms)
+✔ drafts are isolated by user and store, and units/specifications never merge (1.588822ms)
+✔ storage failure prevents sending an unrepeatable business request (0.61882ms)
+✔ uncertain retry uses immutable original payload/key and survives success before draft acknowledgement (1.273483ms)
+✔ validation rejection releases draft, but expired login preserves pending operation (0.663446ms)
+✔ busy and view generation protect double clicks and late results after hide/show (0.635285ms)
+✔ decimal validation and explicit UTC+08 display do not invent quantities or dates (0.849473ms)
+✔ native page registrations, assets and event handlers exist (static, not WXML rendering) (12.662455ms)
+✔ compose sends only this store draft and clears it only after confirmed success (6.754954ms)
+✔ compose double-click plus network retry does not replace the original payload (7.074597ms)
+✔ leaving compose before response keeps the original pending request and does not navigate later (6.570858ms)
+✔ explicit date+time becomes a timezone-aware value; date-only stays a note (6.501767ms)
+✔ private detail rejects store mismatch and clears private content on hide (5.793994ms)
+✔ private images send authentication as a header, never a query token (0.918225ms)
+✔ image picker cancellation sends no upload and preserves draft (0.541795ms)
+✔ a different product entry does not silently mix an existing inquiry draft (1.071142ms)
+✔ leaving the login page interrupts the pending identity switch (0.501866ms)
+✔ date-only input remains a note and is not silently assigned midnight (6.342835ms)
+✔ source default has no API origin or enabled fake login (0.301859ms)
+✔ manual UUID entry is development-only; valid recent/shared route is retained (0.365733ms)
+✔ native wx.login boundary passes only code and installs only server verified identity (10.927115ms)
+✔ native formal missing config, provider failure and expired session never fall back to demo (2.423413ms)
+✔ invitation response uses server-listed invitation and current account, not supplied owner ID (19.2843ms)
+✔ invitation unknown result can only replay original response after reopening (13.947052ms)
+✔ switching invitation account clears private rows and pending state from previous user (13.565112ms)
+✔ only approved invitation with server tenant ID opens its merchant workspace (1.787587ms)
+✔ merchant tenant selection never falls back from an unauthorized explicit tenant (5.327852ms)
+✔ merchant workbench invalid route remains invalid onShow and does not issue requests (3.40345ms)
+✔ customer with no merchant membership cannot load workbench records (7.781138ms)
+✔ manual record requires no catalog, preserves raw text and retries original uncertain operation (8.362833ms)
+✔ leaving workbench during membership lookup does not restore private draft (3.887456ms)
+✔ merchant transitions reflect fulfillment method and pending cancellation gate (0.582276ms)
+✔ merchant detail rejects route mismatch and hides private payload (6.985485ms)
+✔ confirmation requires explicit latest agreement and sends only allowed transition (6.514466ms)
+✔ unknown detail write locks other operations and retries original key after reload failure (6.325214ms)
+✔ proposal copies free snapshots without live product reference and retains fractional units (6.259186ms)
+✔ inquiry reply defaults private and never implicitly converts (7.246944ms)
+✔ shop settings require owner and do not send an unauthorized write (7.503565ms)
+✔ new store uses version zero, existing logo is preserved, unknown PUT requires refresh (7.053606ms)
+✔ refresh clears previous candidate consent; hiding clears private unsubmitted edits (6.209782ms)
+✔ daily queue uses one aggregate count request and passes bounded shop-only filters (6.807061ms)
+✔ copy makes a separate guarded draft with fractional units and no automatic post (12.081852ms)
+ℹ tests 59
+ℹ suites 0
+ℹ pass 59
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 276.999818
