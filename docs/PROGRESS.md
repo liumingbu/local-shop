@@ -1,11 +1,11 @@
 # PROGRESS｜任务状态唯一台账
 
-更新时间：2026-10-13 UTC。以实际代码、远端和测试为依据；原包历史检查记录保留在evidence/package-original。
+更新时间：2026-10-14 UTC。以实际代码、远端和测试为依据；原包历史检查记录保留在evidence/package-original。
 
 ## 当前基准
 
-- PR #1–#18已自查、合并并fetch核对；main：406ab69be3313b906834efa9cecddad5f194d878。
-- 当前分支：chore/development-delivery，从上述main干净创建，仅维护交付索引和交接，无运行代码变更。
+- PR #1–#19已自查、合并并fetch核对；main基准：7dc4d3135169fe3b4803d9f13c5f5f69eb8c2dc1。
+- 当前分支：docs/wechat-appid-deferred，从上述main干净创建；远端无待合并PR。本轮仅记录用户确认AppID暂缺和交接，无运行代码变更。
 - 用户已授权Dot自行测试审查后合并常规PR，阶段性回报。生产、凭据/权限、费用和环境变更仍需确认。
 - 仅Dot自身云电脑；未使用Mac、Codex任务、Actions、Codespaces或其他云。未部署。
 - GitHub API提交/PR/合并可用且fetch树核验；终端直接push认证未建立，不能混称终端push通过。
@@ -37,4 +37,8 @@
 
 ## 下一步
 
-开发验证版达到DEV_REVIEW_READY，交付索引DELIVERY.md、验收入口ACCEPTANCE.md。源码包按最终合并提交导出/核验；不再扩展MVP外功能。下一阶段待本项目AppID/安全配置与获准的微信验收条件，完成正式身份及真实验证。M5外部条件缺失保留阻塞，不沿用旧佳琪配置，不让这项阻塞替代独立模块开发。
+开发验证版达到DEV_REVIEW_READY，交付索引DELIVERY.md、验收入口ACCEPTANCE.md。源码包按最终合并提交导出/核验；不再扩展MVP外功能。用户于2026-10-14明确确认本项目暂无AppID、后续再补，真实微信接入延期，暂不继续催要。条件补齐后完成正式身份及真实验证。M5外部条件缺失保留阻塞，不沿用旧佳琪配置，不让这项阻塞替代独立模块开发。
+
+## 本轮检查（2026-10-14）
+
+远端main及分支已fetch核对，工作树起点干净，开放PR查询为0。只修改Markdown；运行代码相对b6652736无差异，历史213 Python/18 Web/54原生结果属于2026-10-13，本轮未重跑业务测试（NOT_RUN）。本轮执行文档差异/链接检查；没有登录微信或启用额外环境。已交付ZIP仍对应7dc4d313，无需为状态备注重新打包。
