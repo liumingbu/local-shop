@@ -14,6 +14,7 @@ from .attachments import attachments_json, copy_inquiry_attachments, link_privat
 from .cancellation_data import cancellation_json
 from .catalog import find_owned, published_store
 from .confirmation_data import confirmation_json
+from .list_relations import prefetch
 from .models import (
     Category,
     Inquiry,
@@ -318,6 +319,9 @@ def build_router(access):
             .offset((page - 1) * limit)
             .limit(limit)
         )
+        rows = list(rows)
+        if kind == "reservation":
+            prefetch(session, rows)
         items = [
             customer_reservation(row, session)
             if kind == "reservation"

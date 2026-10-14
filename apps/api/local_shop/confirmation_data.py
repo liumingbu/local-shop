@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 from fastapi import HTTPException
 from sqlalchemy import select
 
+from .list_relations import cached
 from .models import ConfirmationRevision
 
 
@@ -16,6 +17,11 @@ def revisions(session, row):
 
 
 def confirmation_json(session, row):
+    rows = cached(session, row.tenant_id, row.id, "revisions")
+    if rows is None:
+        rows = session.scalars(
+            revisions(session, row).order_by(ConfirmationRevision.proposed_version)
+        )
     return [
         {
             "id": str(revision.id),
@@ -26,9 +32,7 @@ def confirmation_json(session, row):
             "confirmed_at": revision.confirmed_at.isoformat() if revision.confirmed_at else None,
             "agreement_recorded_by": "MERCHANT" if revision.confirmed_at else None,
         }
-        for revision in session.scalars(
-            revisions(session, row).order_by(ConfirmationRevision.proposed_version)
-        )
+        for revision in rows
     ]
 
 

@@ -221,3 +221,31 @@ Web开发演示入口须显式设置`VITE_ENABLE_DEVELOPMENT_LOGIN=true npm run 
 本项目没有真实AppID。默认WECHAT_LOGIN_ENABLED=false，原生config.enableWechatLogin=false；点击正式入口会明确提示未配置。不要借用旧项目值、把密钥写入小程序或聊天。后续安全配置本项目AppID/服务端secret后，原生入口「微信登录」调用wx.login；Web「发起工作台登录」显示短时确认码，在本项目小程序入口明确确认再回网页核对状态。仅使用原有商户/平台权限，首个真实平台角色授予需单独批准。
 
 正式身份专项：`PG_BIN=/path/to/postgresql/bin .venv/bin/python scripts/test_with_postgres.py apps/api/tests/test_formal_identity.py`。外部微信HTTPS响应是唯一身份替身，数据库/会话/权限实际运行；其中另启动同机HTTP执行Vue正式登录事件。无需真实AppID。不能将此报告写作微信真机通过。生产发布门禁仍硬拒绝待外部验收。
+
+### 同机受控开发启动、停止与诊断
+
+先完成上述锁定依赖安装，PG_BIN指向已安装的可信PostgreSQL二进制目录。下面只管理仓库var/dev-stack中的专用合成开发库和图片，拒绝不认识的已有目录；不读取生产连接，不开放公网。
+
+```sh
+PG_BIN=/path/to/postgresql/bin .venv/bin/python scripts/dev_stack.py start
+.venv/bin/python scripts/dev_stack.py status
+.venv/bin/python scripts/dev_stack.py diagnose
+.venv/bin/python scripts/dev_stack.py stop
+```
+
+start前台运行，默认最长一小时，可用--duration调整；Ctrl+C或stop结束API、Vite和PG，保留该专用库/图片，下次启动迁移到当前版本并幂等补齐合成账号。默认API127.0.0.1:8000、Web127.0.0.1:5173；可显式--api-port/--web-port。只在服务所在执行上下文访问这些地址，不是公开演示链接。
+
+Dot云电脑的不同终端调用可能隔离PID和网络命名空间。status展示拥有该服务进程写入的近期健康心跳；stop通过本项目实例号控制文件请求拥有者结束，不根据其他调用中碰巧同号的PID杀进程。心跳过时不会声称仍在线；会话销毁可能停止服务，不承诺永久托管。没有再次尝试浏览器或切换环境。
+
+实际生命周期回归：`PG_BIN=/path/to/postgresql/bin .venv/bin/python scripts/check_dev_stack.py`，创建合成记录、停止、重启、核对数据和Vite回环代理。专用合成数据保留，不自动清理。
+
+### 规模、升级与只读维护验证
+
+```sh
+PG_BIN=/path/to/postgresql/bin .venv/bin/python scripts/benchmark_daily.py --baseline-ref adaef77da60fcd88513fcb97d54e6d801dd2729f --output /tmp/benchmark.json
+PG_BIN=/path/to/postgresql/bin .venv/bin/python scripts/upgrade_drill.py --old-ref 640148dd84d6241eea399ccfc5552d0d324fc001 --output /tmp/upgrade.json
+```
+
+两个命令只创建新临时合成PG。升级演练用已知旧Git提交的后端先生成数据和图片，再实际增量迁移；源包使用Git archive需本地拥有指定提交，单一源码ZIP没有Git历史时这些两版对比命令BLOCKED，可从已授权仓库克隆获取相应历史；其他启动/测试不依赖Git历史。它们不接收现有生产库地址。
+
+`PYTHONPATH=apps/api .venv/bin/python scripts/maintenance_check.py`只读当前明确配置的库与媒体目录，报告会话过期和未引用文件候选，没有删除/apply选项；不要把候选当作删除许可。真实保留/清理/部署另行审批。

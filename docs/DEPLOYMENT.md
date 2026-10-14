@@ -86,3 +86,9 @@
 `systemd-analyze verify`实际失败：`Failed to create directory '/run/systemd/': Read-only file system`。未改系统安全设置。`--skip-systemd`只允许重跑其他组件并明确输出NOT_RUN，不能当成完整Linux服务验证通过。
 
 上游依据：[Nginx官方下载](https://nginx.org/en/download.html)、[签名公钥](https://nginx.org/en/pgp_keys.html)、[HTTP核心指令](https://nginx.org/en/docs/http/ngx_http_core_module.html)、[代理指令](https://nginx.org/en/docs/http/ngx_http_proxy_module.html)。
+
+## 增量升级与开发生命周期补充
+
+同机开发运行由scripts/dev_stack.py start/status/diagnose/stop统一管理，数据保存在受控var/dev-stack，停止不清库；仅回环/合成身份，不能当生产服务。Dot执行调用可能隔离PID/网络，控制通过近期实例心跳与停止请求，不能把localhost链接当可公开访问地址。
+正式升级仍先停写、备份、检查恢复路径，再alembic upgrade head；旧的已成功幂等请求必须还能安全重放。0010新联系字段默认空、0011新邀请账号码默认空时兼容旧成功载荷摘要；任何新增非空联系信息或改变命令仍冲突，不能借升级覆盖旧操作。旧成功响应快照保留，客户端随后读取最新详情。
+scripts/upgrade_drill.py实际由0009旧后端生成合成数据，再升级0011，逐表比较所有旧字段值、图片字节、原始/确认/事件、旧幂等响应和权限，最后重启复核。真实升级/发布仍未授权；回退涉及业务数据时不能用破坏性downgrade代替恢复计划。

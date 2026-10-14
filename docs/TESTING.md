@@ -148,3 +148,7 @@ PR #18代码b6652736独立远端干净检出213 Python（154真实PG、59非PG�
 ## 工作包C正式身份
 
 见[evidence/verified-identity/RESULT_20261014.md](evidence/verified-identity/RESULT_20261014.md)。正式身份外部HTTPS替身+真实PG18专项，其中真实HTTP上的Vue正式登录事件；完整Python初次238通过后又增加1项权限隔离，远端最终239项待复核。59原生模拟wx/18控制器/11Vue组件通过。真实AppID/微信/浏览器未验收，失败与修复保留。
+
+## 工作包D运行与交付
+
+见[evidence/runtime-delivery/RESULT_20261014.md](evidence/runtime-delivery/RESULT_20261014.md)：主工作树242 Python（183 PG）、18控制器/11Vue组件/59原生及实际HTTP通过；同机10并发/500读请求前后0错误，旧0009→0011真实升级和启动停止重启已执行；保留旧幂等兼容失败和修复。TLS代理通过，systemd明确跳过。最终精确远端SHA复核待追加。

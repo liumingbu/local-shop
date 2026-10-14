@@ -2,6 +2,7 @@
 
 from sqlalchemy import select
 
+from .list_relations import cached
 from .models import CancellationRequest
 
 
@@ -16,14 +17,16 @@ def pending_cancellation(session, record):
 
 
 def cancellation_json(session, record):
-    rows = session.scalars(
-        select(CancellationRequest)
-        .where(
-            CancellationRequest.tenant_id == record.tenant_id,
-            CancellationRequest.reservation_id == record.id,
+    rows = cached(session, record.tenant_id, record.id, "cancellations")
+    if rows is None:
+        rows = session.scalars(
+            select(CancellationRequest)
+            .where(
+                CancellationRequest.tenant_id == record.tenant_id,
+                CancellationRequest.reservation_id == record.id,
+            )
+            .order_by(CancellationRequest.requested_version)
         )
-        .order_by(CancellationRequest.requested_version)
-    )
     return [
         {
             "id": str(row.id),

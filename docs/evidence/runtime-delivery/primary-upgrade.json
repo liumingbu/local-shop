@@ -1,0 +1,18 @@
+{
+  "old_sha": "640148dd84d6241eea399ccfc5552d0d324fc001",
+  "tested_head": "adaef77da60fcd88513fcb97d54e6d801dd2729f",
+  "dirty": true,
+  "old_tables_verified": 20,
+  "old_rows_verified": 91,
+  "images_verified": 3,
+  "upgrade": "0009_platform to 0011_verified_identity",
+  "checks": [
+    "all old row values unchanged",
+    "image bytes unchanged",
+    "original details and history unchanged",
+    "old idempotency response preserved",
+    "new stable business number after restart",
+    "cross-tenant and anonymous media access refused"
+  ],
+  "result": "PASS, synthetic same-computer only; NOT production upgrade"
+}
