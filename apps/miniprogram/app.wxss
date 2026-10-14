@@ -19,3 +19,6 @@ input { min-height:82rpx; } textarea { min-height:200rpx; }
 .gallery { width:100%; height:450rpx; }.gallery-image { width:100%; height:450rpx; }
 .categories { white-space:nowrap; }.categories button { display:inline-block; margin-right:12rpx; }
 .photos { display:flex; gap:12rpx; flex-wrap:wrap; }.pre { white-space:pre-wrap; word-break:break-all; }
+
+.title,.subtitle,.notice,.error,.field,button { overflow-wrap:anywhere; word-break:break-word; }
+.actions button { min-height:88rpx; }.card .muted { overflow-wrap:anywhere; }

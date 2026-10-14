@@ -1,0 +1,3 @@
+import {defineConfig} from 'vitest/config';
+import vue from '@vitejs/plugin-vue';
+export default defineConfig({plugins:[vue()],test:{include:['tests/dom/**/*.test.ts'],environment:'jsdom',environmentOptions:{jsdom:{url:'http://localhost',pretendToBeVisual:true}},pool:'threads',maxWorkers:1,fileParallelism:false,testTimeout:10000,restoreMocks:true}});

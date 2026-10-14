@@ -2,11 +2,13 @@ export class ApiError extends Error {
   constructor(public status: number, public code: string) { super(code); }
 }
 export interface Tenant { id: string; name: string; role: string }
-export interface Store { name: string; description: string; version: number }
+export interface Store { name: string; description: string; version: number; public_contact?:string;public_address?:string;business_hours?:string;delivery_note?:string;allow_pickup?:boolean;allow_delivery?:boolean;published?:boolean }
 export interface RecordItem {
   id: string; tenant_id: string; customer_label: string; raw_text: string;
   source: string; fulfillment_method: 'PICKUP' | 'DELIVERY'; status: string;
-  version: number; created_at: string;
+  version: number; created_at: string; expected_time_note?:string;internal_note?:string;items?:{name:string;quantity:string;unit:string;spec:string}[];
+  confirmation_revisions?:{id:string;confirmed_version:number|null;details:{summary:string;time_note:string;fulfillment_at:string|null}}[];
+  events?:{to_status:string;action:string;note:string}[];
 }
 export async function request<T>(path: string, token: string, method = 'GET', body?: unknown, key?: string): Promise<T> {
   if(!path.startsWith('/api/v1/')||path.includes('..')||path.includes('://')||path.includes('\\'))throw new ApiError(0,'INVALID_API_PATH');

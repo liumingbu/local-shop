@@ -29,6 +29,10 @@ parser.add_argument(
     action="store_true",
     help="Compiled native logic with simulated wx transport against real HTTP",
 )
+parser.add_argument(
+    "--dom-client", action="store_true",
+    help="Real Vue DOM events in jsdom with real HTTP/PG; NOT a browser",
+)
 args = parser.parse_args()
 
 root = Path(__file__).resolve().parents[1]
@@ -80,6 +84,7 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
             "DATABASE_URL": f"postgresql+psycopg://{getpass.getuser()}@127.0.0.1:{port}/postgres",
             "APP_SECRET_KEY": secrets.token_urlsafe(32),
             "DEV_AUTH_ENABLED": "true",
+            "VITE_ENABLE_DEVELOPMENT_LOGIN": "true",
             "API_HOST": "127.0.0.1",
             "API_PORT": "8000",
             "PYTHONPATH": str(root / "apps/api"),
@@ -199,6 +204,11 @@ with tempfile.TemporaryDirectory(prefix="local-shop-e2e-") as directory:
                         ["node", "scripts/catalog_console_http.cjs", "http://127.0.0.1:8000"],
                         cwd=root,
                         check=True,
+                    )
+                if args.dom_client:
+                    subprocess.run(
+                        ["npm", "run", "test:dom:live"], cwd=root,
+                        env=env | {"LOCAL_SHOP_TEST_API": "http://127.0.0.1:8000"}, check=True,
                     )
                 platform_state = exercise_platform("http://127.0.0.1:8000")
                 api.terminate()

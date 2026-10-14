@@ -13,10 +13,15 @@
     "typecheck": "npm run typecheck --workspaces",
     "build": "npm run build --workspaces",
     "test:native": "npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs",
-    "test:admin": "tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs"
+    "test:admin": "tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs",
+    "test:dom": "vitest run --config vitest.config.mts",
+    "test:dom:live": "vitest run --config vitest.live.config.mts"
   },
   "devDependencies": {
     "@playwright/test": "1.64.0",
-    "typescript": "5.9.3"
+    "@vue/test-utils": "2.5.1",
+    "jsdom": "30.1.2",
+    "typescript": "5.9.3",
+    "vitest": "5.0.4"
   }
 }

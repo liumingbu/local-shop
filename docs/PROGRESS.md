@@ -42,3 +42,27 @@
 ## 本轮检查（2026-10-14）
 
 远端main及分支已fetch核对，工作树起点干净，开放PR查询为0。只修改Markdown；运行代码相对b6652736无差异，历史213 Python/18 Web/54原生结果属于2026-10-13，本轮未重跑业务测试（NOT_RUN）。本轮执行文档差异/链接检查；没有登录微信或启用额外环境。已交付ZIP仍对应7dc4d313，无需为状态备注重新打包。
+
+## 2026-10-14 下一阶段授权与F01—F11核对
+
+基准main640148dd84d6241eea399ccfc5552d0d324fc001；已fetch全部远端分支，开放PR=0，起点工作树干净。用户授权A—D工作包（页面/日常闭环/正式身份代码/性能交付），AppID仅阻塞真实微信联调。历史213/18/54测试不计作本轮执行。
+
+| 需求 | 已有API/模型 | 现有操作入口 | 已执行证据（历史） | 当前缺口与安排 |
+|---|---|---|---|---|
+| F01租户权限 | access/identity、Tenant/Member、平台启停 | 开发Web登录、原生入口/邀请/选店 | m2、platform、native HTTP：PG隔离/禁用 | 正式微信/管理身份未实现→C；真实页面未验收→A |
+| F02店铺资料 | records Store、Logo关联 | Web简版店名；原生shopsettings完整字段 | m3b/m4g、真实HTTP/图片 | Web字段入口与保存反馈不足；长名称/失效状态→A |
+| F03商品分类多图 | catalog/media、Category/Product/Media | 原生catalog/productedit；Web批量表 | m3a/m3b/m4g/web-catalog | Web大表移动端可操作性/空分类提示，页面事件覆盖→A；不重做API |
+| F04询货 | customers/inquiries/replies | 顾客compose、商户merchantdetail | m4a/m4f、客户/商户HTTP | 原生真实交互未验收；Web无完整询货处理入口→A/B |
+| F05顾客登记 | CustomerReservation、归属/快照/私图 | compose/records/detail | m4a–m4e、私图HTTP | 联系/配送信息字段和入口需补；日期备注不猜截止→B |
+| F06老板代记 | NewReservation、来源/小数/幂等 | 原生merchant；Web快速代记 | m2/m4f、真实HTTP闭环 | Web草稿刷新丢失、未确认请求持久化不足；联系方式→A/B |
+| F07确认交付 | records/confirmations/cancellations、版本事件 | 原生merchantdetail完整；Web仅按钮+事件 | m4c/m4d/m4f、PG并发/回滚 | Web缺确认候选/取消意向入口；需明确二次确认与冲突反馈→A/B |
+| F08待办历史 | 当前只按状态分页；逐状态查询计数 | merchant列表/计数；Web状态筛选 | m2/m4f有限逻辑 | 日期/交付方式/逾期、搜索业务号、复制新需求、刷新计数均缺完整闭环→B/D |
+| F09分享 | 原生store/product分享参数、scene路由 | 原生分享/最近浏览；首页UUID为开发入口 | m4e路由/模拟wx | UUID输入须限开发模式→A；真实码/分享/配置边界→C，真测待AppID |
+| F10平台 | platform邀请/接受/审批/启停/审计 | WebPlatformPanel、原生invitations | platform/platform-ui，真实HTTP | 正式平台身份→C；审批/启停DOM交互与空态→A |
+| F11保障 | 错误/幂等/上传DB限时/恢复/候选部署 | 开发错误提示、隐私说明、脚本 | bounded-io/recovery/linux-delivery | 真实页面/正式身份、参考规模性能、统一启动诊断/旧数据升级→A/C/D；systemd/微信另验 |
+
+浏览器本轮有限排障已结束：启动被Unix socket权限拒绝，未放宽sandbox或API认证，见evidence/browser-20261014。之后不重复尝试。第一改进在既有Web工作台实现持久化代记与正确上下文隔离、清晰模式/导航/错误反馈，补实际Vue组件事件测试；不新增另一套系统。
+
+## 工作包A现有页面交互（2026-10-14）
+
+开发入口「记单与待办」与「商品维护」：持久化代记/原提交恢复、详情与明确确认、完整店铺字段、分类创建、退出与隐藏时私有内容清理。执行与失败修复记录见[evidence/workbench-ui/RESULT_20261014.md](evidence/workbench-ui/RESULT_20261014.md)。Vue/jsdom补充事件验证不等同真实浏览器；浏览器唯一迭代BLOCKED且已停止。后续B/C/D继续；正式身份不能等待AppID才编码。
