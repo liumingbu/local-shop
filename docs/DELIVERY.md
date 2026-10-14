@@ -7,7 +7,7 @@
 - PR21：已有工作台交互/草稿恢复，精确代码916b7554086fcf345900db62cd99f36b32f104ec。
 - PR22：日常筛选/联系/复制/聚合统计，精确代码a574b0fa20c3df6897420ecaa92984188d69bc02。
 - PR23：正式身份与工作台会话，精确代码7e386292393c9d792b3095395a4ec8cf93df1fc2。
-- 本轮D代码与最终远端复核见[evidence/runtime-delivery/RESULT_20261014.md](evidence/runtime-delivery/RESULT_20261014.md)，源码包从最终实际合并SHA导出，ZIP comment和随包验收说明记录SHA/ZIP哈希；不把报告自身的纯文档提交说成另一次业务测试。
+- PR24：性能、启动、升级与交付，精确代码0afbd497955dde0b8d661cd633b9854e319cee5b；本轮D代码与最终远端复核见[evidence/runtime-delivery/RESULT_20261014.md](evidence/runtime-delivery/RESULT_20261014.md)，源码包从最终实际合并SHA导出，ZIP comment和随包验收说明记录SHA/ZIP哈希；不把报告自身的纯文档提交说成另一次业务测试。
 
 ## 包含什么
 
