@@ -5,7 +5,7 @@
 ## 当前基准
 
 - PR #1–#21已合并并fetch核对；当前起点main：ef174b00fee96e6a5546acf04d4207048edf3785。
-- 当前工作包B分支feat/merchant-daily-loop。A代码916b7554独立检出通过，PR21已合并且树核验；B正在完成最终回归与提交。下方旧轮次仅代表各自时间范围。
+- 当前工作包B分支feat/merchant-daily-loop。A代码916b7554独立检出通过，PR21已合并且树核验；B代码a574b0fa独立检出全回归/恢复通过，PR22报告提交后合并。下方旧轮次仅代表各自时间范围。
 - 用户已授权Dot自行测试审查后合并常规PR，阶段性回报。生产、凭据/权限、费用和环境变更仍需确认。
 - 仅Dot自身云电脑；未使用Mac、Codex任务、Actions、Codespaces或其他云。未部署。
 - GitHub API提交/PR/合并可用且fetch树核验；终端直接push认证未建立，不能混称终端push通过。
