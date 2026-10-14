@@ -17,6 +17,7 @@ from .confirmations import build_router as confirmation_router
 from .customers import build_router as customer_router
 from .daily_workbench import build_router as daily_router
 from .db import build_engine, probe_database
+from .formal_auth import build_router as formal_router
 from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
 from .media import build_router as media_router
 from .platform import build_router as platform_router
@@ -68,6 +69,16 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     async def validation_error(request, exc):
         return error(request, 422, "INVALID_INPUT", "请求参数不符合要求")
 
+    @app.get("/api/v1/capabilities")
+    def capabilities():
+        return {
+            "wechat_login_configured": settings.wechat_login_enabled,
+            "wechat_live_verified": False,
+            "wechat_qr": "NOT_CONFIGURED",
+            "wechat_messages": "NOT_CONFIGURED",
+            "privacy": "DEVELOPMENT_DRAFT",
+        }
+
     @app.get("/health/live")
     def live():
         return {"status": "ok"}
@@ -107,6 +118,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return {"user_id": claims["sub"], "development_only": True}
 
     access = build_access(settings, engine)
+    app.include_router(formal_router(access, settings, engine))
     app.include_router(daily_router(access))
     app.include_router(build_router(access))
     app.include_router(catalog_router(access))

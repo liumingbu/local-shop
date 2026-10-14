@@ -2,7 +2,7 @@
 import { onMounted,onUnmounted,reactive,ref,watch } from 'vue';
 import { request } from './api';
 import { PlatformConsole,platformState,type Invitation,type PlatformTenant } from './platform';
-const props=defineProps<{token:string;userId:string}>();
+const props=defineProps<{token:string;userId:string;development?:boolean}>();
 const emit=defineEmits<{locked:[value:boolean];busy:[value:boolean]}>();
 const state=reactive(platformState()),owner=ref(''),name=ref(''),reason=ref(''),reviewReason=ref(''),statusReason=ref('');
 const storage={getItem:(key:string)=>localStorage.getItem(key),setItem:(key:string,value:string)=>localStorage.setItem(key,value)};
@@ -21,7 +21,7 @@ function status(row:PlatformTenant,value:'ACTIVE'|'SUSPENDED'){return controller
 <p v-if="state.locked">原请求结果待确认：{{state.pendingPath}}。编辑和切换身份已锁定。</p><button v-if="state.locked" :disabled="state.busy || !state.ready" @click="controller.retry()">重试原命令</button>
 <button :disabled="state.busy" @click="controller.load()">重新读取服务端</button>
 <template v-if="state.ready"><section><h3>定向邀请已有账号</h3><form @submit.prevent="controller.invite(owner,name,reason)"><fieldset :disabled="state.busy || state.locked">
-<label>收件人账号UUID<input v-model="owner" maxlength="36" required placeholder="由收件人在小程序本人邀请页查看，不填姓名或电话"></label><label>拟用店名<input v-model="name" maxlength="100" required></label><label>邀请原因<textarea v-model="reason" maxlength="500" required placeholder="仅简要审核记录，不填写凭据或证件原文"></textarea></label><button>创建邀请</button></fieldset></form></section>
+<label>{{development?'收件人账号UUID':'收件人开店账号码'}}<input v-model="owner" maxlength="36" required placeholder="由收件人在本人邀请页查看；正式账号为U-开头，不填姓名或电话"></label><label>拟用店名<input v-model="name" maxlength="100" required></label><label>邀请原因<textarea v-model="reason" maxlength="500" required placeholder="仅简要审核记录，不填写凭据或证件原文"></textarea></label><button>创建邀请</button></fieldset></form></section>
 <section><h3>邀请与审核（{{state.invitationTotal}}）</h3><label>本次审核理由<input v-model="reviewReason" maxlength="500" :disabled="state.busy || state.locked"></label>
 <article v-for="row in state.invitations" :key="row.id"><strong>{{row.proposed_name}}</strong><p>{{labels[row.status]}} · 版本{{row.version}}</p><p>收件账号：{{row.owner_user_id}}</p>
 <div class="actions"><button :disabled="state.busy || state.locked || row.status!=='ACCEPTED' || !reviewReason.trim()" @click="review(row,'APPROVED')">明确批准（仍不公开店铺）</button><button :disabled="state.busy || state.locked || !['INVITED','ACCEPTED'].includes(row.status) || !reviewReason.trim()" @click="review(row,'REJECTED')">拒绝</button></div></article>

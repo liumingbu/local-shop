@@ -44,7 +44,7 @@
 
 ## 8. Linux候选交付（2026-10-13）
 
-当前可执行交付是开发验证包，不是可直接营业的发布版。`scripts/production_preflight.py`在配置有效后仍以`BLOCKED_REAL_AUTH`和退出码2拒绝生产服务启动：正式身份适配器和发布验收尚缺。模板通过`ExecStartPre`调用它，不能删除检查或用开发登录绕过。直接手工启动Python进程不受这个服务门禁保护，属于不支持的发布方式。
+当前可执行交付是开发验证包，不是可直接营业的发布版。`scripts/production_preflight.py`在配置有效后仍以`BLOCKED_REAL_WECHAT_ACCEPTANCE`和退出码2拒绝生产服务启动：正式身份代码虽已实现，真实微信/真机/隐私与发布验收仍缺；缺少身份配置时更早以BLOCKED_CONFIGURATION拒绝。模板通过`ExecStartPre`调用它，不能删除检查或用开发登录绕过。直接手工启动Python进程不受这个服务门禁保护，属于不支持的发布方式。
 
 文件：
 

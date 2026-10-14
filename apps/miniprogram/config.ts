@@ -2,7 +2,9 @@
 export const config: {
     apiOrigin: string;
     enableDevelopmentLogin: boolean;
+    enableWechatLogin: boolean;
 } = {
     apiOrigin: '',
     enableDevelopmentLogin: false,
+    enableWechatLogin: false,
 };

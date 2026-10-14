@@ -23,6 +23,7 @@ export async function request<T>(path: string, token: string, method = 'GET', bo
                  ...(key ? {'Idempotency-Key': key} : {}) },
       ...(body === undefined ? {} : {body: JSON.stringify(body)}),
     });
+    if(response.status===401&&token.startsWith('ls1_')&&typeof window!=='undefined')window.dispatchEvent(new Event('local-shop-session-expired'));
     if (!response.ok) {
       const error = await response.json().catch(() => ({}));
       throw new ApiError(response.status, error.code ?? `HTTP_${response.status}`);

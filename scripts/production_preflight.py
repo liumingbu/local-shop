@@ -22,7 +22,8 @@ def main():
         return 2
     # Deliberate hard stop, not a user-settable flag that can bless incomplete authentication.
     print(
-        "BLOCKED_REAL_AUTH: real identity adapter and release acceptance are not implemented; "
+        "BLOCKED_REAL_WECHAT_ACCEPTANCE: identity code exists; "
+        "real provider/device/privacy acceptance is pending; "
         "do not publish this development build"
     )
     return 2

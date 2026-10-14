@@ -184,3 +184,11 @@ GET /merchant/tenants/{tenant}/reservations保留状态/分页，增加day=today
 GET /merchant/tenants/{tenant}/workbench-summary用一次SQL同快照统计状态、待回复、取消意向和逾期；as_of是统计时间，不代表微信通知。
 GET /merchant/tenants/{tenant}/reservations/{id}/copy-draft只读且须本店鉴权，不创建记录；不复制ID/版本/状态/幂等键/私图/内部备注/账号归属/承诺。返回可编辑草稿与商品核对警告；保存仍走创建接口和商品现状校验。
 创建增加contact_name/contact_phone/delivery_address，均限长、非身份凭据。仅本店商户和本人DTO可读，公开DTO不输出。暂不供应商品拒绝新登记，旧快照保留。
+
+## 正式身份代码（0011；外部微信响应尚未实测）
+
+POST /auth/wechat/session仅接受code，服务端固定HTTPS code2Session交换，按本项目AppID+openid唯一映射本地账号；不接收客户端角色/账号/租户/openid。返回短时本系统opaque bearer，数据库仅保存HMAC摘要；session_key不保存不下发。默认900秒，无自动永久刷新。
+GET /auth/me返回本系统user_id、开店账号码及development_only，不返回openid/session_key。POST /auth/logout撤销当前正式会话。每次请求重新核对过期/撤销/账号状态，平台权限还须独立PlatformAdmin有效。
+POST /auth/browser-approvals发起三分钟工作台确认，随机确认码与仅留当前网页内存的查询secret；POST /auth/browser-approvals/confirm需已登录正式小程序账号且confirmed=true；POST /auth/browser-approvals/poll用原secret一次领取工作台会话。不创建新角色，不把开发账号升级为正式/平台账号。仅确认本人正在打开的工作台，禁止代他人确认。
+平台邀请支持owner_account_code或旧开发owner_user_id二选一；正式管理员只能邀请WECHAT账号，U-账号码用于定向邀请，不是登录凭据，不用姓名/手机号认领。
+GET /capabilities明确区分登录配置存在与真实微信已验；当前二维码/消息NOT_CONFIGURED，隐私DEVELOPMENT_DRAFT。不会返回假二维码或已通知结果。

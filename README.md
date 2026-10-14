@@ -215,3 +215,9 @@ PG_BIN=/path/to/trusted/postgresql-16/bin .venv/bin/python scripts/backup_restor
 Web开发演示入口须显式设置`VITE_ENABLE_DEVELOPMENT_LOGIN=true npm run dev -w apps/admin`，只在开发构建的localhost/127.0.0.1显示；后端仍要求受控回环和DEV_AUTH_ENABLED，正式构建不自动降级。工作台默认先显示记单/待办，商品维护可切换，草稿和未确认命令按账号/店铺保存在本机；退出清除内存令牌和私有页面，不删除原待确认请求。
 
 `npm run test:dom`编译实际Vue组件，在jsdom执行输入、点击、提交、卸载/恢复事件；不是浏览器渲染。`PG_BIN=<PG16 bin> .venv/bin/python scripts/e2e_with_postgres.py --http-only --native-client --dom-client`另以真实API/PG验证这些组件事件。实际Chromium在本阶段唯一有限排障中仍被Unix socket权限限制，证据在docs/evidence/browser-20261014；没有真实截图，不能将DOM结果当成浏览器或微信验收。
+
+### 正式身份代码与未配置边界
+
+本项目没有真实AppID。默认WECHAT_LOGIN_ENABLED=false，原生config.enableWechatLogin=false；点击正式入口会明确提示未配置。不要借用旧项目值、把密钥写入小程序或聊天。后续安全配置本项目AppID/服务端secret后，原生入口「微信登录」调用wx.login；Web「发起工作台登录」显示短时确认码，在本项目小程序入口明确确认再回网页核对状态。仅使用原有商户/平台权限，首个真实平台角色授予需单独批准。
+
+正式身份专项：`PG_BIN=/path/to/postgresql/bin .venv/bin/python scripts/test_with_postgres.py apps/api/tests/test_formal_identity.py`。外部微信HTTPS响应是唯一身份替身，数据库/会话/权限实际运行；其中另启动同机HTTP执行Vue正式登录事件。无需真实AppID。不能将此报告写作微信真机通过。生产发布门禁仍硬拒绝待外部验收。

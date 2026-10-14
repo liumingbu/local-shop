@@ -48,7 +48,7 @@ export class PlatformConsole {
   if(!this.alive)return;await this.readLists();if(!this.alive)return;
   this.store(null);this.patch({locked:false,pendingPath:'',notice:'命令已执行并重新读取服务端状态'});
  });}
- invite(ownerId:string,name:string,reason:string){try{return this.command('/api/v1/platform/invitations',{owner_user_id:requireId(ownerId.trim()),proposed_name:name,reason});}catch(e){this.patch({error:e instanceof Error?e.message:'INVALID_INPUT'});return Promise.resolve();}}
+ invite(ownerId:string,name:string,reason:string){try{return this.command('/api/v1/platform/invitations',{...(/^U-[A-F0-9]{12}$/.test(ownerId.trim())?{owner_account_code:ownerId.trim()}:{owner_user_id:requireId(ownerId.trim())}),proposed_name:name,reason});}catch(e){this.patch({error:e instanceof Error?e.message:'INVALID_INPUT'});return Promise.resolve();}}
  review(row:Invitation,decision:'APPROVED'|'REJECTED',reason:string){if(this.state.locked)return Promise.resolve();return this.command(`/api/v1/platform/invitations/${requireId(row.id)}/review`,{expected_version:row.version,decision,reason});}
  status(row:PlatformTenant,status:'ACTIVE'|'SUSPENDED',reason:string){if(this.state.locked)return Promise.resolve();return this.command(`/api/v1/platform/tenants/${requireId(row.id)}/status`,{expected_version:row.version,status,reason});}
  retry(){let pending:Pending|null;try{pending=this.readPending();}catch(e){this.patch({error:e instanceof Error?e.message:'LOCAL_PENDING_UNAVAILABLE'});return Promise.resolve();}return pending?this.command(pending.path,pending.body):Promise.resolve();}

@@ -27,6 +27,7 @@ class Base(DeclarativeBase):
 
 
 class User(Base):
+    account_code: Mapped[str | None] = mapped_column(String(20), nullable=True, unique=True)
     __tablename__ = "users"
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True)
     identity_type: Mapped[str] = mapped_column(String(20))
@@ -486,3 +487,41 @@ class PlatformOperation(Base):
         UniqueConstraint("actor_id", "key", name="uq_platform_operation_actor_key"),
         Index("ix_platform_operation_time", "created_at", "id"),
     )
+
+
+class WeChatIdentity(Base):
+    __tablename__ = "wechat_identities"
+    appid: Mapped[str] = mapped_column(String(32), primary_key=True)
+    openid: Mapped[str] = mapped_column(String(128), primary_key=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), unique=True)
+
+
+class AuthSession(Base):
+    __tablename__ = "auth_sessions"
+    token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"), index=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    revoked: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class UsedLoginCode(Base):
+    __tablename__ = "used_login_codes"
+    code_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
+class AuthRateWindow(Base):
+    __tablename__ = "auth_rate_windows"
+    bucket: Mapped[str] = mapped_column(String(100), primary_key=True)
+    count: Mapped[int] = mapped_column(Integer)
+
+
+class BrowserApproval(Base):
+    __tablename__ = "browser_approvals"
+    secret_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
+    code_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    user_id: Mapped[uuid.UUID | None] = mapped_column(ForeignKey("users.id"), nullable=True)
+    consumed: Mapped[bool] = mapped_column(default=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
