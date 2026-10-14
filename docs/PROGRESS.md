@@ -4,8 +4,8 @@
 
 ## 当前基准
 
-- PR #1–#22已合并并fetch核对；当前起点main：4264c4789407c29e59557802db108c32470342fd。
-- 当前工作包C分支feat/verified-identity-sessions。B代码a574b0fa独立检出通过，PR22已合并；C正式身份/会话/工作台确认入口在合成PG完成专项验证，代码7e386292独立检出239 Python及完整回归/恢复通过，PR23报告提交后合并。
+- PR #1–#23已合并并fetch核对；D起点main：adaef77da60fcd88513fcb97d54e6d801dd2729f。PR24代码0afbd497955dde0b8d661cd633b9854e319cee5b已远端干净检出验证。
+- 当前工作包D分支feat/reproducible-runtime-delivery。C代码7e386292精确检出全回归通过，PR23已合并；D全回归/性能/升级/恢复/生命周期在精确远端代码独立复核通过，报告提交后按授权合并PR24。
 - 用户已授权Dot自行测试审查后合并常规PR，阶段性回报。生产、凭据/权限、费用和环境变更仍需确认。
 - 仅Dot自身云电脑；未使用Mac、Codex任务、Actions、Codespaces或其他云。未部署。
 - GitHub API提交/PR/合并可用且fetch树核验；终端直接push认证未建立，不能混称终端push通过。
@@ -18,9 +18,9 @@
 | M0 | DONE（开发范围） | 终端/运行时/文件/最小程序、真实PG及GitHub读写，ENVIRONMENT_CHECK | 不含微信/生产 |
 | M1 | DONE | PR #2工程/配置/迁移/健康检查/合成身份，evidence/m1 | 无 |
 | M2 | IN_PROGRESS（后端闭环通过） | PR #3及后续修订：代记→确认→备货→交付历史；租户/版本/幂等/事件；evidence/m2、m4c、m4d、m4f | 浏览器/原生UI实际运行未验收 |
-| M3 | IN_PROGRESS（后端与原生逻辑通过） | PR #4/#5/#12/#15：分类/商品/多图/Logo/公开店铺/Web批量维护；evidence/m3a、m3b、m4g、web-catalog | DOM/WXML/真机未验收 |
-| M4 | IN_PROGRESS（代码与协议逻辑通过） | PR #6–#14：顾客询货/需求/本人历史/私图/取消/修订；13原生页面；商户端与平台邀请审核/启停/审计；evidence/m4a–m4g、platform、platform-ui | 浏览器/微信真实运行、真实身份 |
-| M5 | BLOCKED_EXTERNAL / CODE_PENDING | 模拟身份隔离、分享路径与网络封装有代码；没有声称微信实测通过 | 新项目AppID/凭据、正式身份接入、微信工具/真机、主体类目隐私/消息/域名条件；见EXTERNAL_DEPENDENCIES |
+| M3 | IN_PROGRESS（后端与原生逻辑通过） | PR #4/#5/#12/#15：分类/商品/多图/Logo/公开店铺/Web批量维护；evidence/m3a、m3b、m4g、web-catalog | 真实浏览器/WXML/真机未验收 |
+| M4 | IN_PROGRESS（代码与协议逻辑通过） | PR #6–#14：顾客询货/需求/本人历史/私图/取消/修订；13原生页面；商户端与平台邀请审核/启停/审计；evidence/m4a–m4g、platform、platform-ui | 浏览器/微信真实运行与正式身份联调 |
+| M5 | BLOCKED_EXTERNAL / CODE_TESTED | PR23正式身份/可撤销会话/工作台确认登录代码通过外部替身+真实PG/HTTP；分享参数有代码，没有声称微信实测通过 | 新项目AppID/凭据、正式身份真实联调、微信工具/真机、主体类目隐私/消息/域名条件；见EXTERNAL_DEPENDENCIES |
 | M6 | IN_PROGRESS | PR #16上传/DB等待限时，evidence/bounded-io；PR #17恢复工具/演练已合并；本轮Linux组件专项通过 | 开发验证源码交付见DELIVERY；systemd/微信/生产仍阻塞；systemd/生产/异机灾备另验 |
 
 ## 阶段交付
@@ -33,13 +33,13 @@
 ## 测试与未验收
 
 真实测试索引统一在TESTING.md；历史结果不覆盖。当前PG16.15，旧16.2报告保留其原始时间与范围。
-浏览器DOM受当前浏览器运行/连接条件阻塞；原生测试使用模拟wx生命周期，真实HTTP仅证明协议和服务端往返。没有运行WXML编译/微信开发者工具/真机，没有真实微信登录、扫码、消息、审核或发布。
+真实浏览器受当前运行/连接条件阻塞；Vue/jsdom事件与真实HTTP已验证；原生测试使用模拟wx生命周期，真实HTTP仅证明协议和服务端往返。没有运行WXML编译/微信开发者工具/真机，没有真实微信登录、扫码、消息、审核或发布。
 
 ## 下一步
 
 开发验证版达到DEV_REVIEW_READY，交付索引DELIVERY.md、验收入口ACCEPTANCE.md。源码包按最终合并提交导出/核验；不再扩展MVP外功能。用户于2026-10-14明确确认本项目暂无AppID、后续再补，真实微信接入延期，暂不继续催要。正式身份代码按本阶段C先行实现；外部条件补齐后完成真实微信验证。M5外部条件缺失保留阻塞，不沿用旧佳琪配置，不让这项阻塞替代独立模块开发。
 
-## 本轮检查（2026-10-14）
+## 历史检查（2026-10-14早于本轮A—D，保留当时结论）
 
 远端main及分支已fetch核对，工作树起点干净，开放PR查询为0。只修改Markdown；运行代码相对b6652736无差异，历史213 Python/18 Web/54原生结果属于2026-10-13，本轮未重跑业务测试（NOT_RUN）。本轮执行文档差异/链接检查；没有登录微信或启用额外环境。已交付ZIP仍对应7dc4d313，无需为状态备注重新打包。
 
@@ -50,27 +50,35 @@
 | 需求 | 已有API/模型 | 现有操作入口 | 已执行证据（历史） | 当前缺口与安排 |
 |---|---|---|---|---|
 | F01租户权限 | access/identity、Tenant/Member、平台启停 | 开发Web登录、原生入口/邀请/选店 | m2、platform、native HTTP：PG隔离/禁用 | C已实现正式身份/短时会话/工作台确认登录，外部HTTP替身+真实PG专项验证；真实微信/页面另验 |
-| F02店铺资料 | records Store、Logo关联 | Web简版店名；原生shopsettings完整字段 | m3b/m4g、真实HTTP/图片 | Web字段入口与保存反馈不足；长名称/失效状态→A |
-| F03商品分类多图 | catalog/media、Category/Product/Media | 原生catalog/productedit；Web批量表 | m3a/m3b/m4g/web-catalog | Web大表移动端可操作性/空分类提示，页面事件覆盖→A；不重做API |
-| F04询货 | customers/inquiries/replies | 顾客compose、商户merchantdetail | m4a/m4f、客户/商户HTTP | 原生真实交互未验收；Web无完整询货处理入口→A/B |
+| F02店铺资料 | records Store、Logo关联 | Web简版店名；原生shopsettings完整字段 | m3b/m4g、真实HTTP/图片 | A已补完整Web字段与冲突反馈；原生Logo入口保留，真实布局/微信待验 |
+| F03商品分类多图 | catalog/media、Category/Product/Media | 原生catalog/productedit；Web批量表 | m3a/m3b/m4g/web-catalog | A/B补分类创建/空态/表格滚动且不丢编辑，Vue真实HTTP通过；原生多图已有码，视觉/真机待验 |
+| F04询货 | customers/inquiries/replies | 顾客compose、商户merchantdetail | m4a/m4f、客户/商户HTTP | 原生既有答复/明确转换入口保留并通过HTTP逻辑验证；Web未重复此页，原生真实渲染/交互待验 |
 | F05顾客登记 | CustomerReservation、归属/快照/私图 | compose/records/detail | m4a–m4e、私图HTTP | B已补联系/配送字段与顾客/商户入口、本人隐私隔离测试；正式身份→C，真机另验 |
 | F06老板代记 | NewReservation、来源/小数/幂等 | 原生merchant；Web快速代记 | m2/m4f、真实HTTP闭环 | A已补草稿/原请求恢复；B补联系/配送/明确期望时间及复制核对；原生真机待验 |
-| F07确认交付 | records/confirmations/cancellations、版本事件 | 原生merchantdetail完整；Web仅按钮+事件 | m4c/m4d/m4f、PG并发/回滚 | Web缺确认候选/取消意向入口；需明确二次确认与冲突反馈→A/B |
+| F07确认交付 | records/confirmations/cancellations、版本事件 | 原生merchantdetail完整；Web仅按钮+事件 | m4c/m4d/m4f、PG并发/回滚 | A/B已补Web候选确认/取消决定入口，Vue实际HTTP通过；原生既有入口真机待验 |
 | F08待办历史 | 状态/日期/方式/搜索分页、一次SQL聚合统计 | merchant列表/计数；Web状态筛选 | m2/m4f有限逻辑 | B已补日期/方式/逾期、文字/LS号搜索、新草稿复制与单次聚合计数；D补规模基准/交付；真机待验 |
-| F09分享 | 原生store/product分享参数、scene路由 | 原生分享/最近浏览；首页UUID为开发入口 | m4e路由/模拟wx | UUID输入须限开发模式→A；真实码/分享/配置边界→C，真测待AppID |
+| F09分享 | 原生store/product分享参数、scene路由 | 原生分享/最近浏览；首页UUID为开发入口 | m4e路由/模拟wx | A已限开发UUID输入；C接入状态明确二维码/消息未配置，原生分享参数代码已测；真实扫码分享待AppID |
 | F10平台 | platform邀请/接受/审批/启停/审计 | WebPlatformPanel、原生invitations | platform/platform-ui，真实HTTP | C补非演示登录与U-邀请账号码；A已测Vue审核/启停事件；首个真实管理员授予和真机另验 |
-| F11保障 | 错误/幂等/上传DB限时/恢复/候选部署 | 开发错误提示、隐私说明、脚本 | bounded-io/recovery/linux-delivery | 真实页面/正式身份、参考规模性能、统一启动诊断/旧数据升级→A/C/D；systemd/微信另验 |
+| F11保障 | 错误/幂等/上传DB限时/恢复/候选部署 | 开发错误提示、隐私说明、脚本 | bounded-io/recovery/linux-delivery | A/C身份与事件已测；D已执行2店各30商品/200记录10并发、启动停止重启、旧版升级及只读检查；最终远端0afbd497独立复核已通过；systemd/微信/浏览器另验 |
 
 浏览器本轮有限排障已结束：启动被Unix socket权限拒绝，未放宽sandbox或API认证，见evidence/browser-20261014。之后不重复尝试。第一改进在既有Web工作台实现持久化代记与正确上下文隔离、清晰模式/导航/错误反馈，补实际Vue组件事件测试；不新增另一套系统。
 
 ## 工作包A现有页面交互（2026-10-14）
 
-开发入口「记单与待办」与「商品维护」：持久化代记/原提交恢复、详情与明确确认、完整店铺字段、分类创建、退出与隐藏时私有内容清理。执行与失败修复记录见[evidence/workbench-ui/RESULT_20261014.md](evidence/workbench-ui/RESULT_20261014.md)。Vue/jsdom补充事件验证不等同真实浏览器；浏览器唯一迭代BLOCKED且已停止。后续B/C/D继续；正式身份不能等待AppID才编码。
+开发入口「记单与待办」与「商品维护」：持久化代记/原提交恢复、详情与明确确认、完整店铺字段、分类创建、退出与隐藏时私有内容清理。执行与失败修复记录见[evidence/workbench-ui/RESULT_20261014.md](evidence/workbench-ui/RESULT_20261014.md)。Vue/jsdom补充事件验证不等同真实浏览器；浏览器唯一迭代BLOCKED且已停止。后续B/C/D结果见下文。
 
 ## 工作包B：日常待办与联系信息
 
-0010迁移、单店日期与交付方式筛选、仅确认精确截止的逾期、历史文字/业务号搜索、复制新草稿、联系/配送字段、聚合计数已实现。Web与原生入口见ACCEPTANCE；Web额外补取消意向处理，分类创建保留商品编辑。正式身份及性能/启动升级C/D仍未完成。真实浏览器不重试，jsdom与模拟wx均不替代微信真机。证据将归档evidence/daily-workbench。
+0010迁移、单店日期与交付方式筛选、仅确认精确截止的逾期、历史文字/业务号搜索、复制新草稿、联系/配送字段、聚合计数已实现。Web与原生入口见ACCEPTANCE；Web额外补取消意向处理，分类创建保留商品编辑。该段为B完成时状态，后续C/D结果见下文。真实浏览器不重试，jsdom与模拟wx均不替代微信真机。证据已归档evidence/daily-workbench。
 
 ## 工作包C正式身份代码
 
-服务端固定HTTPS协议、AppID+openid映射、一次性登录码、仅摘要可撤销会话、禁用/过期/角色和租户检查已实现；原生wx.login与Web本人明确确认登录入口已接线，U-账号码替代正式邀请UUID输入。只有外部微信HTTPS响应模拟，真实PG与HTTP/会话/权限运行。未使用真实AppID，真实二维码/消息/隐私保留未配置；生产门禁仍拒绝外部未验收状态。首个真实管理员的实际权限授予另确认。D性能/启动升级继续。
+服务端固定HTTPS协议、AppID+openid映射、一次性登录码、仅摘要可撤销会话、禁用/过期/角色和租户检查已实现；原生wx.login与Web本人明确确认登录入口已接线，U-账号码替代正式邀请UUID输入。只有外部微信HTTPS响应模拟，真实PG与HTTP/会话/权限运行。未使用真实AppID，真实二维码/消息/隐私保留未配置；生产门禁仍拒绝外部未验收状态。首个真实管理员的实际权限授予另确认。D性能/启动升级结果见下文。
+
+## 工作包D 可复现运行与交付
+
+列表取消/确认/附件改为请求内批量读取，20条页真实SQL数量不随条数增长。2租户各30商品/200记录、10并发500读请求同机前后测量，0错误；指标见evidence/runtime-delivery，不能外推生产容量。
+旧0009后端真实生成20张业务表91合成行3图，增量升至0011后旧字段/图片/历史/权限/原幂等响应及重启均核对。发现并修复新增空默认导致旧成功请求409的兼容缺口，保留失败。
+统一dev_stack生命周期实际启动API/Vite/PG，写入、停止保留、重启读回、Vite代理通过；Dot不同终端调用PID/网络隔离，跨调用以实例心跳/停止请求控制并已收到结束确认。仅回环合成开发，不承诺常驻或公开链接。维护只读候选检查，无删除选项。
+
+D最终：242 Python（183真实PG）及全部回归退出0，远端干净检出10并发P95 326.86→161.83ms、每轮500读0错误；20旧业务表91合成行3图升级保留、恢复和启动停止重启通过。证据runtime-delivery。A—D阶段源码交付后等待用户查看，不扩展MVP或部署。

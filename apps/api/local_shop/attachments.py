@@ -6,6 +6,7 @@ from fastapi import HTTPException
 from sqlalchemy import select
 
 from .image_store import active_media
+from .list_relations import cached
 from .models import Inquiry, MediaObject, PrivateAttachment, Reservation
 
 
@@ -83,7 +84,11 @@ def attachments_json(session, tenant_id, *, inquiry_id=None, reservation_id=None
         query = query.where(PrivateAttachment.reservation_id == reservation_id)
     if customer:
         query = query.where(PrivateAttachment.visible_to_customer.is_(True))
-    rows = session.execute(query.order_by(PrivateAttachment.sort_order, PrivateAttachment.id))
+    rows = cached(session, tenant_id, reservation_id, "attachments") if reservation_id else None
+    if rows is None:
+        rows = session.execute(query.order_by(PrivateAttachment.sort_order, PrivateAttachment.id))
+    elif customer:
+        rows = [(media, item) for media, item in rows if item.visible_to_customer]
     return [
         {
             "id": str(media.id),

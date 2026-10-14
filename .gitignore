@@ -50,3 +50,6 @@ playwright-report/
 var/media/
 
 /tests/admin/.compiled/
+
+# Owned synthetic development lifecycle, never source or production data
+var/dev-stack/

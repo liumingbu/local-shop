@@ -1,0 +1,19 @@
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+waiting for server to shut down.... done
+server stopped
+Traceback (most recent call last):
+  File "<DOT_WORKSPACE>/local-shop-foundation/scripts/upgrade_drill.py", line 162, in <module>
+    main()
+  File "<DOT_WORKSPACE>/local-shop-foundation/scripts/upgrade_drill.py", line 113, in main
+    assert replay.status_code == 201 and replay.json() == owner["original"]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

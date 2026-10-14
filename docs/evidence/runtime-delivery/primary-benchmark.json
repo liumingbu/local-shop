@@ -1,0 +1,43 @@
+{
+  "kind": "same-Dot synthetic reference, NOT production capacity",
+  "baseline_sha": "adaef77da60fcd88513fcb97d54e6d801dd2729f",
+  "tested_head": "adaef77da60fcd88513fcb97d54e6d801dd2729f",
+  "dirty": true,
+  "dataset": {
+    "tenants": 2,
+    "products_per_tenant": 30,
+    "records_per_tenant": 200
+  },
+  "identity": "Real opaque sessions and DB permissions; synthetic provider identities; no WeChat network",
+  "environment": {
+    "python": "3.12.14",
+    "cpu_visible": 9,
+    "postgres": "postgres (PostgreSQL) 16.15"
+  },
+  "before": {
+    "requests": 500,
+    "concurrency": 10,
+    "errors": 0,
+    "latency_ms": {
+      "p50": 99.6,
+      "p95": 302.69,
+      "max": 405.57
+    },
+    "wall_seconds": 9.05,
+    "api_cpu_seconds": 9.99,
+    "api_peak_rss_kib": 88772
+  },
+  "after": {
+    "requests": 500,
+    "concurrency": 10,
+    "errors": 0,
+    "latency_ms": {
+      "p50": 73.03,
+      "p95": 157.7,
+      "max": 225.18
+    },
+    "wall_seconds": 4.676,
+    "api_cpu_seconds": 5.06,
+    "api_peak_rss_kib": 88872
+  }
+}

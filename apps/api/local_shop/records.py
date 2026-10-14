@@ -14,6 +14,7 @@ from .attachments import attachments_json, link_private
 from .cancellation_data import cancellation_json, pending_cancellation
 from .confirmation_data import acknowledge_latest, confirmation_json
 from .image_store import active_media
+from .list_relations import prefetch
 from .models import (
     CancellationRequest,
     Category,
@@ -146,7 +147,18 @@ def idempotent(session, tenant, actor, endpoint, key, payload, action):
     existing = session.get(IdempotencyKey, (tenant, actor, endpoint, key))
     if existing:
         if existing.payload_hash != digest:
-            raise HTTPException(409, "IDEMPOTENCY_CONFLICT")
+            # 0010 added optional contact defaults. Preserve successful pre-0010 commands.
+            # Only empty defaults may be omitted; changed contact details must still conflict.
+            legacy = {
+                k: v
+                for k, v in payload.items()
+                if not (k in {"contact_name", "contact_phone", "delivery_address"} and v == "")
+            }
+            legacy_digest = hashlib.sha256(
+                json.dumps(legacy, sort_keys=True, separators=(",", ":")).encode()
+            ).hexdigest()
+            if existing.payload_hash != legacy_digest:
+                raise HTTPException(409, "IDEMPOTENCY_CONFLICT")
         return existing.response
     response = action()
     session.add(
@@ -381,6 +393,8 @@ def build_router(access):
             .offset((page - 1) * limit)
             .limit(limit)
         )
+        rows = list(rows)
+        prefetch(session, rows)
         return {
             "items": [reservation_json(row, session) for row in rows],
             "total": count,

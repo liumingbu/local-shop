@@ -139,12 +139,16 @@ PR #18代码b6652736独立远端干净检出213 Python（154真实PG、59非PG�
 
 ## 工作包A现有页面交互（2026-10-14）
 
-开发入口「记单与待办」与「商品维护」：持久化代记/原提交恢复、详情与明确确认、完整店铺字段、分类创建、退出与隐藏时私有内容清理。执行与失败修复记录见[evidence/workbench-ui/RESULT_20261014.md](evidence/workbench-ui/RESULT_20261014.md)。Vue/jsdom补充事件验证不等同真实浏览器；浏览器唯一迭代BLOCKED且已停止。后续B/C/D继续；正式身份不能等待AppID才编码。
+开发入口「记单与待办」与「商品维护」：持久化代记/原提交恢复、详情与明确确认、完整店铺字段、分类创建、退出与隐藏时私有内容清理。执行与失败修复记录见[evidence/workbench-ui/RESULT_20261014.md](evidence/workbench-ui/RESULT_20261014.md)。Vue/jsdom补充事件验证不等同真实浏览器；浏览器唯一迭代BLOCKED且已停止。后续B/C/D证据见下文。
 
 ## 工作包B 日常闭环
 
-见[evidence/daily-workbench/RESULT_20261014.md](evidence/daily-workbench/RESULT_20261014.md)：主工作树221 Python、18控制器、11 Vue组件、57原生模拟wx、5 Vue/jsdom真实HTTP场景及重启通过；保留初次空库降级失败与修复。精确远端独立检出结果随后追加。原生真机/浏览器仍未验收。
+见[evidence/daily-workbench/RESULT_20261014.md](evidence/daily-workbench/RESULT_20261014.md)：主工作树221 Python、18控制器、11 Vue组件、57原生模拟wx、5 Vue/jsdom真实HTTP场景及重启通过；保留初次空库降级失败与修复。精确远端a574b0fa20c3df6897420ecaa92984188d69bc02独立检出同套回归通过。原生真机/浏览器仍未验收。
 
 ## 工作包C正式身份
 
-见[evidence/verified-identity/RESULT_20261014.md](evidence/verified-identity/RESULT_20261014.md)。正式身份外部HTTPS替身+真实PG18专项，其中真实HTTP上的Vue正式登录事件；完整Python初次238通过后又增加1项权限隔离，远端最终239项待复核。59原生模拟wx/18控制器/11Vue组件通过。真实AppID/微信/浏览器未验收，失败与修复保留。
+见[evidence/verified-identity/RESULT_20261014.md](evidence/verified-identity/RESULT_20261014.md)。正式身份外部HTTPS替身+真实PG18专项，其中真实HTTP上的Vue正式登录事件；完整Python初次238通过后又增加1项权限隔离，远端7e386292393c9d792b3095395a4ec8cf93df1fc2独立检出239项（180真实PG）通过，0失败/跳过。59原生模拟wx/18控制器/11Vue组件通过。真实AppID/微信/浏览器未验收，失败与修复保留。
+
+## 工作包D运行与交付
+
+见[evidence/runtime-delivery/RESULT_20261014.md](evidence/runtime-delivery/RESULT_20261014.md)：主工作树242 Python（183 PG）、18控制器/11Vue组件/59原生及实际HTTP通过；同机10并发/500读请求前后0错误，旧0009→0011真实升级和启动停止重启已执行；保留旧幂等兼容失败和修复。TLS代理通过，systemd明确跳过。最终精确远端0afbd497955dde0b8d661cd633b9854e319cee5b干净独立检出同套完整回归、备份恢复、10并发规模/升级/生命周期全部退出0，详见该报告最终段和remote-full.txt。

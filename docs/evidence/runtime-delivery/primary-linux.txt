@@ -1,0 +1,18 @@
+nginx version: nginx/1.30.5
+built by gcc 14.2.0 (Debian 14.2.0-19) 
+built with OpenSSL 3.5.7 9 Jun 2026
+TLS SNI support enabled
+configure arguments: --prefix=<DOT_WORKSPACE>/local-shop-tools/nginx-1.30.5 --with-http_ssl_module --with-http_v2_module
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+nginx: the configuration file /tmp/local-shop-delivery-check-a62s6krg/nginx.conf syntax is ok
+nginx: configuration file /tmp/local-shop-delivery-check-a62s6krg/nginx.conf test is successful
+PASS REAL Nginx/TLS1.2+TLS1.3: certificate verified by explicit ephemeral CA, HTTPS fixed-host redirect, health/auth/image/idempotency proxy, blocked dev/static paths, 2MiB limit, 429, query-free JSON access log
+NOT_RUN systemd-analyze verification explicitly skipped; earlier Dot run hit read-only /run/systemd
+PASS fail-closed release guard; systemd activation/production/real WeChat remain NOT_RUN/BLOCKED
+waiting for server to shut down.... done
+server stopped

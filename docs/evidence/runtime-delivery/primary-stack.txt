@@ -1,0 +1,6 @@
+v24.19.0
+{"kind": "owned synthetic development", "running": true, "data_preserved": true, "health_source": "owning process heartbeat; cells may isolate PID/network namespaces", "api_url": "http://127.0.0.1:44911", "web_url": "http://127.0.0.1:49763", "started_at": 1791966973.0868936, "api_status": 200, "web_status": 200}
+{"python": "3.12.14", "venv_available": true, "node_dependencies": true, "pg_bin_configured": true, "public_access": false, "persistent_hosting_guaranteed": false}
+Owned stack stopped and data preserved; owner acknowledged
+Owned stack stopped and data preserved; owner acknowledged
+PASS owned stack start/status/diagnose/stop/restart: real HTTP data and Vite proxy preserved; no browser claim

@@ -1,0 +1,3 @@
+{"kind": "owned synthetic development", "running": true, "data_preserved": true, "health_source": "owning process heartbeat; cells may isolate PID/network namespaces", "api_url": "http://127.0.0.1:18000", "web_url": "http://127.0.0.1:15173", "started_at": 1791966793.2227652, "api_status": 200, "web_status": 200}
+Owned stack stopped and data preserved; owner acknowledged
+{"kind": "owned synthetic development", "running": false, "data_preserved": true, "health_source": "owning process heartbeat; cells may isolate PID/network namespaces"}

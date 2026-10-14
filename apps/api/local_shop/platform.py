@@ -96,7 +96,13 @@ def operation(session, uid, key, action_name, payload, action):
         )
     )
     if previous:
-        if previous.action != action_name or previous.payload_hash != digest:
+        legacy = dict(body)
+        if action_name == "INVITE_SHOP_OWNER" and legacy.get("owner_account_code") is None:
+            legacy.pop("owner_account_code", None)
+        legacy_digest = hashlib.sha256(
+            json.dumps(legacy, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        if previous.action != action_name or previous.payload_hash not in {digest, legacy_digest}:
             raise HTTPException(409, "IDEMPOTENCY_CONFLICT")
         return previous.response
     response, audit = action()
