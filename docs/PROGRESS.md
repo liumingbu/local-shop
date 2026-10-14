@@ -5,7 +5,7 @@
 ## 当前基准
 
 - PR #1–#22已合并并fetch核对；当前起点main：4264c4789407c29e59557802db108c32470342fd。
-- 当前工作包C分支feat/verified-identity-sessions。B代码a574b0fa独立检出通过，PR22已合并；C正式身份/会话/工作台确认入口在合成PG完成专项验证，完整复核进行中。
+- 当前工作包C分支feat/verified-identity-sessions。B代码a574b0fa独立检出通过，PR22已合并；C正式身份/会话/工作台确认入口在合成PG完成专项验证，代码7e386292独立检出239 Python及完整回归/恢复通过，PR23报告提交后合并。
 - 用户已授权Dot自行测试审查后合并常规PR，阶段性回报。生产、凭据/权限、费用和环境变更仍需确认。
 - 仅Dot自身云电脑；未使用Mac、Codex任务、Actions、Codespaces或其他云。未部署。
 - GitHub API提交/PR/合并可用且fetch树核验；终端直接push认证未建立，不能混称终端push通过。
