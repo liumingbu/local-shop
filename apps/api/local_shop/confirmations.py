@@ -62,6 +62,7 @@ def build_router(access):
             details["items"] = snapshot_items(session, tenant_id, details["items"])
             previous = row.status
             row.status = "PENDING_CONFIRMATION"
+            row.confirmed_due_at = None
             row.version += 1
             row.updated_at = datetime.now(UTC)
             session.add(

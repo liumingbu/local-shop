@@ -1,8 +1,8 @@
 import { auth, ApiError, errorText, needLogin, privateImage, request, requireId } from '../../lib/client';
-import { finishMutation, mutate, pending } from '../../lib/drafts';
+import { finishMutation, mutate, pending, readDraft, saveDraft } from '../../lib/drafts';
 import { merchantBase, transitions } from '../../lib/merchant';
 import { labels, quantityValid, route, run, timeText } from '../../lib/ui';
-import type { Cancellation, Item, RecordData } from '../../lib/types';
+import type { Cancellation, Draft, Item, RecordData } from '../../lib/types';
 function present(row:RecordData){
   const cancellations=row.cancellation_requests||[],revisions=row.confirmation_revisions||[];
   return {row,label:labels[row.status]||row.status,time:timeText(row.created_at),expected:timeText(row.expected_at),
@@ -68,6 +68,7 @@ Page({alive:true,view:0,
       return this.perform(this.base()+'/confirmation-revisions',{expected_version:row.version,summary:this.data.summary,items:this.data.items,change_reason:this.data.changeReason,
         fulfillment_at:at,time_note:[this.data.date&&!this.data.clock?this.data.date:'',this.data.timeNote].filter(Boolean).join(' ')});
     }catch(e){this.setData({error:errorText(e)});}},
+  copy(){return run(this,async commit=>{if(this.data.kind!=='reservation'||this.data.locked)return;const old=readDraft(this.data.storeId,'merchant-record');if(old.raw_text||old.items.length||pending(this.data.storeId,'merchant-record'))throw new ApiError('EXISTING_DRAFT');const result=await request<{draft:Draft;warnings:string[]}>(this.base()+'/copy-draft');if(!this.alive)return;saveDraft(this.data.storeId,{...result.draft,privacy_accepted:false,copy_review_required:true},'merchant-record');commit({notice:result.warnings.join('；')});route('merchant',this.data.storeId);});},
   converted(){const id=this.data.row?.converted_reservation_id;if(id)route('merchantdetail',this.data.storeId,'&kind=reservation&record_id='+requireId(id));},
   back(){route('merchant',this.data.storeId);},home(){wx.navigateTo({url:'/pages/index/index'});},
 });

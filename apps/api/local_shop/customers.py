@@ -37,6 +37,9 @@ PRIVACY_VERSION = "development-draft-v1"
 
 
 class CustomerRequest(StrictModel):
+    contact_name: str = Field(default="", max_length=100)
+    contact_phone: str = Field(default="", max_length=50)
+    delivery_address: str = Field(default="", max_length=500)
     raw_text: str = Field(default="", max_length=4000)
     customer_label: str = Field(default="", max_length=100)
     items: list[FreeItem] = Field(default_factory=list, max_length=100)
@@ -85,6 +88,11 @@ def customer_reservation(row, session, detail=False):
     allowed = (
         "id",
         "tenant_id",
+        "business_number",
+        "contact_name",
+        "contact_phone",
+        "delivery_address",
+        "confirmed_due_at",
         "source",
         "source_inquiry_id",
         "raw_text",

@@ -1,18 +1,18 @@
 import { ApiError } from './api';
 import { requireId, type PendingStorage } from './platform';
-export interface ManualDraft {customer_label:string;raw_text:string;source:string;fulfillment_method:string;expected_time_note:string;internal_note:string;mark_confirmed:boolean}
+export interface ManualDraft {customer_label:string;raw_text:string;source:string;fulfillment_method:string;expected_time_note:string;internal_note:string;mark_confirmed:boolean;copy_review_required?:boolean;contact_name:string;contact_phone:string;delivery_address:string;expected_at:string|null;items:{name:string;quantity:string;unit:string;spec:string;product_id?:string|null}[]}
 export interface Command {path:string;body:unknown;key:string}
-export const emptyDraft=():ManualDraft=>({customer_label:'',raw_text:'',source:'MERCHANT_PHONE',fulfillment_method:'PICKUP',expected_time_note:'',internal_note:'',mark_confirmed:false});
+export const emptyDraft=():ManualDraft=>({customer_label:'',raw_text:'',source:'MERCHANT_PHONE',fulfillment_method:'PICKUP',expected_time_note:'',internal_note:'',mark_confirmed:false,contact_name:'',contact_phone:'',delivery_address:'',expected_at:null,items:[]});
 export class WorkbenchDraft {
  readonly root:string;private slot:string;
  constructor(private storage:PendingStorage,user:string,tenant:string){this.root=`/api/v1/merchant/tenants/${requireId(tenant)}/reservations`;this.slot=`local-shop.web.workbench.v1.${requireId(user)}.${requireId(tenant)}`;}
  read():{draft:ManualDraft;pending:Command|null}{
   try{const raw=this.storage.getItem(this.slot);if(!raw)return{draft:emptyDraft(),pending:null};if(raw.length>50000)throw Error();const value=JSON.parse(raw);
-   const draft=value.draft;const limits:Record<string,number>={customer_label:100,raw_text:4000,expected_time_note:200,internal_note:2000};
+   const draft={...emptyDraft(),...value.draft};const limits:Record<string,number>={customer_label:100,raw_text:4000,expected_time_note:200,internal_note:2000,contact_name:100,contact_phone:50,delivery_address:500};
    if(!draft||Object.entries(limits).some(([k,n])=>typeof draft[k]!=='string'||draft[k].length>n)||!['MERCHANT_PHONE','MERCHANT_WECHAT','MERCHANT_IN_STORE'].includes(draft.source)||!['PICKUP','DELIVERY'].includes(draft.fulfillment_method)||typeof draft.mark_confirmed!=='boolean')throw Error();
    const pending=value.pending;if(pending){if(!/^[A-Za-z0-9_.-]{8,100}$/.test(pending.key)||!pending.body||typeof pending.body!=='object'||Array.isArray(pending.body))throw Error();
-    if(pending.path!==this.root){if(typeof pending.path!=='string'||!pending.path.startsWith(this.root+'/'))throw Error();const parts=pending.path.slice(this.root.length+1).split('/');requireId(parts[0]);if(parts.length!==2||!['transitions','confirmation-revisions'].includes(parts[1]))throw Error();}}
-   return{draft:{...emptyDraft(),...draft},pending:pending||null};
+    if(pending.path!==this.root){if(typeof pending.path!=='string'||!pending.path.startsWith(this.root+'/'))throw Error();const parts=pending.path.slice(this.root.length+1).split('/');requireId(parts[0]);if(parts.length===4&&parts[1]==='cancellation-requests'&&parts[3]==='decision'){requireId(parts[2]);}else if(parts.length!==2||!['transitions','confirmation-revisions'].includes(parts[1]))throw Error();}}
+   if(!Array.isArray(draft.items)||draft.items.length>100)throw Error();return{draft:{...emptyDraft(),...draft},pending:pending||null};
   }catch{throw Error('LOCAL_DRAFT_UNAVAILABLE');}
  }
  save(draft:ManualDraft,pending:Command|null){try{this.storage.setItem(this.slot,JSON.stringify({draft,pending}));}catch{throw Error('LOCAL_DRAFT_UNAVAILABLE');}}

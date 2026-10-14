@@ -1,6 +1,6 @@
 import hashlib
 import json
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from decimal import Decimal
 from typing import Literal
 from uuid import UUID
@@ -50,6 +50,9 @@ class FreeItem(StrictModel):
 
 
 class NewReservation(StrictModel):
+    contact_name: str = Field(default="", max_length=100)
+    contact_phone: str = Field(default="", max_length=50)
+    delivery_address: str = Field(default="", max_length=500)
     source: Literal["MERCHANT_PHONE", "MERCHANT_WECHAT", "MERCHANT_IN_STORE"] = "MERCHANT_PHONE"
     customer_label: str = Field(min_length=1, max_length=100)
     raw_text: str = Field(min_length=1, max_length=4000)
@@ -100,6 +103,18 @@ def lock_scope(session, scope: str):
 
 def reservation_json(record, session=None):
     value = {key: str(getattr(record, key)) for key in ("id", "tenant_id", "actor_id")} | {
+        "business_number": f"LS{record.business_number:010d}",
+        "contact_name": record.contact_name,
+        "contact_phone": record.contact_phone,
+        "delivery_address": record.delivery_address,
+        "confirmed_due_at": record.confirmed_due_at.isoformat()
+        if record.confirmed_due_at
+        else None,
+        "is_overdue": bool(
+            record.confirmed_due_at
+            and record.confirmed_due_at < datetime.now(UTC)
+            and record.status not in {"COMPLETED", "CANCELLED", "PENDING_CONFIRMATION"}
+        ),
         "source": record.source,
         "customer_user_id": str(record.customer_user_id) if record.customer_user_id else None,
         "source_inquiry_id": str(record.source_inquiry_id) if record.source_inquiry_id else None,
@@ -169,6 +184,8 @@ def snapshot_items(session, tenant_id, items):
             )
             if product is None:
                 raise HTTPException(404, "PRODUCT_NOT_FOUND")
+            if product.supply_status == "UNAVAILABLE":
+                raise HTTPException(409, "PRODUCT_UNAVAILABLE")
             snapshot |= {
                 "name": product.name,
                 "unit": product.unit,
@@ -329,21 +346,32 @@ def build_router(access):
         tenant_id: UUID,
         status: Status | None = None,
         cancellation_pending: bool | None = None,
+        day: Literal["today", "tomorrow", "date", "none"] | None = None,
+        on_date: date | None = None,
+        method: Literal["PICKUP", "DELIVERY"] | None = None,
+        overdue: bool = False,
+        q: str = Query(default="", max_length=100),
         page: int = Query(1, ge=1),
         limit: int = Query(20, ge=1, le=100),
         uid: UUID = Depends(actor),
         session: Session = Depends(database, scope="function"),
     ):
         authorize(session, tenant_id, uid)
-        condition = [Reservation.tenant_id == tenant_id]
+        from .daily_workbench import filters
+
+        condition = filters(tenant_id, day, on_date, method, overdue, q)
         if status:
             condition.append(Reservation.status == status)
         if cancellation_pending is not None:
-            pending = select(CancellationRequest.id).where(
-                CancellationRequest.tenant_id == Reservation.tenant_id,
-                CancellationRequest.reservation_id == Reservation.id,
-                CancellationRequest.status == "REQUESTED",
-            ).exists()
+            pending = (
+                select(CancellationRequest.id)
+                .where(
+                    CancellationRequest.tenant_id == Reservation.tenant_id,
+                    CancellationRequest.reservation_id == Reservation.id,
+                    CancellationRequest.status == "REQUESTED",
+                )
+                .exists()
+            )
             condition.append(pending if cancellation_pending else ~pending)
         count = session.scalar(select(func.count()).select_from(Reservation).where(*condition))
         rows = session.scalars(
@@ -432,8 +460,9 @@ def build_router(access):
             if payload.target_status not in allowed[row.status]:
                 raise HTTPException(409, "INVALID_TRANSITION")
             if payload.target_status == "CONFIRMED":
-                acknowledge_latest(session, row, uid, payload.confirmation_revision_id,
-                                   payload.customer_agreed)
+                acknowledge_latest(
+                    session, row, uid, payload.confirmation_revision_id, payload.customer_agreed
+                )
             elif payload.confirmation_revision_id or payload.customer_agreed:
                 raise HTTPException(422, "CONFIRMATION_FIELDS_NOT_APPLICABLE")
             previous = row.status

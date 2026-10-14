@@ -351,7 +351,7 @@ def test_downgrade_refuses_to_destroy_platform_history(platform, pg_settings):
     invite(platform)
     with pytest.raises(AssertionError, match="Migration failed"):
         migrate(pg_settings, "downgrade", "0008_confirmations")
-    assert "0009_platform" in migrate(pg_settings, "current").stdout
+    assert "0010_daily_workbench" in migrate(pg_settings, "current").stdout
     assert (
         platform.get(
             "/api/v1/platform/invitations", headers=headers(platform, "platform-admin")

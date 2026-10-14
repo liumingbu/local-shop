@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def test_real_migration_idempotent(pg_settings):
     migrate(pg_settings, "upgrade", "head")
-    assert "0009_platform" in migrate(pg_settings, "current").stdout
+    assert "0010_daily_workbench" in migrate(pg_settings, "current").stdout
 
 
 def test_real_seed_idempotent(pg_settings):

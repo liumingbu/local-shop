@@ -39,7 +39,7 @@ onMounted(()=>document.addEventListener('visibilitychange',visibility));onUnmoun
 <PlatformPanel v-if="platformRole" :key="userId+sessionVersion" :token="token" :user-id="userId" @busy="platformBusy=$event" @locked="platformLocked=$event"/>
 <template v-else-if="tenant"><div class="row"><h2 class="store-title">{{tenant.name}}</h2><label v-if="members.length>1">当前已授权店铺<select :value="tenantId" :disabled="busy||childBusy||locked" @change="choose"><option v-for="member in members" :key="member.id" :value="member.id">{{member.name}}</option></select></label></div>
 <nav aria-label="工作台功能" class="actions"><button :aria-pressed="tab==='workbench'" @click="tab='workbench'">记单与待办</button><button :aria-pressed="tab==='catalog'" @click="tab='catalog'">商品维护</button></nav>
-<WorkbenchPanel v-show="tab==='workbench'" :key="'workbench'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" :role="tenant.role" @busy="workbenchBusy=$event" @locked="workbenchLocked=$event"/>
+<WorkbenchPanel v-show="tab==='workbench'" :key="'workbench'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" :role="tenant.role" :active="tab==='workbench'" @busy="workbenchBusy=$event" @locked="workbenchLocked=$event"/>
 <CatalogPanel v-show="tab==='catalog'" :key="'catalog'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" @busy="catalogBusy=$event" @locked="catalogLocked=$event"/>
 </template></template>
 <p v-if="concealed">页面已隐藏，私有工作台内容已清除；返回后重新读取。</p>

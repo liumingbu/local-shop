@@ -11,7 +11,7 @@ function categoryRestore(){try{const raw=localStorage.getItem(categorySlot);if(!
 async function createCategory(){if(categoryBusy.value||state.busy||state.locked||categoryStorageInvalid)return;categoryBusy.value=true;categoryError.value='';
  try{if(!categoryPending.value){const value={name:categoryName.value.trim(),key:crypto.randomUUID()};if(!value.name||value.name.length>100)return;localStorage.setItem(categorySlot,JSON.stringify(value));categoryPending.value=value;}
  const command=categoryPending.value;await request(`/api/v1/merchant/tenants/${props.tenantId}/categories`,token,'POST',{name:command.name,sort_order:0,status:'ACTIVE'},command.key);
- if(!alive)return;localStorage.setItem(categorySlot,'null');categoryPending.value=null;categoryName.value='';await controller.load();
+ if(!alive)return;localStorage.setItem(categorySlot,'null');categoryPending.value=null;categoryName.value='';await controller.refreshCategories();
  }catch(e){if(!alive)return;if(e instanceof ApiError&&e.status>=400&&e.status<500&&![401,403,408,429].includes(e.status)){try{localStorage.setItem(categorySlot,'null');categoryPending.value=null;}catch{}}
  categoryError.value=errorMessage(e);
  }finally{if(alive)categoryBusy.value=false;}}

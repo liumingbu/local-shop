@@ -15,6 +15,7 @@ from .catalog import build_router as catalog_router
 from .config import Settings
 from .confirmations import build_router as confirmation_router
 from .customers import build_router as customer_router
+from .daily_workbench import build_router as daily_router
 from .db import build_engine, probe_database
 from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
 from .media import build_router as media_router
@@ -106,6 +107,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             return {"user_id": claims["sub"], "development_only": True}
 
     access = build_access(settings, engine)
+    app.include_router(daily_router(access))
     app.include_router(build_router(access))
     app.include_router(catalog_router(access))
     app.include_router(media_router(access, settings))

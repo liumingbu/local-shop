@@ -92,3 +92,7 @@ confirmation_revisions以tenant_id+reservation_id复合FK绑定原需求，propo
 platform_operations存actor+key唯一、action、payload_hash、原始response以及目标租户/邀请、前后状态、reason和时间；普通API只追加，未提供修改/删除审计接口。不是防DB管理员篡改的承诺。
 租户状态变更锁定Tenant行；商户鉴权与公开店铺新业务持有Tenant共享行锁到事务结束，避免授权检查和暂停提交间穿透。历史顾客权限路径保持独立。
 存在邀请/操作历史时0009降级主动拒绝，不能靠降级删除历史；需要审查备份恢复方案。真实资料保留政策另确认。
+
+## 0010 日常待办
+
+reservations新增数据库Identity business_number，展示LS+至少10位数字，仅查找标识；旧行迁移生成稳定编号。新增限长联系方式和confirmed_due_at；截止仅由最新候选明确确认写入，提出新候选清除，旧候选历史保留。迁移仅从最新且已确认的fulfillment_at回填，不解析期望或文字。逾期只覆盖CONFIRMED/PREPARING/READY/OUT_FOR_DELIVERY。新增租户+截止/期望/业务号索引。文本包含查询仍为本店有限页查询，不宣称已有全文索引。存在需求记录时降级拒绝删除这些业务字段；仅空需求表可回退，真实环境仍需审查恢复方案。

@@ -2,7 +2,8 @@
   <view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{locked}}">原请求结果未确认，内容已锁定。重试会使用同一请求，不会新建另一份。</view>
   <view class="notice">仅使用合成演示资料。询货答复不自动成为备货需求；登记不代表商家已确认。</view>
   <block wx:if="{{draft && !done}}"><view class="card">
-    <textarea data-field="raw_text" value="{{draft.raw_text}}" bindinput="input" disabled="{{busy || locked}}" maxlength="4000" placeholder="想问什么／需要什么？也可以只上传需求图片"/>
+    <block wx:if="{{kind==='reservation'}}"><input value="{{draft.contact_name}}" data-field="contact_name" bindinput="input" disabled="{{busy || locked}}" maxlength="100" placeholder="联系人（不用于认领账号）"/><input value="{{draft.contact_phone}}" data-field="contact_phone" bindinput="input" disabled="{{busy || locked}}" maxlength="50" placeholder="联系电话，仅本人和本店可见"/><textarea wx:if="{{draft.fulfillment_method==='DELIVERY'}}" value="{{draft.delivery_address}}" data-field="delivery_address" bindinput="input" disabled="{{busy || locked}}" maxlength="500" placeholder="本次配送地址"/></block>
+<textarea data-field="raw_text" value="{{draft.raw_text}}" bindinput="input" disabled="{{busy || locked}}" maxlength="4000" placeholder="想问什么／需要什么？也可以只上传需求图片"/>
     <block wx:if="{{kind==='reservation'}}"><input data-field="customer_label" value="{{draft.customer_label}}" bindinput="input" disabled="{{busy || locked}}" maxlength="100" placeholder="称呼（选填，不用于认领历史）"/>
       <view wx:for="{{draft.items}}" wx:key="index" class="line"><view>{{item.name}} · {{item.spec}} · {{item.unit}}</view>
         <input type="digit" value="{{item.quantity}}" data-index="{{index}}" bindinput="quantity" disabled="{{busy || locked}}"/>
