@@ -3,6 +3,7 @@ test('老板A完整闭环、关闭历史、切换B隔离、重复点击', async 
   await page.goto('/');
   await page.getByRole('button', {name:'进入工作台'}).click();
   await expect(page.getByRole('heading', {name:'合成演示店1'})).toBeVisible();
+  await page.getByText('店铺资料与公开设置', {exact:true}).click();
   await page.getByLabel('店名', {exact:true}).fill('演示店 A');
   await page.getByRole('button', {name:'保存店铺'}).click();
   await page.getByLabel('顾客称呼', {exact:true}).fill('自动测试顾客甲');
@@ -14,10 +15,10 @@ test('老板A完整闭环、关闭历史、切换B隔离、重复点击', async 
     await card.getByRole('button', {name:status, exact:true}).click();
     await expect(card.locator('.badge')).toHaveText(status);
   }
-  await card.getByRole('button', {name:'查看历史'}).click();
-  const history=page.getByRole('region',{name:'处理历史'});
+  await card.getByRole('button', {name:'查看详情与历史'}).click();
+  const history=page.getByRole('region',{name:'处理详情'});
   await expect(history.locator('li')).toHaveCount(5);
-  await page.getByRole('button', {name:'关闭历史'}).click();
+  await page.getByRole('button', {name:'关闭详情'}).click();
   await expect(history).toHaveCount(0);
   await page.getByLabel('演示身份').selectOption('merchant-b');
   await page.getByRole('button', {name:'进入工作台'}).click();

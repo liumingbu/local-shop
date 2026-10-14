@@ -209,3 +209,9 @@ PG_BIN=/path/to/trusted/postgresql-16/bin .venv/bin/python scripts/backup_restor
 ## Linux交付候选
 
 服务、TLS代理和配置模板见[DEPLOYMENT](docs/DEPLOYMENT.md#8-linux候选交付2026-10-13)。真实登录未完成，生产门禁主动拒绝启动；不代表已部署。合成组件检查：`PG_BIN=<PG16 bin> NGINX_BIN=<nginx 1.30.5> .venv/bin/python scripts/linux_delivery_check.py`；systemd验证受限时可明确使用`--skip-systemd`，该项仍NOT_RUN。
+
+## 工作台交互验证（下一阶段）
+
+Web开发演示入口须显式设置`VITE_ENABLE_DEVELOPMENT_LOGIN=true npm run dev -w apps/admin`，只在开发构建的localhost/127.0.0.1显示；后端仍要求受控回环和DEV_AUTH_ENABLED，正式构建不自动降级。工作台默认先显示记单/待办，商品维护可切换，草稿和未确认命令按账号/店铺保存在本机；退出清除内存令牌和私有页面，不删除原待确认请求。
+
+`npm run test:dom`编译实际Vue组件，在jsdom执行输入、点击、提交、卸载/恢复事件；不是浏览器渲染。`PG_BIN=<PG16 bin> .venv/bin/python scripts/e2e_with_postgres.py --http-only --native-client --dom-client`另以真实API/PG验证这些组件事件。实际Chromium在本阶段唯一有限排障中仍被Unix socket权限限制，证据在docs/evidence/browser-20261014；没有真实截图，不能将DOM结果当成浏览器或微信验收。

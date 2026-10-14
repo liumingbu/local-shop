@@ -124,3 +124,9 @@ test('date-only input remains a note and is not silently assigned midnight',asyn
 test('source default has no API origin or enabled fake login',()=>{
   const text=fs.readFileSync(path.resolve(root,'../config.ts'),'utf8');assert.match(text,/apiOrigin:\s*''/);assert.match(text,/enableDevelopmentLogin:\s*false/);
 });
+
+test('manual UUID entry is development-only; valid recent/shared route is retained',()=>{
+ const {state,config}=setup();const p=page('index');config.enableDevelopmentLogin=false;
+ p.data.storeInput='10000000-0000-4000-8000-000000000001';p.enter();assert.equal(state.navigation.length,0);
+ p.enter({currentTarget:{dataset:{id:p.data.storeInput}}});assert.equal(state.navigation.length,1);
+});

@@ -42,6 +42,7 @@ Page({
         return; logout(); this.setData({ identity: '未登录' }); },
     enter(event?: WechatMiniprogram.TouchEvent) {
         try {
+            if (!event?.currentTarget.dataset.id && !developmentAllowed()) throw new Error('DEVELOPMENT_ENTRY_DISABLED');
             const id = requireId(event?.currentTarget.dataset.id || this.data.storeInput.trim());
             wx.navigateTo({ url: `/pages/store/store?store_id=${id}` });
         }

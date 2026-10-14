@@ -136,3 +136,7 @@ PR #17代码ca64e8a5远端独立干净检出206 Python（154真实PG、52非PG�
 ## Linux TLS代理与生产发布门禁
 
 PR #18代码b6652736独立远端干净检出213 Python（154真实PG、59非PG）、18 Web、54原生与Ruff/TS/构建/HTTP/恢复通过。真实Nginx1.30.5 TLS1.2和1.3/413/429/访问日志/私图鉴权通过，见[evidence/linux-delivery/RESULT_20261013.md](evidence/linux-delivery/RESULT_20261013.md)。systemd-analyze因/run/systemd只读BLOCKED；全套明确--skip-systemd，并未运行系统服务或生产部署。正式身份/微信/DOM仍未验收。
+
+## 工作包A现有页面交互（2026-10-14）
+
+开发入口「记单与待办」与「商品维护」：持久化代记/原提交恢复、详情与明确确认、完整店铺字段、分类创建、退出与隐藏时私有内容清理。执行与失败修复记录见[evidence/workbench-ui/RESULT_20261014.md](evidence/workbench-ui/RESULT_20261014.md)。Vue/jsdom补充事件验证不等同真实浏览器；浏览器唯一迭代BLOCKED且已停止。后续B/C/D继续；正式身份不能等待AppID才编码。
