@@ -1,6 +1,7 @@
 import { auth, errorText, requireId } from './client';
 export interface Screen {
     alive?: boolean;
+    onSessionInvalidated?(): void;
     view?: number;
     data: {
         busy: boolean;
@@ -25,6 +26,7 @@ export async function run(screen: Screen, action: (commit: (data: Record<string,
         commit({ error: errorText(e) });
     }
     finally {
+        if (alive(screen) && (screen.view || 0) === view && sessionGuard && current !== auth().generation) screen.onSessionInvalidated?.();
         if (alive(screen) && (screen.view || 0) === view && (!sessionGuard || current === auth().generation))
             screen.setData({ busy: false });
     }

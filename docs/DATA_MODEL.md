@@ -102,3 +102,9 @@ reservations新增数据库Identity business_number，展示LS+至少10位数字
 users增加唯一可空account_code；正式账号创建时分配U-开店账号码，旧开发账号不自动转换。wechat_identities以appid+openid联合主键映射新UUID，不读取旧项目配置或凭姓名电话归属。auth_sessions存本项目AppID域隔离HMAC token_hash、user_id、expires_at、revoked；used_login_codes只保存已消费code摘要。重复登录码不能再次创建会话，并发首登使用PG事务锁加唯一键。
 browser_approvals保存查询secret/确认码摘要、期限、确认账号和一次性消费状态，不保存明文会话token。auth_rate_windows存IP的HMAC域隔离分钟桶和计数，登录失败也在独立事务计数；未提供自动删除真实记录任务。保留策略和清理需上线前确认，后续仅提供dry-run检查。
 有正式身份/会话/工作台确认历史时0011拒绝降级；空表可回退。密钥或AppID变化使旧会话摘要失效，需要重新登录，不自动迁移身份。
+
+## G 0014_updates_contacts
+
+notice_reads以user_id+tenant_id+audience+event_key为复合主键；站内条目从原有record_events/inquiry_events派生，不另维护消息业务状态。新增事件租户时间索引。
+contact_records以tenant_id+reservation_id/inquiry_id复合外键限制所属，两目标恰选一；保留操作者、明确联系结果、500字内备注和时间。原记录版本递增，内部CONTACT_LOGGED事件不进入顾客DTO。
+notification_attempts对tenant+recipient+audience+event+channel唯一，仅记录状态元数据。发送前IN_PROGRESS单独提交，进程中断不盲重发；ACCEPTED仅表接口接受，delivered_at/read_at数据库约束必须为空（当前没有真实回执）。无生产适配器或自动队列。非空新历史表时拒绝downgrade删除。

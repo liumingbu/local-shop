@@ -192,3 +192,11 @@ GET /auth/me返回本系统user_id、开店账号码及development_only，不返
 POST /auth/browser-approvals发起三分钟工作台确认，随机确认码与仅留当前网页内存的查询secret；POST /auth/browser-approvals/confirm需已登录正式小程序账号且confirmed=true；POST /auth/browser-approvals/poll用原secret一次领取工作台会话。不创建新角色，不把开发账号升级为正式/平台账号。仅确认本人正在打开的工作台，禁止代他人确认。
 平台邀请支持owner_account_code或旧开发owner_user_id二选一；正式管理员只能邀请WECHAT账号，U-账号码用于定向邀请，不是登录凭据，不用姓名/手机号认领。
 GET /capabilities明确区分登录配置存在与真实微信已验；当前二维码/消息NOT_CONFIGURED，隐私DEVELOPMENT_DRAFT。不会返回假二维码或已通知结果。
+
+## 站内更新与人工联系（G）
+
+GET merchant/tenants/{tenant}/updates 与 me/stores/{tenant}/updates：每页50、page<=10000，返回本站当前身份 unread/total/items；event_key只定位既有事件，不是授权凭证。POST同路径/read接收1—100个event_keys，逐个验证归属，全有权限才写；同键重试无重复，绝不迁移业务状态。顾客只见本人公开事件，商户/顾客游标独立。
+
+GET/POST merchant/tenants/{tenant}/{reservations|inquiries}/{record}/contacts：本店商户私有，每页50。POST复用Idempotency-Key、expected_version并要求confirmed=true；method只允许PHONE/WECHAT/NOT_REACHED、note<=500，增加版本和内部事件，不改变业务状态。顾客DTO不含此事件或备注。GET /contact-draft仅已确认需求，返回待人工核对摘要；复制不写联系记录。UI支持分页、显式结果和原请求重试。
+
+GET notification-capabilities认证后返回外部UNCONFIGURED。没有外部发送HTTP入口、后台调度或真实凭据。内部提供prepare/dispatch_once接口供将来适配，必须先提交去重任务；IN_PROGRESS/UNKNOWN/TIMEOUT不自动重发，不承诺第三方恰好一次。

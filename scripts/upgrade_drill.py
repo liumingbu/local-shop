@@ -96,6 +96,32 @@ def preserve_existing_import(runtime, headers):
         return {"path": root + f"/catalog-imports/{job['id']}", "value": response.json()}
 
 
+def preserve_existing_export(runtime, headers):
+    root = "/api/v1/merchant/tenants/10000000-0000-4000-8000-000000000001"
+    with httpx.Client(base_url=runtime.url, trust_env=False, timeout=10) as client:
+        snapshot = client.get(root + "/fulfillment?phase=ACTIVE", headers=headers)
+        if snapshot.status_code == 404:
+            return None
+        assert snapshot.status_code == 200, snapshot.text
+        command = {
+            "scope": {"phase": "ACTIVE"},
+            "purpose": "PREPARATION",
+            "format": "TEXT",
+            "expected_fingerprint": snapshot.json()["fingerprint"],
+        }
+        key = "synthetic-upgrade-export-" + str(uuid4())
+        response = client.post(
+            root + "/fulfillment/exports", json=command, headers=headers | {"Idempotency-Key": key}
+        )
+        assert response.status_code == 200, response.text
+        return {
+            "path": root + "/fulfillment/exports",
+            "body": command,
+            "headers": headers | {"Idempotency-Key": key},
+            "value": response.json(),
+        }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--old-ref", required=True)
@@ -125,6 +151,7 @@ def main():
         exercise_confirmation(runtime.url)
         platform = exercise_platform(runtime.url)
         import_probe = preserve_existing_import(runtime, owner["headers"])
+        export_probe = preserve_existing_export(runtime, owner["headers"])
         old_columns, old_revision = database_schema(runtime)
         before = snapshot(runtime, old_columns)
         media_before = files(runtime)
@@ -136,6 +163,11 @@ def main():
         assert files(runtime) == media_before, "Image bytes changed during upgrade"
         runtime.start()
         with httpx.Client(base_url=runtime.url, trust_env=False, timeout=10) as client:
+            if export_probe:
+                exported = client.post(
+                    export_probe["path"], json=export_probe["body"], headers=export_probe["headers"]
+                )
+                assert exported.status_code == 200 and exported.json() == export_probe["value"]
             if import_probe:
                 imported = client.get(import_probe["path"], headers=owner["headers"])
                 assert imported.status_code == 200 and imported.json() == import_probe["value"]
@@ -187,6 +219,7 @@ def main():
             "old_rows_verified": sum(map(len, before.values())),
             "images_verified": len(media_before),
             "old_partial_import_preserved": bool(import_probe),
+            "old_export_audit_replay_preserved": bool(export_probe),
             "upgrade": f"{old_revision} to {new_revision}",
             "checks": [
                 "all old row values unchanged",

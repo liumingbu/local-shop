@@ -1,0 +1,20 @@
+{
+  "old_sha": "b516193d1931e2671c409723497bb6aa87e1e16c",
+  "tested_head": "a1bd092904e0703dd603251c8b326118a0ad3c57",
+  "dirty": false,
+  "old_tables_verified": 27,
+  "old_rows_verified": 98,
+  "images_verified": 3,
+  "old_partial_import_preserved": true,
+  "old_export_audit_replay_preserved": true,
+  "upgrade": "0013_fulfillment_export to 0014_updates_contacts",
+  "checks": [
+    "all old row values unchanged",
+    "image bytes unchanged",
+    "original details and history unchanged",
+    "old idempotency response preserved",
+    "new stable business number after restart",
+    "cross-tenant and anonymous media access refused"
+  ],
+  "result": "PASS, synthetic same-computer only; NOT production upgrade"
+}

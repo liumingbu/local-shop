@@ -209,6 +209,7 @@ class RecordEvent(Base):
             ["reservations.tenant_id", "reservations.id"],
             name="fk_event_same_tenant",
         ),
+        Index("ix_record_event_tenant_time", "tenant_id", "created_at", "id"),
     )
 
 
@@ -322,6 +323,7 @@ class InquiryEvent(Base):
             ["inquiries.tenant_id", "inquiries.id"],
             name="fk_inquiry_event_tenant",
         ),
+        Index("ix_inquiry_event_tenant_time", "tenant_id", "created_at", "id"),
         UniqueConstraint("tenant_id", "inquiry_id", "version", name="uq_inquiry_event_version"),
     )
 

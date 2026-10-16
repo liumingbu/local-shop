@@ -1,4 +1,4 @@
-<view class="page"><view class="title">我在本店的记录</view><view class="muted">仅显示当前身份本人提交的记录。电话代记不会按姓名或手机号自动关联。</view>
+<view class="page"><button bindtap="updates">站内更新（未读不等于待办）</button><view class="title">我在本店的记录</view><view class="muted">仅显示当前身份本人提交的记录。电话代记不会按姓名或手机号自动关联。</view>
   <view class="error" wx:if="{{error}}">{{error}}</view><view class="actions"><button data-kind="reservation" bindtap="tab" disabled="{{busy}}">需求登记</button><button data-kind="inquiry" bindtap="tab" disabled="{{busy}}">询货</button></view>
   <view class="card" wx:for="{{items}}" wx:key="id" data-id="{{item.id}}" bindtap="open"><view class="subtitle">{{item.label}}</view><view>{{item.raw_text || '图片／商品需求'}}</view><view class="muted">{{item.time}}</view></view>
   <view class="empty" wx:if="{{!items.length && !busy && !error}}">当前没有可显示的记录</view>

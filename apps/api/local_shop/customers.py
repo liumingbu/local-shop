@@ -128,6 +128,7 @@ def customer_reservation(row, session, detail=False):
                 "created_at": event.created_at.isoformat(),
             }
             for event in events
+            if event.action != "CONTACT_LOGGED"
         ]
     return value
 
@@ -181,7 +182,7 @@ def inquiry_json(row, session, customer=False, detail=False):
                 "created_at": event.created_at.isoformat(),
             }
             for event in events
-            if not customer or event.action != "INTERNAL_NOTE"
+            if not customer or event.action not in {"INTERNAL_NOTE", "CONTACT_LOGGED"}
         ]
     return value
 

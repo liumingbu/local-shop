@@ -1,0 +1,31 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:admin
+> tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs
+
+✔ batch validates all rows before any write and preserves decimals and nullable price (22.795676ms)
+✔ batch stops after known version conflict and requires explicit discard without rollback (8.755858ms)
+✔ unknown response resumes original immutable command and remaining commands after reload (8.506056ms)
+✔ batch storage failure prevents writes; acknowledgement persistence failure replays same key (1.541102ms)
+✔ authentication and forbidden results keep original batch pending (2.283408ms)
+✔ persisted batch is scoped to verified identity and tenant; cross-tenant path is rejected (3.044005ms)
+✔ concurrent submit emits one batch and unmount ignores late response while retaining recovery (6.371038ms)
+✔ completed batch is not resent after a read refresh failure (5.98316ms)
+✔ platform role is read from server; a merchant cannot load control data (6.867996ms)
+✔ unknown command retains immutable payload and key across reconstructed controller (5.302249ms)
+✔ storage failure happens before any write is sent (1.966184ms)
+✔ version rejection unlocks command; authentication failures retain it for same-user login (2.437373ms)
+✔ invalid or external stored command is never replayed with credentials (2.073171ms)
+✔ pending storage is isolated by verified account (2.336844ms)
+✔ unmounted panel ignores late success and retains unknown operation for recovery (22.892872ms)
+✔ saved command remains locked if post-write refresh fails (3.116908ms)
+✔ review and tenant status carry displayed versions and explicit reason (0.488423ms)
+✔ web request refuses external paths and forbids automatic redirect forwarding (4.091019ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 621.08154

@@ -13,7 +13,8 @@
     "pages/catalog/catalog",
     "pages/productedit/productedit",
     "pages/invitations/invitations",
-    "pages/preparation/preparation"
+    "pages/preparation/preparation",
+    "pages/updates/updates"
   ],
   "window": {
     "navigationBarTitleText": "local-shop",
