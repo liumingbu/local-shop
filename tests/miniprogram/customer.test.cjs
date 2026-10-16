@@ -65,7 +65,7 @@ test('decimal validation and explicit UTC+08 display do not invent quantities or
   assert.equal(ui.timeText(null),'未确定');assert.equal(ui.timeText('2026-10-13T00:00:00Z'),'2026-10-13 08:00（北京时间）');
 });
 test('native page registrations, assets and event handlers exist (static, not WXML rendering)',()=>{
-  setup();const app=JSON.parse(fs.readFileSync(path.join(root,'app.json')));assert.equal(app.pages.length,14);
+  setup();const app=JSON.parse(fs.readFileSync(path.join(root,'app.json')));assert.equal(app.pages.length,15);
   for(const route of app.pages){for(const ext of ['js','json','wxml','wxss'])assert.ok(fs.existsSync(path.join(root,`${route}.${ext}`)));const p=page(route.split('/')[1]);
     const markup=fs.readFileSync(path.join(root,route+'.wxml'),'utf8');for(const match of markup.matchAll(/(?:bind|catch)[a-z]+="([A-Za-z]\w*)"/g))assert.equal(typeof p[match[1]],'function',`${route}:${match[1]}`);
   }

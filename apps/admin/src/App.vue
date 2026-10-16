@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {computed,onMounted,onUnmounted,ref} from 'vue';
+import UpdatesPanel from './UpdatesPanel.vue';
 import FulfillmentPanel from './FulfillmentPanel.vue';
 import PreparationPanel from './PreparationPanel.vue';
 import VerifiedLogin from './VerifiedLogin.vue';
@@ -11,6 +12,7 @@ import {errorMessage} from './workbench';
 const development=computed(()=>import.meta.env.DEV&&import.meta.env.VITE_ENABLE_DEVELOPMENT_LOGIN==='true'&&['127.0.0.1','localhost'].includes(location.hostname));
 const alias=ref('merchant-a'),token=ref(''),userId=ref(''),activeAlias=ref(''),platformRole=ref(false),tenantId=ref(''),members=ref<Tenant[]>([]);
 const busy=ref(false),error=ref(''),notice=ref(''),tab=ref('workbench'),sessionVersion=ref(0),concealed=ref(document.hidden);
+const unread=ref(0);
 const fulfillmentBusy=ref(false);
 const preparationBusy=ref(false);
 const platformBusy=ref(false),catalogBusy=ref(false),workbenchBusy=ref(false),platformLocked=ref(false),catalogLocked=ref(false),workbenchLocked=ref(false);
@@ -27,15 +29,15 @@ async function login(){
   const list=platform?[]:(await request<{items:Tenant[]}>('/api/v1/merchant/tenants',session.access_token)).items;
   if(!alive||current!==epoch)return;
   const previous=userId.value===me.user_id?tenantId.value:'';
-  token.value=session.access_token;userId.value=me.user_id;activeAlias.value=alias.value;platformRole.value=platform;members.value=list;tenantId.value=list.find(x=>x.id===previous)?.id||list[0]?.id||'';sessionVersion.value++;tab.value='workbench';
+  unread.value=0;token.value=session.access_token;userId.value=me.user_id;activeAlias.value=alias.value;platformRole.value=platform;members.value=list;tenantId.value=list.find(x=>x.id===previous)?.id||list[0]?.id||'';sessionVersion.value++;tab.value='workbench';
   notice.value=!platform&&!list.length?'当前账号没有已启用的店铺授权。请先由平台邀请并完成审核。':'';
  }catch(e){if(alive&&current===epoch)error.value=errorMessage(e);}finally{if(alive)busy.value=false;}
 }
-async function verifiedLogin(value:string){const current=epoch;busy.value=true;error.value='';try{const me=await request<{user_id:string;development_only:boolean}>('/api/v1/auth/me',value);if(me.development_only)throw Error('INVALID_IDENTITY');let platform=false;try{platform=(await request<{role:string}>('/api/v1/platform/me',value)).role==='PLATFORM_ADMIN';}catch(e){if(!(e instanceof ApiError&&e.status===403))throw e;}const list=platform?[]:(await request<{items:Tenant[]}>('/api/v1/merchant/tenants',value)).items;if(!alive||current!==epoch)return;token.value=value;userId.value=me.user_id;platformRole.value=platform;members.value=list;tenantId.value=list[0]?.id||'';sessionVersion.value++;notice.value=!platform&&!list.length?'当前账号尚无店铺授权，可在小程序查看本人开店邀请。':'';}catch(e){if(alive&&current===epoch)error.value=errorMessage(e);}finally{if(alive)busy.value=false;}}
+async function verifiedLogin(value:string){const current=epoch;busy.value=true;error.value='';try{const me=await request<{user_id:string;development_only:boolean}>('/api/v1/auth/me',value);if(me.development_only)throw Error('INVALID_IDENTITY');let platform=false;try{platform=(await request<{role:string}>('/api/v1/platform/me',value)).role==='PLATFORM_ADMIN';}catch(e){if(!(e instanceof ApiError&&e.status===403))throw e;}const list=platform?[]:(await request<{items:Tenant[]}>('/api/v1/merchant/tenants',value)).items;if(!alive||current!==epoch)return;unread.value=0;token.value=value;userId.value=me.user_id;platformRole.value=platform;members.value=list;tenantId.value=list[0]?.id||'';sessionVersion.value++;notice.value=!platform&&!list.length?'当前账号尚无店铺授权，可在小程序查看本人开店邀请。':'';}catch(e){if(alive&&current===epoch)error.value=errorMessage(e);}finally{if(alive)busy.value=false;}}
 async function formalLogout(){const value=token.value;logout();try{await request('/api/v1/auth/logout',value,'POST');}catch{notice.value='本机已退出；服务端退出未确认，原会话会在到期时失效。';}}
 function expired(){if(token.value.startsWith('ls1_')){logout();notice.value='登录已失效，请重新登录同一账号；未确认请求保留，避免重新新建。';}}
-function logout(){epoch++;token.value='';userId.value='';members.value=[];tenantId.value='';platformRole.value=false;error.value='';notice.value='已退出。令牌已清除，未确认请求按账号和店铺保留在本机。';platformBusy.value=catalogBusy.value=workbenchBusy.value=false;platformLocked.value=catalogLocked.value=workbenchLocked.value=false;}
-function choose(event:Event){if(busy.value||childBusy.value||locked.value)return;const value=(event.target as HTMLSelectElement).value;if(members.value.some(x=>x.id===value)){tenantId.value=value;sessionVersion.value++;tab.value='workbench';}}
+function logout(){epoch++;unread.value=0;token.value='';userId.value='';members.value=[];tenantId.value='';platformRole.value=false;error.value='';notice.value='已退出。令牌已清除，未确认请求按账号和店铺保留在本机。';platformBusy.value=catalogBusy.value=workbenchBusy.value=false;platformLocked.value=catalogLocked.value=workbenchLocked.value=false;}
+function choose(event:Event){if(busy.value||childBusy.value||locked.value)return;const value=(event.target as HTMLSelectElement).value;if(members.value.some(x=>x.id===value)){unread.value=0;tenantId.value=value;sessionVersion.value++;tab.value='workbench';}}
 function visibility(){concealed.value=document.hidden;}
 onMounted(()=>{document.addEventListener('visibilitychange',visibility);window.addEventListener('local-shop-session-expired',expired);});onUnmounted(()=>{alive=false;epoch++;document.removeEventListener('visibilitychange',visibility);window.removeEventListener('local-shop-session-expired',expired);});
 </script>
@@ -47,7 +49,8 @@ onMounted(()=>{document.addEventListener('visibilitychange',visibility);window.a
 <template v-if="token&&userId&&!concealed">
 <PlatformPanel v-if="platformRole" :key="userId+sessionVersion" :token="token" :user-id="userId" :development="development" @busy="platformBusy=$event" @locked="platformLocked=$event"/>
 <template v-else-if="tenant"><div class="row"><h2 class="store-title">{{tenant.name}}</h2><label v-if="members.length>1">当前已授权店铺<select :value="tenantId" :disabled="busy||childBusy||locked" @change="choose"><option v-for="member in members" :key="member.id" :value="member.id">{{member.name}}</option></select></label></div>
-<nav aria-label="工作台功能" class="actions"><button :aria-pressed="tab==='workbench'" @click="tab='workbench'">记单与待办</button><button :aria-pressed="tab==='catalog'" @click="tab='catalog'">商品维护</button><button :aria-pressed="tab==='preparation'" @click="tab='preparation'">开店准备/CSV导入</button><button :aria-pressed="tab==='fulfillment'" @click="tab='fulfillment'">今日备货/交付清单</button></nav>
+<nav aria-label="工作台功能" class="actions"><button :aria-pressed="tab==='workbench'" @click="tab='workbench'">记单与待办</button><button :aria-pressed="tab==='catalog'" @click="tab='catalog'">商品维护</button><button :aria-pressed="tab==='preparation'" @click="tab='preparation'">开店准备/CSV导入</button><button :aria-pressed="tab==='fulfillment'" @click="tab='fulfillment'">今日备货/交付清单</button><button :aria-pressed="tab==='updates'" @click="tab='updates'">站内更新 {{unread}}</button></nav>
+<UpdatesPanel v-show="tab==='updates'" :key="'updates'+userId+tenantId+sessionVersion" :token="token" :tenant-id="tenantId" @unread="unread=$event"/>
 <FulfillmentPanel v-if="tab==='fulfillment'" :key="'fulfillment'+userId+tenantId+sessionVersion" :token="token" :tenant-id="tenantId" @busy="fulfillmentBusy=$event"/>
 <PreparationPanel v-if="tab==='preparation'" :key="'preparation'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" @navigate="tab=$event" @busy="preparationBusy=$event"/>
 <WorkbenchPanel v-show="tab==='workbench'" :key="'workbench'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" :role="tenant.role" :active="tab==='workbench'" @busy="workbenchBusy=$event" @locked="workbenchLocked=$event"/>

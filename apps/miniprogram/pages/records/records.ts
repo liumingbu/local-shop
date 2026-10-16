@@ -36,4 +36,5 @@ Page({ alive: true, view: 0,
         return; this.setData({ page: this.data.page + 1 }); void this.load(); },
     open(event: WechatMiniprogram.TouchEvent) { route('detail', this.data.storeId, `&kind=${this.data.kind}&record_id=${requireId(event.currentTarget.dataset.id)}`); },
     home() { wx.navigateTo({ url: '/pages/index/index' }); },
+updates(){route('updates',this.data.storeId,'&audience=customer');},
 });

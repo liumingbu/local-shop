@@ -57,4 +57,5 @@ Page({alive:true,view:0,validEntry:false,
   latest(){if(this.data.lastId)route('merchantdetail',this.data.tenantId,`&kind=reservation&record_id=${this.data.lastId}`);},
   preparation(){route('preparation',this.data.tenantId);},
   catalog(){route('catalog',this.data.tenantId);},settings(){route('shopsettings',this.data.tenantId);},store(){route('store',this.data.tenantId);},home(){wx.navigateTo({url:'/pages/index/index'});},
+updates(){route('updates',this.data.tenantId,'&audience=merchant');},
 });

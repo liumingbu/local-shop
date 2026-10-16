@@ -1,0 +1,92 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:native
+> npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 47 native assets; this is NOT a WeChat runtime test.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+✔ catalog numeric input permits empty reference but rejects fake quantity/price normalization (17.365638ms)
+✔ category picker loads all pages instead of silently truncating after first 100 (7.374956ms)
+✔ explicit unauthorized catalog entry cannot load or create categories (31.536015ms)
+✔ category unknown creation survives hide/show and replays original name and key (23.683783ms)
+✔ category stale update is locked until refreshed, with no automatic overwrite (9.272666ms)
+✔ product create retries immutable request; blank reference remains null and status starts draft (19.262475ms)
+✔ post-response storage failure retains create lock instead of allowing a second product (8.093394ms)
+✔ image ordering/removal updates association only and advances the product version (9.273298ms)
+✔ image upload limit and uncertain ordering both block unsafe continuation (10.418492ms)
+✔ switching identity while picker is open prevents file upload under the new account (4.335172ms)
+✔ leaving product image picker prevents upload after page dismissal (10.701398ms)
+✔ logo uploads with LOGO purpose then requires explicit versioned store save (13.30778ms)
+✔ old session completion cannot clear a newer session busy state (2.348799ms)
+✔ development login is disabled by configuration and always refused for trial/release (16.139864ms)
+✔ origin and path are fail-closed; remote plaintext, userinfo and arbitrary URLs refused (4.587136ms)
+✔ invalid share entry does not fall back to a recent store (8.865637ms)
+✔ login keeps credentials in memory; authenticated identity comes from server me response (1.973559ms)
+✔ late private response after account switch is discarded (20.771882ms)
+✔ drafts are isolated by user and store, and units/specifications never merge (5.397996ms)
+✔ storage failure prevents sending an unrepeatable business request (1.878486ms)
+✔ uncertain retry uses immutable original payload/key and survives success before draft acknowledgement (3.465588ms)
+✔ validation rejection releases draft, but expired login preserves pending operation (0.981957ms)
+✔ busy and view generation protect double clicks and late results after hide/show (1.000588ms)
+✔ decimal validation and explicit UTC+08 display do not invent quantities or dates (2.250454ms)
+✔ native page registrations, assets and event handlers exist (static, not WXML rendering) (64.506583ms)
+✔ compose sends only this store draft and clears it only after confirmed success (19.151124ms)
+✔ compose double-click plus network retry does not replace the original payload (7.852858ms)
+✔ leaving compose before response keeps the original pending request and does not navigate later (8.466603ms)
+✔ explicit date+time becomes a timezone-aware value; date-only stays a note (8.656016ms)
+✔ private detail rejects store mismatch and clears private content on hide (9.814405ms)
+✔ private images send authentication as a header, never a query token (1.358243ms)
+✔ image picker cancellation sends no upload and preserves draft (1.030182ms)
+✔ a different product entry does not silently mix an existing inquiry draft (2.232389ms)
+✔ leaving the login page interrupts the pending identity switch (0.877722ms)
+✔ date-only input remains a note and is not silently assigned midnight (15.050498ms)
+✔ source default has no API origin or enabled fake login (0.628258ms)
+✔ manual UUID entry is development-only; valid recent/shared route is retained (2.110664ms)
+✔ native wx.login boundary passes only code and installs only server verified identity (13.345496ms)
+✔ native formal missing config, provider failure and expired session never fall back to demo (3.679847ms)
+✔ invitation response uses server-listed invitation and current account, not supplied owner ID (17.588556ms)
+✔ invitation unknown result can only replay original response after reopening (13.000679ms)
+✔ switching invitation account clears private rows and pending state from previous user (12.7102ms)
+✔ only approved invitation with server tenant ID opens its merchant workspace (1.149721ms)
+✔ merchant tenant selection never falls back from an unauthorized explicit tenant (14.647026ms)
+✔ merchant workbench invalid route remains invalid onShow and does not issue requests (8.081679ms)
+✔ customer with no merchant membership cannot load workbench records (19.444565ms)
+✔ manual record requires no catalog, preserves raw text and retries original uncertain operation (12.84979ms)
+✔ leaving workbench during membership lookup does not restore private draft (5.609193ms)
+✔ merchant transitions reflect fulfillment method and pending cancellation gate (1.225997ms)
+✔ merchant detail rejects route mismatch and hides private payload (8.867037ms)
+✔ confirmation requires explicit latest agreement and sends only allowed transition (8.763402ms)
+✔ unknown detail write locks other operations and retries original key after reload failure (10.210632ms)
+✔ proposal copies free snapshots without live product reference and retains fractional units (10.092194ms)
+✔ inquiry reply defaults private and never implicitly converts (10.129063ms)
+✔ shop settings require owner and do not send an unauthorized write (12.465159ms)
+✔ new store uses version zero, existing logo is preserved, unknown PUT requires refresh (9.387575ms)
+✔ refresh clears previous candidate consent; hiding clears private unsubmitted edits (7.481988ms)
+✔ daily queue uses one aggregate count request and passes bounded shop-only filters (66.187834ms)
+✔ copy makes a separate guarded draft with fractional units and no automatic post (139.736217ms)
+✔ preparation derives server steps, permits later manual entry, clears hidden data (48.518009ms)
+✔ native update page uses customer scope, explicit read marker and no business transition (42.680662ms)
+✔ native updates hide discards delayed private results and stops poll (20.341889ms)
+✔ native contacts require explicit result and recover uncertain same-key submit (29.239173ms)
+ℹ tests 63
+ℹ suites 0
+ℹ pass 63
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 968.253138
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

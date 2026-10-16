@@ -14,6 +14,7 @@ from .cancellations import build_router as cancellation_router
 from .catalog import build_router as catalog_router
 from .config import Settings
 from .confirmations import build_router as confirmation_router
+from .contacts import build_router as contacts_router
 from .customers import build_router as customer_router
 from .daily_workbench import build_router as daily_router
 from .db import build_engine, probe_database
@@ -21,6 +22,7 @@ from .formal_auth import build_router as formal_router
 from .fulfillment import build_router as fulfillment_router
 from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
 from .media import build_router as media_router
+from .notices import build_router as notices_router
 from .onboarding import build_router as onboarding_router
 from .platform import build_router as platform_router
 from .records import build_router
@@ -122,6 +124,8 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     access = build_access(settings, engine)
     app.include_router(onboarding_router(access, settings))
     app.include_router(fulfillment_router(access))
+    app.include_router(contacts_router(access))
+    app.include_router(notices_router(access))
     app.include_router(formal_router(access, settings, engine))
     app.include_router(daily_router(access))
     app.include_router(build_router(access))

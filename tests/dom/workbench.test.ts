@@ -17,6 +17,8 @@ beforeEach(()=>{localStorage.clear();records=[];posts=[];lost=false;conflict=fal
  if(path==='/api/v1/platform/me')return reply({code:'PLATFORM_ADMIN_REQUIRED'},403);
  if(path==='/api/v1/merchant/tenants')return reply({items:[{id:tenant,name:store.name,role:'OWNER'}]});
  if(path.endsWith('/store')){if(method==='PUT'){posts.push({path,body});if(conflict)return reply({code:'VERSION_CONFLICT'},409);return reply({...store,...body,version:2});}return reply(store);}
+ if(path.includes('/updates?'))return reply({items:[],total:0,unread:0,page:1,limit:50,notice:''});
+ if(path.endsWith('/contacts'))return reply({items:[],total:0});
  if(path.endsWith('/workbench-summary'))return reply({counts:{},as_of:new Date().toISOString()});
  if(path.includes('/categories'))return reply({items:[],total:0});
  if(path.includes('/products'))return reply({items:[],total:0});
