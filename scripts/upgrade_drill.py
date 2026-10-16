@@ -22,38 +22,34 @@ from private_media_http import exercise_private_media, verify_private_after_rest
 from psycopg import sql
 
 
-def snapshot(runtime, old_tables=None):
+def database_schema(runtime):
     with psycopg.connect(
         runtime.env["DATABASE_URL"].replace("postgresql+psycopg:", "postgresql:", 1)
     ) as connection:
-        tables = old_tables or [
-            row[0]
-            for row in connection.execute(
-                "SELECT tablename FROM pg_tables WHERE schemaname='public' "
-                "AND tablename<>'alembic_version' ORDER BY tablename"
-            )
-        ]
+        columns = {}
+        for table, name in connection.execute(
+            "SELECT table_name, column_name FROM information_schema.columns "
+            "WHERE table_schema='public' AND table_name<>'alembic_version' "
+            "ORDER BY table_name, ordinal_position"
+        ):
+            columns.setdefault(table, []).append(name)
+        revision = connection.execute("SELECT version_num FROM alembic_version").fetchone()[0]
+        return columns, revision
+
+
+def snapshot(runtime, old_columns=None):
+    with psycopg.connect(
+        runtime.env["DATABASE_URL"].replace("postgresql+psycopg:", "postgresql:", 1)
+    ) as connection:
+        tables = old_columns or database_schema(runtime)[0]
         result = {}
         for table in tables:
             values = []
             for (row,) in connection.execute(
                 sql.SQL("SELECT to_jsonb(t) FROM {} t").format(sql.Identifier(table))
             ):
-                for field in (
-                    {
-                        "users": ["account_code"],
-                        "reservations": [
-                            "business_number",
-                            "contact_name",
-                            "contact_phone",
-                            "delivery_address",
-                            "confirmed_due_at",
-                        ],
-                    }.get(table, [])
-                    if old_tables
-                    else []
-                ):
-                    row.pop(field, None)
+                if old_columns:
+                    row = {key: value for key, value in row.items() if key in old_columns[table]}
                 values.append(json.dumps(row, sort_keys=True, ensure_ascii=False))
             result[table] = sorted(values)
         return result
@@ -94,11 +90,13 @@ def main():
         exercise_cancellation(runtime.url)
         exercise_confirmation(runtime.url)
         platform = exercise_platform(runtime.url)
-        before = snapshot(runtime)
+        old_columns, old_revision = database_schema(runtime)
+        before = snapshot(runtime, old_columns)
         media_before = files(runtime)
         runtime.stop()
         runtime.migrate()
-        after = snapshot(runtime, list(before))
+        _, new_revision = database_schema(runtime)
+        after = snapshot(runtime, old_columns)
         assert after == before, "Old row values changed during upgrade"
         assert files(runtime) == media_before, "Image bytes changed during upgrade"
         runtime.start()
@@ -140,7 +138,7 @@ def main():
                 client.get(owner["url"], headers=owner["headers"]).json()["business_number"]
                 == new["business_number"]
             )
-        assert snapshot(runtime, list(before)) == before and files(runtime) == media_before
+        assert snapshot(runtime, old_columns) == before and files(runtime) == media_before
         report = {
             "old_sha": args.old_ref,
             "tested_head": subprocess.check_output(
@@ -150,7 +148,7 @@ def main():
             "old_tables_verified": len(before),
             "old_rows_verified": sum(map(len, before.values())),
             "images_verified": len(media_before),
-            "upgrade": "0009_platform to 0011_verified_identity",
+            "upgrade": f"{old_revision} to {new_revision}",
             "checks": [
                 "all old row values unchanged",
                 "image bytes unchanged",

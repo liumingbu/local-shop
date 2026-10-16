@@ -1,4 +1,5 @@
 from alembic import context
+from local_shop import import_models  # noqa: F401
 from local_shop.config import Settings
 from local_shop.db import build_engine
 from local_shop.models import Base

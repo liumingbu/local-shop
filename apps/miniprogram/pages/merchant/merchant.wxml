@@ -1,7 +1,7 @@
 <view class="page"><view class="eyebrow">local-shop · 商户工作台</view><view class="title">{{storeName || '今天要处理什么'}}</view>
   <view class="error" wx:if="{{error}}">{{error}}</view><view class="notice" wx:if="{{notice}}">{{notice}}</view>
   <picker wx:if="{{members.length>1}}" range="{{memberNames}}" value="{{memberIndex}}" bindchange="choose" disabled="{{busy}}"><view class="field">已授权店铺：{{memberNames[memberIndex]}}</view></picker>
-  <block wx:if="{{tenantId}}"><view class="actions"><button bindtap="settings" disabled="{{busy || role!=='OWNER'}}">店铺资料</button><button bindtap="catalog" disabled="{{busy}}">分类与商品</button><button bindtap="store">看公开店铺</button></view>
+  <block wx:if="{{tenantId}}"><view class="actions"><button bindtap="preparation" disabled="{{busy}}">开店准备</button><button bindtap="settings" disabled="{{busy || role!=='OWNER'}}">店铺资料</button><button bindtap="catalog" disabled="{{busy}}">分类与商品</button><button bindtap="store">看公开店铺</button></view>
     <view class="actions"><button wx:for="{{counts}}" wx:key="name" data-status="{{item.status}}" data-kind="{{item.kind}}" bindtap="filter" disabled="{{busy}}">{{item.name}} {{item.total}}</button></view>
     <view class="card" wx:if="{{form}}"><view class="subtitle">快速代记</view><view class="muted">没建商品库也能先记下来。仅使用合成演示资料。</view>
       <view class="notice" wx:if="{{locked}}">原请求结果未确认，仅可重试原内容。</view>

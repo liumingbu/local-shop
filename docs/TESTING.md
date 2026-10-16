@@ -156,3 +156,7 @@ PR #18代码b6652736独立远端干净检出213 Python（154真实PG、59非PG�
 ## 2026-10-16 H1正式代理来源
 
 PR25代码79b83d4444e1eff95419ad38b837196c171d94de独立干净检出254 Python（183 PG）、真实Nginx/TLS来源隔离/伪造头/直连计数及既有Linux组件均通过；systemd明确跳过，真实微信/浏览器不变。详见[evidence/auth-proxy/RESULT_20261016.md](evidence/auth-proxy/RESULT_20261016.md)。
+
+## 2026-10-16 E开店准备/CSV
+
+主工作树13真实PG专项、60原生逻辑/资源、11Vue组件、6Vue真实HTTP事件及旧重启通过；200行参考和0011→0012升级见evidence/merchant-preparation。最终被测远端SHA结果随后追加；不把原生资源检查或jsdom当视觉/真机验收。

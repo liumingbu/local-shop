@@ -53,3 +53,7 @@ var/media/
 
 # Owned synthetic development lifecycle, never source or production data
 var/dev-stack/
+
+# Also ignore workspace-local dependency symlinks.
+.venv
+node_modules

@@ -1,0 +1,15 @@
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+............CSV_REFERENCE rows=200 total_seconds=16.085 row_p95_ms=152.59 largest_receipt_bytes=160; synthetic TestClient/real PG, not production capacity
+.
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  <DOT_WORKSPACE>/local-shop-pilot/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+13 passed, 1 warning in 65.81s (0:01:05)
+waiting for server to shut down.... done
+server stopped
