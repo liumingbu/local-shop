@@ -1,9 +1,9 @@
 # HANDOFF
 
-2026-10-16 E—H，Dot同机。H1 PR25、E PR26和F PR27已合并；最新main b516193d1931e2671c409723497bb6aa87e1e16c已fetch核对树55cf26db8be57e4bd1d68636c1a4c4dec1224d56及与被测F代码5ce8e2e业务无差异。F最终274Python/203PG、7真实VueHTTP、升级/恢复通过，首次超时/网络失败与原码复跑均保留，不改认证限制。
+2026-10-16 E—H仅Dot同机。H1 PR25、E PR26、F PR27已合并；F main b516193d1931e2671c409723497bb6aa87e1e16c。G PR28精确a1bd092904e0703dd603251c8b326118a0ad3c57通过52相关真实PG、18控制器/14jsdom/64原生、8Vue事件真实HTTP及0013→0014保留27旧表98行3图。registry访问被策略拒绝时未完成的流水线保留；既有依赖离线子命令重跑通过，无网络权限变更。当前报告后合并并fetch验证，业务文件不变。
 
-当前G local-shop-communications分支feat/in-app-updates-contact已经汇合F main；仅自身HANDOFF/PROGRESS/TESTING文档追加冲突，保留两边证据。0014派生更新/本人已读、Web/原生入口、私有联系/核对复制、默认关闭外部接口。初测15PG/63原生/14jsdom/8真实VueHTTP和0013→0014旧数据升级通过；之后增加身份切换清空徽标/原生视图及1回归，最终精确远端待运行。G发布时跑通信、客户/正式身份相关PG回归、完整客户端/HTTP/升级；H最后再跑全量，避免重复重压。
+H local-shop-pilot-closeout chore/pilot-closeout以G本地代码增量，6新安全PG通过；真实API提交前/后kill、PG短停恢复、替身通知进程kill未知不重发通过；3合成店、非空新表备份恢复和软件升级兼容初测通过。收口发现自提清单非必要地址，最小过滤后8F专项和三店重跑通过；界面改商户可读状态/联系文案。必须汇合G已合并main后发H，精确远端完整296预计用例实际计数以执行为准；最终源码/指南/未验清单未交付。
 
-H local-shop-pilot-closeout准备实际子进程/PG短停、只读维护、三店合成、非空新表恢复和交付文档。6项PG新入口/并发登录/文件失败检查通过；故障演练提交前/后真实kill通过，PG重新start漏传原回环/端口参数导致失败，正在最小修正重跑；未计完成。G合并后再汇合H与最终远端。
+运行测试为避免无关registry访问可设置进程环境npm_config_offline=true、npm_config_update_notifier=false、npm_config_audit=false、npm_config_fund=false，复用当前已安装锁定依赖；不借此声称联网安装已验证。
 
-不重做A—D、不重试浏览器、不换环境、不催AppID。常规PR自查测试合并已授权；生产/实际凭据权限/真实删除/费用/微信提审另确认。E—H给上手指南、合成场景/反馈、精确SHA源码和未验清单后停止扩展。
+不重做A—D、不重试浏览器、不换环境、不催AppID。常规PR自查测试合并已授权；生产/实际凭据权限/真实删除/费用/微信提审另确认。E—H最终交付后停止扩展。

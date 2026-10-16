@@ -1,0 +1,229 @@
+Fri Oct 16 14:00:05 UTC 2026
+a1bd092904e0703dd603251c8b326118a0ad3c57
+All checks passed!
+75 files already formatted
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 typecheck
+> npm run typecheck --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> @local-shop/miniprogram@0.1.0 typecheck
+> tsc --noEmit
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:admin
+> tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs
+
+✔ batch validates all rows before any write and preserves decimals and nullable price (40.295507ms)
+✔ batch stops after known version conflict and requires explicit discard without rollback (5.335251ms)
+✔ unknown response resumes original immutable command and remaining commands after reload (8.634593ms)
+✔ batch storage failure prevents writes; acknowledgement persistence failure replays same key (2.360664ms)
+✔ authentication and forbidden results keep original batch pending (5.016942ms)
+✔ persisted batch is scoped to verified identity and tenant; cross-tenant path is rejected (2.747058ms)
+✔ concurrent submit emits one batch and unmount ignores late response while retaining recovery (1.68394ms)
+✔ completed batch is not resent after a read refresh failure (3.131859ms)
+✔ platform role is read from server; a merchant cannot load control data (36.834995ms)
+✔ unknown command retains immutable payload and key across reconstructed controller (9.88848ms)
+✔ storage failure happens before any write is sent (1.682389ms)
+✔ version rejection unlocks command; authentication failures retain it for same-user login (4.46029ms)
+✔ invalid or external stored command is never replayed with credentials (2.256982ms)
+✔ pending storage is isolated by verified account (3.296798ms)
+✔ unmounted panel ignores late success and retains unknown operation for recovery (25.95194ms)
+✔ saved command remains locked if post-write refresh fails (1.141378ms)
+✔ review and tenant status carry displayed versions and explicit reason (1.367642ms)
+✔ web request refuses external paths and forbids automatic redirect forwarding (4.269087ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1233.958968
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:dom
+> vitest run --config vitest.config.mts
+
+
+ RUN  v5.0.4 <DOT_WORKSPACE>/local-shop-m2-clean
+
+
+ Test Files  3 passed (3)
+      Tests  14 passed (14)
+   Start at  23:00:35
+   Duration  13.97s (environment 50%, transform 25%, tests 17%, import 8%)
+
+    Isolate  3 workers spawned · ~2.58s startup each (spawn + environment, per file)
+             at least ~5.15s faster with isolate: false — reuses workers across files instead of one per file
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:native
+> npm run build -w apps/miniprogram && node --test tests/miniprogram/*.test.cjs
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 47 native assets; this is NOT a WeChat runtime test.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+✔ catalog numeric input permits empty reference but rejects fake quantity/price normalization (34.287206ms)
+✔ category picker loads all pages instead of silently truncating after first 100 (30.521592ms)
+✔ explicit unauthorized catalog entry cannot load or create categories (43.975631ms)
+✔ category unknown creation survives hide/show and replays original name and key (28.623574ms)
+✔ category stale update is locked until refreshed, with no automatic overwrite (20.566031ms)
+✔ product create retries immutable request; blank reference remains null and status starts draft (33.176447ms)
+✔ post-response storage failure retains create lock instead of allowing a second product (13.509525ms)
+✔ image ordering/removal updates association only and advances the product version (14.197499ms)
+✔ image upload limit and uncertain ordering both block unsafe continuation (12.845681ms)
+✔ switching identity while picker is open prevents file upload under the new account (13.235612ms)
+✔ leaving product image picker prevents upload after page dismissal (11.656054ms)
+✔ logo uploads with LOGO purpose then requires explicit versioned store save (16.668659ms)
+✔ old session completion cannot clear a newer session busy state (2.19682ms)
+✔ development login is disabled by configuration and always refused for trial/release (16.506356ms)
+✔ origin and path are fail-closed; remote plaintext, userinfo and arbitrary URLs refused (7.032553ms)
+✔ invalid share entry does not fall back to a recent store (10.426997ms)
+✔ login keeps credentials in memory; authenticated identity comes from server me response (4.71239ms)
+✔ late private response after account switch is discarded (26.447685ms)
+✔ drafts are isolated by user and store, and units/specifications never merge (4.117955ms)
+✔ storage failure prevents sending an unrepeatable business request (1.372115ms)
+✔ uncertain retry uses immutable original payload/key and survives success before draft acknowledgement (4.773855ms)
+✔ validation rejection releases draft, but expired login preserves pending operation (1.588348ms)
+✔ busy and view generation protect double clicks and late results after hide/show (3.63221ms)
+✔ decimal validation and explicit UTC+08 display do not invent quantities or dates (4.009463ms)
+✔ native page registrations, assets and event handlers exist (static, not WXML rendering) (67.142502ms)
+✔ compose sends only this store draft and clears it only after confirmed success (10.614919ms)
+✔ compose double-click plus network retry does not replace the original payload (7.714423ms)
+✔ leaving compose before response keeps the original pending request and does not navigate later (6.628388ms)
+✔ explicit date+time becomes a timezone-aware value; date-only stays a note (8.647945ms)
+✔ private detail rejects store mismatch and clears private content on hide (8.665938ms)
+✔ private images send authentication as a header, never a query token (1.514497ms)
+✔ image picker cancellation sends no upload and preserves draft (0.894364ms)
+✔ a different product entry does not silently mix an existing inquiry draft (9.418031ms)
+✔ leaving the login page interrupts the pending identity switch (6.380696ms)
+✔ date-only input remains a note and is not silently assigned midnight (7.195482ms)
+✔ source default has no API origin or enabled fake login (0.496839ms)
+✔ manual UUID entry is development-only; valid recent/shared route is retained (1.716438ms)
+✔ native wx.login boundary passes only code and installs only server verified identity (15.898391ms)
+✔ native formal missing config, provider failure and expired session never fall back to demo (4.933216ms)
+✔ invitation response uses server-listed invitation and current account, not supplied owner ID (36.204308ms)
+✔ invitation unknown result can only replay original response after reopening (24.03854ms)
+✔ switching invitation account clears private rows and pending state from previous user (15.435873ms)
+✔ only approved invitation with server tenant ID opens its merchant workspace (2.833866ms)
+✔ merchant tenant selection never falls back from an unauthorized explicit tenant (9.073304ms)
+✔ merchant workbench invalid route remains invalid onShow and does not issue requests (7.255237ms)
+✔ customer with no merchant membership cannot load workbench records (28.632883ms)
+✔ manual record requires no catalog, preserves raw text and retries original uncertain operation (22.547946ms)
+✔ leaving workbench during membership lookup does not restore private draft (4.646579ms)
+✔ merchant transitions reflect fulfillment method and pending cancellation gate (2.251551ms)
+✔ merchant detail rejects route mismatch and hides private payload (14.855459ms)
+✔ confirmation requires explicit latest agreement and sends only allowed transition (9.001458ms)
+✔ unknown detail write locks other operations and retries original key after reload failure (10.729539ms)
+✔ proposal copies free snapshots without live product reference and retains fractional units (11.169744ms)
+✔ inquiry reply defaults private and never implicitly converts (9.032588ms)
+✔ shop settings require owner and do not send an unauthorized write (12.378906ms)
+✔ new store uses version zero, existing logo is preserved, unknown PUT requires refresh (10.870266ms)
+✔ refresh clears previous candidate consent; hiding clears private unsubmitted edits (7.375064ms)
+✔ daily queue uses one aggregate count request and passes bounded shop-only filters (12.203583ms)
+✔ copy makes a separate guarded draft with fractional units and no automatic post (17.278492ms)
+✔ preparation derives server steps, permits later manual entry, clears hidden data (7.417422ms)
+✔ native update page uses customer scope, explicit read marker and no business transition (39.473864ms)
+✔ native updates hide discards delayed private results and stops poll (17.5717ms)
+✔ native contacts require explicit result and recover uncertain same-key submit (15.435696ms)
+✔ native update request invalidated by logout clears prior feed and stops refresh (10.277804ms)
+ℹ tests 64
+ℹ suites 0
+ℹ pass 64
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1056.469396
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 build
+> npm run build --workspaces
+
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/admin@0.1.0 build
+> vue-tsc --noEmit && vite build
+
+vite v8.3.4 building client environment for production...
+transforming...
+✓ 35 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.36 kB │ gzip:  0.29 kB
+dist/assets/index-GAMICKju.css    3.25 kB │ gzip:  1.27 kB
+dist/assets/index-U2Yy-jQa.js   151.22 kB │ gzip: 53.00 kB
+
+✓ built in 1.17s
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 47 native assets; this is NOT a WeChat runtime test.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+....................................................                     [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  <DOT_WORKSPACE>/local-shop-m2-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+52 passed, 1 warning in 295.58s (0:04:55)
+waiting for server to shut down.... done
+server stopped
+Subsequent HTTP task was interrupted by a registry access denial; see FAILURES.

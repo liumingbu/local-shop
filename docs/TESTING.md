@@ -172,3 +172,5 @@ F精确远端5ce8e2ed7e008e6104fad58f16a7fba52f67476f：274Python（203PG）、1
 ## G新增针对性证据
 
 见evidence/communications/RESULT_20261016.md及失败记录。主工作树15PG、63原生模拟、14jsdom、8Vue事件真实HTTP/PG、0013→0014旧数据升级。精确远端仍待，不把替身外部接受写成送达。
+
+G精确远端a1bd092904e0703dd603251c8b326118a0ad3c57：52通信/顾客/正式身份PG相关回归、18控制器/14jsdom/64原生、8真实VueHTTP及27旧表98行3图升级通过。详见evidence/communications最终追加及registry中断说明；不是全套仅52项。H将完成完整回归。
