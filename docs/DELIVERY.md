@@ -39,3 +39,5 @@ ZIP注释为完整提交SHA；先比对随包SHA256，再验证ZIP CRC及逐Git 
 后续源码在A—D上新增0012—0014对应CSV草稿导入、用途化备货交付清单和站内更新/联系元数据（实际迁移ID以migrations目录为准）。操作指南见MERCHANT_QUICKSTART，合成三店核对与反馈见PILOT_ACCEPTANCE，针对性边界见PILOT_SECURITY_REVIEW。旧A—D源码包不代表包含本次修改。
 
 最终提供的ZIP以明确Git提交为准，根目录直接源码/隐藏配置样例；校验文件单独列精确SHA与ZIP SHA256。没有真实凭据、备份、客户数据或私图；.env.example仅配置示例。尚未达到PILOT_READY，完整未验收项见PILOT_ACCEPTANCE。
+
+E—H最终被测业务SHA：ceb12e9ef0dd1d31b7efd699166319d49da48850，PR25—29。最终开发回归与故障/升级/恢复报告见evidence/pilot-closeout。源码归档从PR29实际合并后的main生成，逐Git blob、CRC和SHA256核对；准确归档SHA在ZIP注释与交付校验文件中，不把报告自身的文档提交算成重新测试业务。

@@ -183,3 +183,7 @@ scripts/pilot_fault_drill.py：实际隔离API提交前/后进程中断、PG停�
 scripts/pilot_journeys.py：三类合成店真实HTTP业务路线。
 现有backup_restore_drill/upgrade_drill增量覆盖非空新表与三店数据。
 当前只有CSV单条PG检查已运行通过，其他新增项NOT_RUN；最终以H证据替代此初始登记，保留失败和修复。
+
+## H最终精确远端全量（覆盖上述待执行登记）
+
+ceb12e9ef0dd1d31b7efd699166319d49da48850干净检出，全296Python、18控制器/14jsdom/64原生、8Vue事件真实HTTP、实际进程/PG/替身sender中断、三类合成店、备份恢复/旧G兼容升级均退出0。运行区间14:18:26—14:40:47 UTC；完整命令/日志/失败保留见evidence/pilot-closeout/RESULT_20261016.md及remote-full.txt。旧条件缺失仍NOT_RUN/BLOCKED，未以真实HTTP或mock替代微信/浏览器验收。
