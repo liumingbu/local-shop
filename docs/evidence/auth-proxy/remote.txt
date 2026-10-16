@@ -1,0 +1,45 @@
+Fri Oct 16 11:48:38 UTC 2026
+79b83d4444e1eff95419ad38b837196c171d94de
+All checks passed!
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+........................................................................ [ 28%]
+........................................................................ [ 56%]
+........................................................................ [ 85%]
+......................................                                   [100%]
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  <DOT_WORKSPACE>/local-shop-m2-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+254 passed, 1 warning in 755.40s (0:12:35)
+waiting for server to shut down.... done
+server stopped
+waiting for server to start.... done
+server started
+waiting for server to shut down.... done
+server stopped
+PASS untrusted direct transport ignores changing proxy header
+{"first_client": [201, 201, 201, 201, 201, 201, 201, 201, 201, 201], "exhausted": 429, "forged_headers": 429, "independent_second_client": 201, "result": "PASS_INDEPENDENT_BUCKETS", "scope": "real Nginx TLS + API + PG; synthetic loopback clients; no external provider request"}
+nginx version: nginx/1.30.5
+built by gcc 14.2.0 (Debian 14.2.0-19) 
+built with OpenSSL 3.5.7 9 Jun 2026
+TLS SNI support enabled
+configure arguments: --prefix=<DOT_WORKSPACE>/local-shop-tools/nginx-1.30.5 --with-http_ssl_module --with-http_v2_module
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+nginx: the configuration file /tmp/local-shop-delivery-check-y7sthzpq/nginx.conf syntax is ok
+nginx: configuration file /tmp/local-shop-delivery-check-y7sthzpq/nginx.conf test is successful
+PASS REAL Nginx/TLS1.2+TLS1.3: certificate verified by explicit ephemeral CA, HTTPS fixed-host redirect, health/auth/image/idempotency proxy, blocked dev/static paths, 2MiB limit, 429, query-free JSON access log
+NOT_RUN systemd-analyze verification explicitly skipped; earlier Dot run hit read-only /run/systemd
+PASS fail-closed release guard; systemd activation/production/real WeChat remain NOT_RUN/BLOCKED
+waiting for server to shut down.... done
+server stopped
+H1_REMOTE_ALL_PASS

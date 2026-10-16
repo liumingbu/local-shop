@@ -20,6 +20,7 @@ from .models import (
     User,
     WeChatIdentity,
 )
+from .proxy_source import auth_source
 from .records import StrictModel, lock_scope
 from .wechat_login import exchange
 
@@ -63,7 +64,7 @@ def resolve(session, settings, token):
 
 def limit(engine, settings, request, kind, maximum=30):
     # Commit rate accounting independently even if the login attempt is rejected.
-    host = request.client.host if request.client else "unknown"
+    host = auth_source(settings, request)
     bucket = (
         kind + ":" + digest(settings, host) + ":" + str(int(datetime.now(UTC).timestamp()) // 60)
     )

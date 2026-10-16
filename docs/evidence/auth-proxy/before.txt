@@ -1,0 +1,5 @@
+waiting for server to start.... done
+server started
+waiting for server to shut down.... done
+server stopped
+{"first_client": [201, 201, 201, 201, 201, 201, 201, 201, 201, 201], "exhausted": 429, "forged_headers": 429, "independent_second_client": 429, "result": "REPRODUCED_SHARED_BUCKET", "scope": "real Nginx TLS + API + PG; synthetic loopback clients; no external provider request"}
