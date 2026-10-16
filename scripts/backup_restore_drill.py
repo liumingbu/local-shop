@@ -171,7 +171,7 @@ def run():
                 manifest = verify(bundle)
                 assert manifest["table_counts"] == before["table_counts"]
                 assert len(manifest["files"]) >= 2
-                assert manifest["schema_versions"] == ["0011_verified_identity"]
+                assert manifest["schema_versions"] == before["schema_versions"]
                 assert bundle.stat().st_mode & 0o077 == 0
                 for path in [
                     bundle / "database.dump",

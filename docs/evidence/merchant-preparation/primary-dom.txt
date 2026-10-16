@@ -1,0 +1,19 @@
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:dom
+> vitest run --config vitest.config.mts
+
+
+ RUN  v5.0.4 <DOT_WORKSPACE>/local-shop-pilot
+
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  20:58:49
+   Duration  11.19s (environment 40%, tests 25%, transform 19%, import 16%)
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

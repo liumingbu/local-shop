@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     wechat_app_secret: SecretStr = SecretStr("")
     auth_trusted_proxy_ips: str = ""
     auth_session_seconds: int = Field(default=900, ge=300, le=3600)
+    csv_import_max_bytes: int = Field(default=524288, ge=1024, le=524288)
     media_root: Path = Path("var/media")
     media_receive_timeout_seconds: float = Field(default=15, ge=0.05, le=120)
     db_statement_timeout_ms: int = Field(default=10000, ge=100, le=60000)

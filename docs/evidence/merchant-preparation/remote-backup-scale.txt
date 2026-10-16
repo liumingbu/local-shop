@@ -1,0 +1,62 @@
+Fri Oct 16 12:49:18 UTC 2026
+1cdb68d2239a4e6aa808deaf3e04faee7b8bfb21
+All checks passed!
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+PASS offline bundle: real pg_dump + media hashes/schema/counts; private permissions; no overwrite/source restore
+PASS damaged image/database archives rejected before target restore
+PASS missing referenced image prevents complete backup; existing function-only database preserved
+RESTORE_METRICS {"archive_bytes": 78278, "code_revision": {"dirty": false, "sha": "1cdb68d2239a4e6aa808deaf3e04faee7b8bfb21"}, "media_files": 3, "rows": 92, "tables": 27}
+PASS real pg_restore into separate empty DB: all table counts/schema/media inventory match; occupied targets refused
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-16 21:49:55.015 JST [106] LOG:  starting PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-16 21:49:55.016 JST [106] LOG:  listening on IPv4 address "127.0.0.1", port 56095
+2026-10-16 21:49:55.020 JST [109] LOG:  database system was shut down at 2026-10-16 21:49:54 JST
+2026-10-16 21:49:55.054 JST [106] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: cancellation decision/audit/idempotency durable
+PASS real HTTP after restart: original and confirmed revisions remain distinct
+PASS real HTTP after restart: invitation identity/idempotency/status audit and separate platform scope durable
+PASS RESTORED-DB HTTP: original records/revisions/cancellation/platform audit/idempotency/public and private image bytes/identity isolation
+Synthetic offline drill only; no production backups or deployment. Temporary bundle is not uploaded.
+waiting for server to shut down....2026-10-16 21:49:58.398 JST [106] LOG:  received fast shutdown request
+2026-10-16 21:49:58.398 JST [106] LOG:  aborting any active transactions
+2026-10-16 21:49:58.405 JST [106] LOG:  background worker "logical replication launcher" (PID 112) exited with exit code 1
+2026-10-16 21:49:58.407 JST [107] LOG:  shutting down
+2026-10-16 21:49:58.407 JST [107] LOG:  checkpoint starting: shutdown immediate
+2026-10-16 21:49:58.408 JST [107] LOG:  checkpoint complete: wrote 12 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.002 s; sync files=6, longest=0.001 s, average=0.000 s; distance=1 kB, estimate=1 kB; lsn=0/1E6E2E0, redo lsn=0/1E6E2E0
+2026-10-16 21:49:58.421 JST [106] LOG:  database system is shut down
+ done
+server stopped
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS: PostgreSQL restart persistence
+CSV_REFERENCE rows=200 total_seconds=21.614 row_p95_ms=175.15 largest_receipt_bytes=160; synthetic TestClient/real PG, not production capacity
+.
+=============================== warnings summary ===============================
+.venv/lib/python3.12/site-packages/fastapi/testclient.py:1
+  <DOT_WORKSPACE>/local-shop-m2-clean/.venv/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 12 deselected, 1 warning in 31.34s
+waiting for server to shut down.... done
+server stopped
+Fri Oct 16 12:50:36 UTC 2026
+E_BACKUP_SCALE_FINAL_PASS

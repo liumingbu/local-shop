@@ -55,5 +55,6 @@ Page({alive:true,view:0,validEntry:false,
   previous(){if(this.data.busy||this.data.page<=1)return;this.setData({page:this.data.page-1});void this.load();},next(){if(this.data.busy||this.data.page*20>=this.data.total)return;this.setData({page:this.data.page+1});void this.load();},
   open(event:WechatMiniprogram.TouchEvent){route('merchantdetail',this.data.tenantId,`&kind=${this.data.kind}&record_id=${requireId(event.currentTarget.dataset.id)}`);},
   latest(){if(this.data.lastId)route('merchantdetail',this.data.tenantId,`&kind=reservation&record_id=${this.data.lastId}`);},
+  preparation(){route('preparation',this.data.tenantId);},
   catalog(){route('catalog',this.data.tenantId);},settings(){route('shopsettings',this.data.tenantId);},store(){route('store',this.data.tenantId);},home(){wx.navigateTo({url:'/pages/index/index'});},
 });

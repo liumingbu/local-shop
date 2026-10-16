@@ -12,7 +12,8 @@
     "pages/shopsettings/shopsettings",
     "pages/catalog/catalog",
     "pages/productedit/productedit",
-    "pages/invitations/invitations"
+    "pages/invitations/invitations",
+    "pages/preparation/preparation"
   ],
   "window": {
     "navigationBarTitleText": "local-shop",
