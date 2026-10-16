@@ -1,9 +1,9 @@
 # HANDOFF
 
-2026-10-16；E—H新增授权来源docs/PILOT_PREPARATION_TASK_20261016.md。起点main265bf0a2a256f45b50e85fe7a327d00bdc9eb11e，开放PR0，起点工作树干净；A—D保留复用。
+2026-10-16 E—H执行中，仅Dot同机。H1 PR25已合并c90d8af9a40dd96ecc7e6f88e216d3876937288c，fetch树核验；真实代理共享限频已复现并修复，254项远端回归和Nginx专项通过。
 
-当前fix/formal-auth-proxy-boundary：H1真实Nginx TLS→API/PG复现共享回环限频（来源A10次后来源B429）。最小修复仅正式计数采纳显式确切代理IP下由Nginx覆盖的专用来源头，默认关闭，与开发身份互斥；request.client/Uvicorn不变。不信XFF/X-Real-IP，不改真实权限或部署。对照复测来源B201且A伪造头仍429；非可信直连改变头仍429。
+E工作树local-shop-pilot分支feat/merchant-preparation-import：开店准备与CSV草稿任务/续传/越权/200行限额已实现。已合入H1 main；.env冲突保留CSV与代理两配置。13PG、60原生、11Vue组件、6Vue真实HTTP和0011→0012升级主工作树通过；下一步发布精确代码并独立克隆全回归/合并，按包汇报。原始失败见evidence/merchant-preparation。
 
-PR25代码79b83d4444e1eff95419ad38b837196c171d94de远端干净检出254 Python（183PG）与真实代理/Linux专项全部退出0。报告后按授权合并H1。E已在同机local-shop-pilot工作树独立实施开店准备/CSV，下一步合入最新main并重新验证；不切换执行环境。F备货导出、G站内更新/人工联系、H故障收口依次推进。PROGRESS为唯一状态表；不得因历史交付停止本轮授权任务。
+之后F备货汇总/受控导出打印，G站内未读/人工联系/关闭外部接口，H新入口安全/异常恢复与交付。范围来源docs/PILOT_PREPARATION_TASK_20261016.md；PROGRESS唯一台账，不重复A—D。H1源码在foundation工作树、独立复核克隆m2-clean；均同一Dot电脑，不是外部环境。
 
-不再尝试浏览器排障，不切换执行环境；真实浏览器/WXML/微信工具与真机/真实AppID交换/外部消息/systemd/生产未验收。用户普通PR自查测试合并已授权；生产、真实凭据权限/删除、费用/外部环境、微信提审仍另确认。E—H最终交付商户指南、合成场景、源码及未验清单后停止扩展。
+真实浏览器排障已结束不重试；jsdom/模拟wx/真实HTTP分开。AppID后补，微信/WXML/真机/真实通知/隐私/systemd/生产未验收。不部署、不改真实权限/凭据、不删真实数据；E—H交付上手指南/合成场景/源码和未验清单后停止扩展。
