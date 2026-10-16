@@ -166,3 +166,5 @@ E远端最终：9bd3219精确检出267 Python（196真实PG）、18控制器/13V
 ## F主工作树验证（2026-10-16）
 
 7真实PG专项、13Vue组件和7Vue实际HTTP场景、类型/构建、原有重启以及0012→0013含半途CSV任务升级通过；精确远端复核待追加，见evidence/fulfillment/RESULT_20261016.md。实际打印/浏览器/WXML另验。
+
+F精确远端5ce8e2ed7e008e6104fad58f16a7fba52f67476f：274Python（203PG）、18控制器/13jsdom/60原生、7真实VueHTTP、26旧表97行3图升级与28表92行3图恢复通过。首次超时及原码重复验证见evidence/fulfillment/RESULT_20261016.md，未跳过失败或放宽限制。

@@ -1,0 +1,194 @@
+Fri Oct 16 13:51:13 UTC 2026
+5ce8e2ed7e008e6104fad58f16a7fba52f67476f
+waiting for server to start.... done
+server started
+PASS REAL TCP incomplete image body returns 408 within configured one-second receipt deadline; same-key retry/replay and database readiness succeed
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:admin
+> tsc -p tests/admin/tsconfig.json && node --test tests/admin/*.test.cjs
+
+✔ batch validates all rows before any write and preserves decimals and nullable price (9.653015ms)
+✔ batch stops after known version conflict and requires explicit discard without rollback (6.298617ms)
+✔ unknown response resumes original immutable command and remaining commands after reload (8.22599ms)
+✔ batch storage failure prevents writes; acknowledgement persistence failure replays same key (2.63894ms)
+✔ authentication and forbidden results keep original batch pending (4.027978ms)
+✔ persisted batch is scoped to verified identity and tenant; cross-tenant path is rejected (1.45642ms)
+✔ concurrent submit emits one batch and unmount ignores late response while retaining recovery (2.049993ms)
+✔ completed batch is not resent after a read refresh failure (4.870628ms)
+✔ platform role is read from server; a merchant cannot load control data (4.935597ms)
+✔ unknown command retains immutable payload and key across reconstructed controller (5.009893ms)
+✔ storage failure happens before any write is sent (0.556205ms)
+✔ version rejection unlocks command; authentication failures retain it for same-user login (2.448868ms)
+✔ invalid or external stored command is never replayed with credentials (1.263435ms)
+✔ pending storage is isolated by verified account (2.45127ms)
+✔ unmounted panel ignores late success and retains unknown operation for recovery (13.366405ms)
+✔ saved command remains locked if post-write refresh fails (3.289892ms)
+✔ review and tenant status carry displayed versions and explicit reason (45.134882ms)
+✔ web request refuses external paths and forbids automatic redirect forwarding (3.740272ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 532.286261
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> @local-shop/miniprogram@0.1.0 build
+> node build-assets.cjs --clean && tsc && node build-assets.cjs
+
+Copied 44 native assets; this is NOT a WeChat runtime test.
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+PASS compiled native customer logic + REAL HTTP/PG: store/product/decimal draft/private image/submit/history/cancel/tenant isolation/inquiry
+SIMULATED wx transport, picker/compression and page lifecycle; NOT WeChat runtime, WXML, sharing or real identity validation.
+PASS compiled native merchant logic + REAL HTTP/PG: store version update/manual phone record/decimal confirmation/explicit agreement/prepare/ready/complete/history/tenant read+write denial/inquiry reply+convert/cancel decision
+SIMULATED wx transport and page lifecycle; NOT WeChat runtime, WXML, real identity, device or sharing validation.
+PASS native catalog logic + REAL HTTP/PG: category create/archive/restore, product draft/publish/archive, null reference price, two images/order/unlink/public access, stale version rejection, Logo upload/remove, cross-tenant product/media denial
+SIMULATED wx media picker/compression and page lifecycle; WXML and real WeChat device remain NOT_RUN.
+PASS compiled Web platform controller + native invitation page with REAL HTTP/PG: invite/recipient isolation/explicit accept/review/default private store/pause/resume/audit
+Node controller and SIMULATED wx page lifecycle only; browser DOM and WXML/device remain NOT_RUN.
+PASS compiled Web catalog controller + REAL HTTP/PG: sequential create/update, lost POST/PUT acknowledgement replay, nullable/decimal reference price, version conflict stops remaining rows, partial results, tenant read/write isolation.
+Browser DOM rendering NOT_RUN; synthetic response loss injected only after real HTTP response.
+npm warn Unknown env config "http-proxy". This will stop working in the next major version of npm.
+
+> local-shop@0.1.0 test:dom:live
+> vitest run --config vitest.live.config.mts
+
+
+ RUN  v5.0.4 <DOT_WORKSPACE>/local-shop-m2-clean
+
+
+ Test Files  3 passed (3)
+      Tests  7 passed (7)
+   Start at  22:51:57
+   Duration  26.93s (tests 58%, environment 33%, transform 6%, import 3%)
+
+    Isolate  3 workers spawned · ~3.24s startup each (spawn + environment, per file)
+             at least ~6.47s faster with isolate: false — reuses workers across files instead of one per file
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-16 22:52:28.594 JST [257] LOG:  starting PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-16 22:52:28.594 JST [257] LOG:  listening on IPv4 address "127.0.0.1", port 55519
+2026-10-16 22:52:28.599 JST [260] LOG:  database system was shut down at 2026-10-16 22:52:28 JST
+2026-10-16 22:52:28.604 JST [257] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: cancellation decision/audit/idempotency durable
+PASS real HTTP after restart: original and confirmed revisions remain distinct
+PASS real HTTP after restart: invitation identity/idempotency/status audit and separate platform scope durable
+waiting for server to shut down....2026-10-16 22:52:34.607 JST [257] LOG:  received fast shutdown request
+2026-10-16 22:52:34.607 JST [257] LOG:  aborting any active transactions
+2026-10-16 22:52:34.609 JST [257] LOG:  background worker "logical replication launcher" (PID 263) exited with exit code 1
+2026-10-16 22:52:34.612 JST [258] LOG:  shutting down
+2026-10-16 22:52:34.612 JST [258] LOG:  checkpoint starting: shutdown immediate
+2026-10-16 22:52:34.614 JST [258] LOG:  checkpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.002 s, sync=0.001 s, total=0.002 s; sync files=9, longest=0.001 s, average=0.000 s; distance=9 kB, estimate=9 kB; lsn=0/1617510, redo lsn=0/1617510
+2026-10-16 22:52:34.621 JST [257] LOG:  database system is shut down
+ done
+server stopped
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: invitation identity/idempotency/status audit and separate platform scope durable
+waiting for server to shut down.... done
+server stopped
+{
+  "old_sha": "67837b05ea62e29daa8ad954575310f8f0fa32b9",
+  "tested_head": "5ce8e2ed7e008e6104fad58f16a7fba52f67476f",
+  "dirty": false,
+  "old_tables_verified": 26,
+  "old_rows_verified": 97,
+  "images_verified": 3,
+  "old_partial_import_preserved": true,
+  "upgrade": "0012_catalog_import to 0013_fulfillment_export",
+  "checks": [
+    "all old row values unchanged",
+    "image bytes unchanged",
+    "original details and history unchanged",
+    "old idempotency response preserved",
+    "new stable business number after restart",
+    "cross-tenant and anonymous media access refused"
+  ],
+  "result": "PASS, synthetic same-computer only; NOT production upgrade"
+}
+postgres (PostgreSQL) 16.15
+waiting for server to start.... done
+server started
+PASS real HTTP: login/store/free-text/decimal/dedup/state/history/tenant isolation
+PASS real HTTP: publish store/category/product/reference price/archive visibility
+PASS real HTTP: image upload/normalization/order/guarded download
+PASS real HTTP: customer ownership/inquiry/reply privacy/conversion/request
+PASS real HTTP: staged privacy/submit access/customer isolation/no public file route
+PASS real HTTP: cancellation intent/ownership/pending gate/merchant decision/audit
+PASS real HTTP: original request preserved/decimal revision/explicit reconfirmation
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+PASS offline bundle: real pg_dump + media hashes/schema/counts; private permissions; no overwrite/source restore
+PASS damaged image/database archives rejected before target restore
+PASS missing referenced image prevents complete backup; existing function-only database preserved
+RESTORE_METRICS {"archive_bytes": 80946, "code_revision": {"dirty": false, "sha": "5ce8e2ed7e008e6104fad58f16a7fba52f67476f"}, "media_files": 3, "rows": 92, "tables": 28}
+PASS real pg_restore into separate empty DB: all table counts/schema/media inventory match; occupied targets refused
+waiting for server to shut down.... done
+server stopped
+waiting for server to start....2026-10-16 22:53:31.355 JST [398] LOG:  starting PostgreSQL 16.15 on x86_64-pc-linux-gnu, compiled by gcc (Debian 14.2.0-19) 14.2.0, 64-bit
+2026-10-16 22:53:31.355 JST [398] LOG:  listening on IPv4 address "127.0.0.1", port 47261
+2026-10-16 22:53:31.358 JST [401] LOG:  database system was shut down at 2026-10-16 22:53:31 JST
+2026-10-16 22:53:31.378 JST [398] LOG:  database system is ready to accept connections
+ done
+server started
+PASS real HTTP after API + PostgreSQL restart: record/events/idempotency durable
+PASS real HTTP after API + PostgreSQL restart: image associations and bytes durable
+PASS real HTTP after restart: customer ownership and original/confirmed text durable
+PASS real HTTP after restart: private file bytes and identity checks durable
+PASS real HTTP after restart: cancellation decision/audit/idempotency durable
+PASS real HTTP after restart: original and confirmed revisions remain distinct
+PASS real HTTP after restart: invitation identity/idempotency/status audit and separate platform scope durable
+PASS RESTORED-DB HTTP: original records/revisions/cancellation/platform audit/idempotency/public and private image bytes/identity isolation
+Synthetic offline drill only; no production backups or deployment. Temporary bundle is not uploaded.
+waiting for server to shut down....2026-10-16 22:53:36.703 JST [398] LOG:  received fast shutdown request
+2026-10-16 22:53:36.703 JST [398] LOG:  aborting any active transactions
+2026-10-16 22:53:36.705 JST [398] LOG:  background worker "logical replication launcher" (PID 404) exited with exit code 1
+2026-10-16 22:53:36.709 JST [399] LOG:  shutting down
+2026-10-16 22:53:36.709 JST [399] LOG:  checkpoint starting: shutdown immediate
+2026-10-16 22:53:36.710 JST [399] LOG:  checkpoint complete: wrote 13 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.001 s; sync files=6, longest=0.001 s, average=0.001 s; distance=1 kB, estimate=1 kB; lsn=0/1E7D3A0, redo lsn=0/1E7D3A0
+2026-10-16 22:53:36.714 JST [398] LOG:  database system is shut down
+ done
+server stopped
+Fri Oct 16 13:53:37 UTC 2026
+F_REMOTE_HTTP_UPGRADE_BACKUP_PASS

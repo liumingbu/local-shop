@@ -1,0 +1,16 @@
+Exact code 5ce8e2ed7e008e6104fad58f16a7fba52f67476f; command scripts/test_with_postgres.py, exit 1. Selected diagnostic lines, not full raw log.
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Duration  19.19s (environment 68%, transform 18%, tests 11%, import 3%)
+____ ERROR at setup of test_concurrent_conversion_cannot_create_two_records ____
+                tex = e.ConnectionTimeout("connection timeout expired")
+E               psycopg.errors.ConnectionTimeout: connection timeout expired
+                tex = e.ConnectionTimeout("connection timeout expired")
+E               sqlalchemy.exc.OperationalError: (psycopg.errors.ConnectionTimeout) connection timeout expired
+E              Test Files  1 failed (1)
+E                   Tests  1 failed (1)
+E                Duration  23.37s (tests 73%, environment 21%, transform 4%, import 2%)
+E             Error: UI condition timed out
+FAILED apps/api/tests/test_formal_identity.py::test_formal_vue_login_over_real_http_and_postgres
+ERROR apps/api/tests/test_customers_integration.py::test_concurrent_conversion_cannot_create_two_records
+1 failed, 272 passed, 3 warnings, 1 error in 1266.50s (0:21:06)
