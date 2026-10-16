@@ -18,7 +18,9 @@
 
 | 文件 | 用途 |
 |---|---|
-| [START_HERE](docs/START_HERE.md) | 用户如何上传文档并启动 Dot |
+| [START_HERE](docs/START_HERE.md) | 当前入口与历史初始化说明 |
+| [MERCHANT_QUICKSTART](docs/MERCHANT_QUICKSTART.md) | 开店/CSV/备货清单/站内更新与联系操作 |
+| [PILOT_ACCEPTANCE](docs/PILOT_ACCEPTANCE.md) | 三类合成试点、反馈表和未验收条件 |
 | [DOT_LONG_TERM_TASK](docs/DOT_LONG_TERM_TASK.md) | 可以直接交给 Dot 的完整长期任务 |
 | [AGENTS](AGENTS.md) | 所有开发轮次必须遵守的约束 |
 | [HANDOFF](HANDOFF.md) | 当前工作位置与恢复入口 |
@@ -139,7 +141,7 @@ MEDIA_ROOT 是后端受控本机目录，不得将目录整体挂载为公开静
 - PATCH .../media/{id} 可凭expected_version设置ACTIVE/ARCHIVED，归档可恢复；不物理删除真实文件。
 
 HTTP脚本已包含上传、归一化、排序、公开下载及重启后图片字节一致性验证。
-图片维护页面及微信上传接口适配尚待后续实现，不能据后端通过声称真机图片已验证。
+图片维护原生页面和上传客户端逻辑已有实现与模拟/真实HTTP证据；微信工具、真机图片选择/压缩/上传与视觉效果仍未验收。
 
 ## M4a 顾客与询货（受控开发身份）
 

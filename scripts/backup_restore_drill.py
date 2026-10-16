@@ -34,8 +34,57 @@ from local_shop.recovery import (  # noqa: E402
 )
 from media_http import exercise_media, verify_media_after_restart  # noqa: E402
 from owner_http import exercise, verify_after_restart  # noqa: E402
+from pilot_journeys import exercise_pilot  # noqa: E402
 from platform_http import exercise_platform, verify_platform_after_restart  # noqa: E402
 from private_media_http import exercise_private_media, verify_private_after_restart  # noqa: E402
+
+
+def pilot_snapshot(url):
+    # These contain private synthetic test data: compare in memory, never print raw rows.
+    with psycopg.connect(**connection_options(url)) as connection:
+        return {
+            table: sorted(
+                json.dumps(row, sort_keys=True)
+                for (row,) in connection.execute(f"SELECT to_jsonb(t) FROM {table} t")
+            )
+            for table in (
+                "catalog_imports",
+                "fulfillment_exports",
+                "notice_reads",
+                "contact_records",
+                "notification_attempts",
+            )
+        }
+
+
+def prepare_disabled_notification(env, pilot):
+    from uuid import UUID
+
+    from local_shop.config import Settings
+    from local_shop.db import build_engine
+    from local_shop.external_notifications import dispatch_once, prepare
+    from sqlalchemy.orm import Session
+
+    settings = Settings(
+        _env_file=None,
+        app_env="test",
+        database_url=env["DATABASE_URL"],
+        app_secret_key=env["APP_SECRET_KEY"],
+        media_root=env["MEDIA_ROOT"],
+    )
+    engine = build_engine(settings)
+    try:
+        with Session(engine) as session, session.begin():
+            identifier = prepare(
+                session,
+                UUID(pilot["tenant_id"]),
+                UUID(pilot["owner_id"]),
+                "MERCHANT",
+                pilot["event_key"],
+            )
+        assert dispatch_once(engine, identifier, None)["status"] == "UNCONFIGURED"
+    finally:
+        engine.dispose()
 
 
 def free_port():
@@ -137,9 +186,13 @@ def run():
                 cancellation = exercise_cancellation(base_url)
                 confirmation = exercise_confirmation(base_url)
                 platform = exercise_platform(base_url)
+                pilot = exercise_pilot(base_url, platform)
                 api.terminate()
                 api.wait(timeout=10)
                 assert api.poll() is not None  # Sole writer actually stopped, not just a flag.
+                prepare_disabled_notification(env, pilot)
+                pilot_before = pilot_snapshot(source_url)
+                assert all(pilot_before.values())
                 before = inventory(connection_options(source_url))
                 reject(lambda: backup(source_url, media, bundle, bin_dir))
                 cli = [sys.executable, "-m", "local_shop.recovery"]
@@ -169,6 +222,26 @@ def run():
                 )
                 assert json.loads(checked.stdout)["status"] == "ok"
                 manifest = verify(bundle)
+                from local_shop.config import Settings
+                from maintenance_check import inspect
+
+                maintenance = inspect(
+                    Settings(
+                        _env_file=None,
+                        app_env="test",
+                        database_url=source_url,
+                        app_secret_key=env["APP_SECRET_KEY"],
+                        media_root=media,
+                    ),
+                    bundle,
+                )
+                assert maintenance["backup"]["status"] == "HASH_VERIFIED"
+                assert not maintenance["delete_supported"]
+                assert not maintenance["backup"]["restore_tested_by_this_check"]
+                assert pilot_snapshot(source_url) == pilot_before
+                print(
+                    "PASS read-only maintenance: size/expiry/backup hash, no deletion", flush=True
+                )
                 assert manifest["table_counts"] == before["table_counts"]
                 assert len(manifest["files"]) >= 2
                 assert manifest["schema_versions"] == before["schema_versions"]
@@ -292,6 +365,12 @@ def run():
                         },
                         sort_keys=True,
                     ),
+                    flush=True,
+                )
+                assert pilot_snapshot(target_url) == pilot_before
+                print(
+                    "PASS E-H nonempty import/export/read/contact/notification "
+                    "rows exactly preserved",
                     flush=True,
                 )
                 for key in ("table_counts", "schema_versions", "database_media"):

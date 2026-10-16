@@ -1,0 +1,13 @@
+waiting for server to start.... done
+server started
+PASS actual API process kill before commit; same-key one record/one notice
+PASS actual API process kill after commit; same-key one record/one notice
+waiting for server to shut down.... done
+server stopped
+waiting for server to start.... done
+server started
+PASS real PostgreSQL stopped/restarted; 503 then original retry one record/notice
+PASS actual synthetic sender process interruption; unknown outcome retained; no resend or delivery/read claim
+{"result": "PASS", "scope": "isolated synthetic API/PG processes on dot computer", "external_provider": "FAKE_ONLY", "production_changed": false, "file_write_failure": "separate test_pilot_closeout.py evidence"}
+waiting for server to shut down.... done
+server stopped

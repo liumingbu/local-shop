@@ -1,0 +1,8 @@
+Original application behavior, authorized opt-in handover of a PICKUP record; expected minimization assertion failed. Selected lines only.
+method = 'PICKUP'
+            delivery_address="SYNTHETIC_ADDRESS",
+>       assert ("SYNTHETIC_ADDRESS" in contact.json()["content"]) == (method == "DELIVERY")
+E       assert ('SYNTHETIC_ADDRESS' in 'local-shop | 配送/自提清单\n生成时间 | 2026-10-16 22:01（北京时间）\n范围 | {"day": null, "on_date": null, "method": null, "phase": "PR...HYPERLINK("synthetic") 散装 0.5斤 |  | SYNTHETIC_PERSON | SYNTHETIC_PHONE | SYNTHETIC_ADDRESS\n需人工核对的业务号 | 原因（原文请回授权记录查看）') == ('PICKUP' == 'DELIVERY'
+apps/api/tests/test_fulfillment.py:189: AssertionError
+FAILED apps/api/tests/test_fulfillment.py::test_explicit_contacts_csv_text_safety_and_metadata_only_audit[PICKUP]
+1 failed, 1 warning in 5.67s

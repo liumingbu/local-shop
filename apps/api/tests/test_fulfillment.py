@@ -153,11 +153,13 @@ def test_stale_cancelled_completed_and_export_never_transition(api):
     assert saved["status"] == "CONFIRMED" and saved["version"] == row["version"]
 
 
-def test_explicit_contacts_csv_text_safety_and_metadata_only_audit(api, pg_settings):
+@pytest.mark.parametrize("method", ["PICKUP", "DELIVERY"])
+def test_explicit_contacts_csv_text_safety_and_metadata_only_audit(api, pg_settings, method):
     p = product(api, name='=HYPERLINK("synthetic")')
     record(
         api,
         p,
+        fulfillment_method=method,
         contact_name="SYNTHETIC_PERSON",
         contact_phone="SYNTHETIC_PHONE",
         delivery_address="SYNTHETIC_ADDRESS",
@@ -183,10 +185,8 @@ def test_explicit_contacts_csv_text_safety_and_metadata_only_audit(api, pg_setti
         format="TEXT",
     )
     assert contact.status_code == 200, contact.text
-    assert (
-        "SYNTHETIC_PHONE" in contact.json()["content"]
-        and "SYNTHETIC_ADDRESS" in contact.json()["content"]
-    )
+    assert "SYNTHETIC_PHONE" in contact.json()["content"]
+    assert ("SYNTHETIC_ADDRESS" in contact.json()["content"]) == (method == "DELIVERY")
     assert "NEVER_EXPORT_INTERNAL" not in contact.json()["content"]
     engine = build_engine(pg_settings)
     with Session(engine) as session:

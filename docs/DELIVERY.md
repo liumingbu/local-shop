@@ -33,3 +33,11 @@ ZIP注释为完整提交SHA；先比对随包SHA256，再验证ZIP CRC及逐Git 
 本项目AppID后补，不复用旧配置、不反复索取。正式身份代码使用外部HTTPS替身和真实PG/HTTP验证；真实微信登录/扫码分享/消息、正式隐私、WXML/工具/真机、浏览器视觉截图/轨迹仍待验。首次真实管理员授予、实际生产部署/数据迁移/删除、付费、外部环境和微信提审须单独批准。systemd服务与目标生产容量/异机灾备未验收，云开发电脑不承诺永久在线。
 
 完成本次A—D后提交阶段验收，等待用户查看成果，不擅自扩展MVP或发布。
+
+## 2026-10-16 E—H补充交付范围
+
+后续源码在A—D上新增0012—0014对应CSV草稿导入、用途化备货交付清单和站内更新/联系元数据（实际迁移ID以migrations目录为准）。操作指南见MERCHANT_QUICKSTART，合成三店核对与反馈见PILOT_ACCEPTANCE，针对性边界见PILOT_SECURITY_REVIEW。旧A—D源码包不代表包含本次修改。
+
+最终提供的ZIP以明确Git提交为准，根目录直接源码/隐藏配置样例；校验文件单独列精确SHA与ZIP SHA256。没有真实凭据、备份、客户数据或私图；.env.example仅配置示例。尚未达到PILOT_READY，完整未验收项见PILOT_ACCEPTANCE。
+
+E—H最终被测业务SHA：ceb12e9ef0dd1d31b7efd699166319d49da48850，PR25—29。最终开发回归与故障/升级/恢复报告见evidence/pilot-closeout。源码归档从PR29实际合并后的main生成，逐Git blob、CRC和SHA256核对；准确归档SHA在ZIP注释与交付校验文件中，不把报告自身的文档提交算成重新测试业务。

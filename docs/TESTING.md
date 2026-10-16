@@ -174,3 +174,16 @@ F精确远端5ce8e2ed7e008e6104fad58f16a7fba52f67476f：274Python（203PG）、1
 见evidence/communications/RESULT_20261016.md及失败记录。主工作树15PG、63原生模拟、14jsdom、8Vue事件真实HTTP/PG、0013→0014旧数据升级。精确远端仍待，不把替身外部接受写成送达。
 
 G精确远端a1bd092904e0703dd603251c8b326118a0ad3c57：52通信/顾客/正式身份PG相关回归、18控制器/14jsdom/64原生、8真实VueHTTP及27旧表98行3图升级通过。详见evidence/communications最终追加及registry中断说明；不是全套仅52项。H将完成完整回归。
+
+## H待执行增量（非通过证明）
+
+apps/api/tests/test_pilot_closeout.py：公开CSV异常字符、文件落盘失败恢复、只读维护。
+apps/api/tests/test_pilot_formal_boundaries.py：新入口过期/撤销会话、并发网页确认/单次领取。
+scripts/pilot_fault_drill.py：实际隔离API提交前/后进程中断、PG停止恢复、替身通知进程中断。
+scripts/pilot_journeys.py：三类合成店真实HTTP业务路线。
+现有backup_restore_drill/upgrade_drill增量覆盖非空新表与三店数据。
+当前只有CSV单条PG检查已运行通过，其他新增项NOT_RUN；最终以H证据替代此初始登记，保留失败和修复。
+
+## H最终精确远端全量（覆盖上述待执行登记）
+
+ceb12e9ef0dd1d31b7efd699166319d49da48850干净检出，全296Python、18控制器/14jsdom/64原生、8Vue事件真实HTTP、实际进程/PG/替身sender中断、三类合成店、备份恢复/旧G兼容升级均退出0。运行区间14:18:26—14:40:47 UTC；完整命令/日志/失败保留见evidence/pilot-closeout/RESULT_20261016.md及remote-full.txt。旧条件缺失仍NOT_RUN/BLOCKED，未以真实HTTP或mock替代微信/浏览器验收。

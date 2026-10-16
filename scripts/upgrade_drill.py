@@ -18,6 +18,7 @@ from customer_http import exercise_customer
 from local_runtime import ROOT, Runtime
 from media_http import exercise_media, verify_media_after_restart
 from owner_http import exercise
+from pilot_journeys import exercise_pilot
 from platform_http import exercise_platform, verify_platform_after_restart
 from private_media_http import exercise_private_media, verify_private_after_restart
 from psycopg import sql
@@ -152,6 +153,17 @@ def main():
         platform = exercise_platform(runtime.url)
         import_probe = preserve_existing_import(runtime, owner["headers"])
         export_probe = preserve_existing_export(runtime, owner["headers"])
+        with httpx.Client(base_url=runtime.url, trust_env=False, timeout=10) as client:
+            updates = client.get(
+                "/api/v1/merchant/tenants/10000000-0000-4000-8000-000000000001/updates",
+                headers=owner["headers"],
+            )
+            assert updates.status_code in (200, 404)
+        pilot_preserved = updates.status_code == 200
+        if pilot_preserved:
+            exercise_pilot(runtime.url, platform, pickup_address_minimized=False)
+            # Pilot writes intentionally change the exported collection; capture a fresh audit.
+            export_probe = preserve_existing_export(runtime, owner["headers"])
         old_columns, old_revision = database_schema(runtime)
         before = snapshot(runtime, old_columns)
         media_before = files(runtime)
@@ -220,6 +232,7 @@ def main():
             "images_verified": len(media_before),
             "old_partial_import_preserved": bool(import_probe),
             "old_export_audit_replay_preserved": bool(export_probe),
+            "old_three_store_pilot_rows_preserved": pilot_preserved,
             "upgrade": f"{old_revision} to {new_revision}",
             "checks": [
                 "all old row values unchanged",

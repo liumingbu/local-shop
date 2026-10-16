@@ -1,0 +1,7 @@
+waiting for server to start.... done
+server started
+PASS real HTTP: invitation/recipient consent/review/unpublished tenant/owner manual record/separate platform role/suspend/resume/audit
+PASS synthetic 3-store pilot: fixed-spec / fractional different units / private image-text inquiry; E import drafts, F scoped exports, G explicit reads/contacts; business completion and cross-store rejection
+waiting for server to shut down.... done
+server stopped
+{"result": "PASS", "merchants": "THREE_SYNTHETIC_ONLY", "browser": "NOT_RUN", "wechat_device": "NOT_RUN", "production": "NOT_DEPLOYED"}
