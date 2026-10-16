@@ -1,0 +1,10 @@
+Same exact code; full Python rerun274 passed then real native HTTP command failed. Serial pipeline exit1; this is not a full-pipeline pass.
+NETWORK_UNCERTAIN
+waiting for server to shut down.... done
+server stopped
+Traceback (most recent call last):
+  File "<DOT_WORKSPACE>/local-shop-m2-clean/scripts/e2e_with_postgres.py", line 159, in <module>
+    subprocess.run(
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['node', 'scripts/native_customer_http.cjs', 'http://127.0.0.1:8000', '/tmp/local-shop-e2e-ynbtyrvx/native-fixture.png', '/tmp/local-shop-e2e-ynbtyrvx']' returned non-zero exit status 1.

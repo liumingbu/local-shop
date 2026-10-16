@@ -18,6 +18,7 @@ from .customers import build_router as customer_router
 from .daily_workbench import build_router as daily_router
 from .db import build_engine, probe_database
 from .formal_auth import build_router as formal_router
+from .fulfillment import build_router as fulfillment_router
 from .identity import DEMO_USERS, issue_demo_token, read_demo_token, require_local
 from .media import build_router as media_router
 from .onboarding import build_router as onboarding_router
@@ -120,6 +121,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     access = build_access(settings, engine)
     app.include_router(onboarding_router(access, settings))
+    app.include_router(fulfillment_router(access))
     app.include_router(formal_router(access, settings, engine))
     app.include_router(daily_router(access))
     app.include_router(build_router(access))

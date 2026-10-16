@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {computed,onMounted,onUnmounted,ref} from 'vue';
+import FulfillmentPanel from './FulfillmentPanel.vue';
 import PreparationPanel from './PreparationPanel.vue';
 import VerifiedLogin from './VerifiedLogin.vue';
 import PlatformPanel from './PlatformPanel.vue';
@@ -10,9 +11,10 @@ import {errorMessage} from './workbench';
 const development=computed(()=>import.meta.env.DEV&&import.meta.env.VITE_ENABLE_DEVELOPMENT_LOGIN==='true'&&['127.0.0.1','localhost'].includes(location.hostname));
 const alias=ref('merchant-a'),token=ref(''),userId=ref(''),activeAlias=ref(''),platformRole=ref(false),tenantId=ref(''),members=ref<Tenant[]>([]);
 const busy=ref(false),error=ref(''),notice=ref(''),tab=ref('workbench'),sessionVersion=ref(0),concealed=ref(document.hidden);
+const fulfillmentBusy=ref(false);
 const preparationBusy=ref(false);
 const platformBusy=ref(false),catalogBusy=ref(false),workbenchBusy=ref(false),platformLocked=ref(false),catalogLocked=ref(false),workbenchLocked=ref(false);
-const childBusy=computed(()=>preparationBusy.value||platformBusy.value||catalogBusy.value||workbenchBusy.value),locked=computed(()=>platformLocked.value||catalogLocked.value||workbenchLocked.value);
+const childBusy=computed(()=>fulfillmentBusy.value||preparationBusy.value||platformBusy.value||catalogBusy.value||workbenchBusy.value),locked=computed(()=>platformLocked.value||catalogLocked.value||workbenchLocked.value);
 const tenant=computed(()=>members.value.find(x=>x.id===tenantId.value));let alive=true,epoch=0;
 async function login(){
  if(!development.value||busy.value||childBusy.value)return;
@@ -45,7 +47,8 @@ onMounted(()=>{document.addEventListener('visibilitychange',visibility);window.a
 <template v-if="token&&userId&&!concealed">
 <PlatformPanel v-if="platformRole" :key="userId+sessionVersion" :token="token" :user-id="userId" :development="development" @busy="platformBusy=$event" @locked="platformLocked=$event"/>
 <template v-else-if="tenant"><div class="row"><h2 class="store-title">{{tenant.name}}</h2><label v-if="members.length>1">当前已授权店铺<select :value="tenantId" :disabled="busy||childBusy||locked" @change="choose"><option v-for="member in members" :key="member.id" :value="member.id">{{member.name}}</option></select></label></div>
-<nav aria-label="工作台功能" class="actions"><button :aria-pressed="tab==='workbench'" @click="tab='workbench'">记单与待办</button><button :aria-pressed="tab==='catalog'" @click="tab='catalog'">商品维护</button><button :aria-pressed="tab==='preparation'" @click="tab='preparation'">开店准备/CSV导入</button></nav>
+<nav aria-label="工作台功能" class="actions"><button :aria-pressed="tab==='workbench'" @click="tab='workbench'">记单与待办</button><button :aria-pressed="tab==='catalog'" @click="tab='catalog'">商品维护</button><button :aria-pressed="tab==='preparation'" @click="tab='preparation'">开店准备/CSV导入</button><button :aria-pressed="tab==='fulfillment'" @click="tab='fulfillment'">今日备货/交付清单</button></nav>
+<FulfillmentPanel v-if="tab==='fulfillment'" :key="'fulfillment'+userId+tenantId+sessionVersion" :token="token" :tenant-id="tenantId" @busy="fulfillmentBusy=$event"/>
 <PreparationPanel v-if="tab==='preparation'" :key="'preparation'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" @navigate="tab=$event" @busy="preparationBusy=$event"/>
 <WorkbenchPanel v-show="tab==='workbench'" :key="'workbench'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" :role="tenant.role" :active="tab==='workbench'" @busy="workbenchBusy=$event" @locked="workbenchLocked=$event"/>
 <CatalogPanel v-show="tab==='catalog'" :key="'catalog'+userId+tenantId+sessionVersion" :token="token" :user-id="userId" :tenant-id="tenantId" @busy="catalogBusy=$event" @locked="catalogLocked=$event"/>

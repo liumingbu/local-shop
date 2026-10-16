@@ -1,0 +1,19 @@
+{
+  "old_sha": "67837b05ea62e29daa8ad954575310f8f0fa32b9",
+  "tested_head": "8bb7071dfc9920ef95709d0ad4ab1f94dbbc1506",
+  "dirty": true,
+  "old_tables_verified": 26,
+  "old_rows_verified": 97,
+  "images_verified": 3,
+  "old_partial_import_preserved": true,
+  "upgrade": "0012_catalog_import to 0013_fulfillment_export",
+  "checks": [
+    "all old row values unchanged",
+    "image bytes unchanged",
+    "original details and history unchanged",
+    "old idempotency response preserved",
+    "new stable business number after restart",
+    "cross-tenant and anonymous media access refused"
+  ],
+  "result": "PASS, synthetic same-computer only; NOT production upgrade"
+}
