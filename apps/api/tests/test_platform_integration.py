@@ -346,12 +346,12 @@ def test_invalid_platform_input_does_not_create_partial_invitation(platform, pay
 
 
 def test_downgrade_refuses_to_destroy_platform_history(platform, pg_settings):
-    from conftest import migrate
+    from conftest import migrate, migration_head
 
     invite(platform)
     with pytest.raises(AssertionError, match="Migration failed"):
         migrate(pg_settings, "downgrade", "0008_confirmations")
-    assert "0011_verified_identity" in migrate(pg_settings, "current").stdout
+    assert migration_head() in migrate(pg_settings, "current").stdout
     assert (
         platform.get(
             "/api/v1/platform/invitations", headers=headers(platform, "platform-admin")

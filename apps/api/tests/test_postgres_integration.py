@@ -5,7 +5,7 @@ from pathlib import Path
 from uuid import UUID, uuid4
 
 import pytest
-from conftest import migrate
+from conftest import migrate, migration_head
 from fastapi.testclient import TestClient
 from local_shop.db import build_engine
 from local_shop.main import create_app
@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[3]
 
 def test_real_migration_idempotent(pg_settings):
     migrate(pg_settings, "upgrade", "head")
-    assert "0011_verified_identity" in migrate(pg_settings, "current").stdout
+    assert migration_head() in migrate(pg_settings, "current").stdout
 
 
 def test_real_seed_idempotent(pg_settings):
