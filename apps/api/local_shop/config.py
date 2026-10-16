@@ -1,4 +1,5 @@
 import re
+from ipaddress import ip_address
 from pathlib import Path
 from typing import Literal
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
@@ -20,6 +21,7 @@ class Settings(BaseSettings):
     wechat_login_enabled: bool = False
     wechat_appid: str = ""
     wechat_app_secret: SecretStr = SecretStr("")
+    auth_trusted_proxy_ips: str = ""
     auth_session_seconds: int = Field(default=900, ge=300, le=3600)
     media_root: Path = Path("var/media")
     media_receive_timeout_seconds: float = Field(default=15, ge=0.05, le=120)
@@ -54,6 +56,18 @@ class Settings(BaseSettings):
             raise ValueError(
                 "Production requires configured verified identity; development fallback forbidden"
             )
+        if self.auth_trusted_proxy_ips:
+            try:
+                peers = self.auth_trusted_proxy_ips.split(",")
+                if len(peers) > 8 or "%" in self.auth_trusted_proxy_ips:
+                    raise ValueError
+                self.auth_trusted_proxy_ips = ",".join(str(ip_address(x.strip())) for x in peers)
+            except ValueError:
+                raise ValueError(
+                    "AUTH_TRUSTED_PROXY_IPS requires at most eight exact IPs, no CIDR/wildcard"
+                ) from None
+            if self.dev_auth_enabled:
+                raise ValueError("Trusted formal proxy cannot coexist with development identity")
         if self.wechat_login_enabled:
             if (
                 not re.fullmatch(r"wx[a-fA-F0-9]{16}", self.wechat_appid)
