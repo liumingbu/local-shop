@@ -162,3 +162,7 @@ PR25代码79b83d4444e1eff95419ad38b837196c171d94de独立干净检出254 Python�
 主工作树13真实PG专项、60原生逻辑/资源、11Vue组件、6Vue真实HTTP事件及旧重启通过；200行参考和0011→0012升级见evidence/merchant-preparation。最终被测远端SHA结果随后追加；不把原生资源检查或jsdom当视觉/真机验收。
 
 E远端最终：9bd3219精确检出267 Python（196真实PG）、18控制器/13Vue组件/60原生、6Vue真实HTTP及升级通过。备份脚本旧版本断言失败后仅补断言，1cdb68d精确检出备份/恢复和重复200行参考通过；应用/测试/锁文件与9bd经git diff一致。详见[evidence/merchant-preparation/RESULT_20261016.md](evidence/merchant-preparation/RESULT_20261016.md)，不隐去串行退出1与修复。
+
+## F主工作树验证（2026-10-16）
+
+7真实PG专项、13Vue组件和7Vue实际HTTP场景、类型/构建、原有重启以及0012→0013含半途CSV任务升级通过；精确远端复核待追加，见evidence/fulfillment/RESULT_20261016.md。实际打印/浏览器/WXML另验。

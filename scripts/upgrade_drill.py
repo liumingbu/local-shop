@@ -7,6 +7,7 @@ import re
 import subprocess
 import tarfile
 from pathlib import Path
+from uuid import uuid4
 
 import httpx
 import psycopg
@@ -62,6 +63,39 @@ def files(runtime):
     }
 
 
+def preserve_existing_import(runtime, headers):
+    root = "/api/v1/merchant/tenants/10000000-0000-4000-8000-000000000001"
+    with httpx.Client(base_url=runtime.url, trust_env=False, timeout=10) as client:
+        available = client.get(root + "/catalog-imports/template", headers=headers)
+        if available.status_code == 404:
+            return None  # Explicitly older baseline without E; report this absence.
+        assert available.status_code == 200, available.text
+        text = (
+            "商品名称,分类,规格,单位,参考价格,供货说明,排序,商品介绍\n"
+            "升级导入一,升级合成分类,规格一,件,,常备,0,合成\n"
+            "升级导入二,升级合成分类,规格二,盒,,常备,1,合成"
+        )
+
+        def post(path, body):
+            response = client.post(
+                root + path, headers=headers | {"Idempotency-Key": str(uuid4())}, json=body
+            )
+            assert response.status_code in (200, 201), response.text
+            return response.json()
+
+        job = post("/catalog-imports", {"csv_text": text})
+        job = post(
+            f"/catalog-imports/{job['id']}/confirm",
+            {"expected_version": job["version"], "confirmed": True, "allow_new_categories": True},
+        )
+        post(f"/catalog-imports/{job['id']}/rows/1", {"expected_version": job["version"]})
+        response = client.get(root + f"/catalog-imports/{job['id']}", headers=headers)
+        assert response.status_code == 200
+        assert response.json()["counts"]["SUCCESS"] == 1
+        assert response.json()["counts"]["PENDING"] == 1
+        return {"path": root + f"/catalog-imports/{job['id']}", "value": response.json()}
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--old-ref", required=True)
@@ -90,6 +124,7 @@ def main():
         exercise_cancellation(runtime.url)
         exercise_confirmation(runtime.url)
         platform = exercise_platform(runtime.url)
+        import_probe = preserve_existing_import(runtime, owner["headers"])
         old_columns, old_revision = database_schema(runtime)
         before = snapshot(runtime, old_columns)
         media_before = files(runtime)
@@ -101,6 +136,9 @@ def main():
         assert files(runtime) == media_before, "Image bytes changed during upgrade"
         runtime.start()
         with httpx.Client(base_url=runtime.url, trust_env=False, timeout=10) as client:
+            if import_probe:
+                imported = client.get(import_probe["path"], headers=owner["headers"])
+                assert imported.status_code == 200 and imported.json() == import_probe["value"]
             result = client.get(owner["url"], headers=owner["headers"])
             assert result.status_code == 200
             new = result.json()
@@ -148,6 +186,7 @@ def main():
             "old_tables_verified": len(before),
             "old_rows_verified": sum(map(len, before.values())),
             "images_verified": len(media_before),
+            "old_partial_import_preserved": bool(import_probe),
             "upgrade": f"{old_revision} to {new_revision}",
             "checks": [
                 "all old row values unchanged",
