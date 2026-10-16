@@ -152,3 +152,7 @@ PR #18代码b6652736独立远端干净检出213 Python（154真实PG、59非PG�
 ## 工作包D运行与交付
 
 见[evidence/runtime-delivery/RESULT_20261014.md](evidence/runtime-delivery/RESULT_20261014.md)：主工作树242 Python（183 PG）、18控制器/11Vue组件/59原生及实际HTTP通过；同机10并发/500读请求前后0错误，旧0009→0011真实升级和启动停止重启已执行；保留旧幂等兼容失败和修复。TLS代理通过，systemd明确跳过。最终精确远端0afbd497955dde0b8d661cd633b9854e319cee5b干净独立检出同套完整回归、备份恢复、10并发规模/升级/生命周期全部退出0，详见该报告最终段和remote-full.txt。
+
+## 2026-10-16 H1正式代理来源
+
+PR25代码79b83d4444e1eff95419ad38b837196c171d94de独立干净检出254 Python（183 PG）、真实Nginx/TLS来源隔离/伪造头/直连计数及既有Linux组件均通过；systemd明确跳过，真实微信/浏览器不变。详见[evidence/auth-proxy/RESULT_20261016.md](evidence/auth-proxy/RESULT_20261016.md)。
