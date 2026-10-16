@@ -62,4 +62,6 @@ def migration_head():
     from alembic.config import Config
     from alembic.script import ScriptDirectory
 
-    return ScriptDirectory.from_config(Config(str(ROOT / "apps/api/alembic.ini"))).get_current_head()
+    return ScriptDirectory.from_config(
+        Config(str(ROOT / "apps/api/alembic.ini"))
+    ).get_current_head()
