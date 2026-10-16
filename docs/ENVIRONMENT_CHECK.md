@@ -123,3 +123,9 @@ Unix socket失败历史保留。本轮实际Uvicorn在127.0.0.1监听、HTTP存�
 实际本机TCP运行Nginx+API+PG并分别握手TLS1.2/1.3，使用临时测试证书且仅本进程显式信任。代理权限/私图/幂等、HTTP固定域名跳转、正文413、限流429与查询串不落访问日志通过。单进程运行只证明组件，不证明正式服务管理。
 
 systemd-analyze257.13已存在，但真实verify失败：Failed to create directory '/run/systemd/': Read-only file system。静态验证BLOCKED，systemd启停/开机启动NOT_RUN；未绕过文件系统限制。测试脚本可明确--skip-systemd重跑其他组件，必须保留这一遗漏。未部署、未新建外部计算环境。
+
+## 2026-10-16 E—H本轮观察
+
+再次实际执行：Git2.52.0、Node24.19.0、npm11.9.0、Python3.12.14、PostgreSQL16.15；终端/文件/实际PG实例和HTTP均用于本轮验证。远端写入采用已授权GitHub接口创建树/提交/分支/PR及自查后合并，随后Git fetch与树/SHA回读；未将本地commit或终端push推测为远端成功。H1/E/F实测证据分别见auth-proxy、merchant-preparation、fulfillment，G/H最新执行结果以TESTING为准。
+
+浏览器没有重试，没有用户Mac、Codespaces、Actions、其他执行环境或额外Codex/Work任务。真实微信和生产仍未验证。F首次遇到PG连接超时、正式Vue等待超时和原生HTTP网络不确定，原码分别复测通过；资源快照不足以证明根因，记录为环境下的偶发现象，不据此放宽认证或生产超时。命令时间使用date -u；部分PG日志自身显示JST，不能与用户UTC+8混用。

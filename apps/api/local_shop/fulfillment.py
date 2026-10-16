@@ -203,7 +203,11 @@ def document(snapshot, rows, payload, when):
                     "；".join(order["review_reasons"]),
                 ]
                 + (
-                    [row.contact_name, row.contact_phone, row.delivery_address]
+                    [
+                        row.contact_name,
+                        row.contact_phone,
+                        row.delivery_address if row.fulfillment_method == "DELIVERY" else "",
+                    ]
                     if payload.include_contact
                     else []
                 )

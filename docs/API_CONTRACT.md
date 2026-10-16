@@ -200,3 +200,5 @@ GET merchant/tenants/{tenant}/updates 与 me/stores/{tenant}/updates：每页50�
 GET/POST merchant/tenants/{tenant}/{reservations|inquiries}/{record}/contacts：本店商户私有，每页50。POST复用Idempotency-Key、expected_version并要求confirmed=true；method只允许PHONE/WECHAT/NOT_REACHED、note<=500，增加版本和内部事件，不改变业务状态。顾客DTO不含此事件或备注。GET /contact-draft仅已确认需求，返回待人工核对摘要；复制不写联系记录。UI支持分页、显式结果和原请求重试。
 
 GET notification-capabilities认证后返回外部UNCONFIGURED。没有外部发送HTTP入口、后台调度或真实凭据。内部提供prepare/dispatch_once接口供将来适配，必须先提交去重任务；IN_PROGRESS/UNKNOWN/TIMEOUT不自动重发，不承诺第三方恰好一次。
+
+H字段最小化：fulfillment/exports的HANDOVER+include_contact仍需明确用途确认；返回联系人/电话，但配送地址仅对fulfillment_method=DELIVERY输出，自提为空。PREPARATION不含这些字段。导出审计/幂等契约不变，原始记录地址不修改。

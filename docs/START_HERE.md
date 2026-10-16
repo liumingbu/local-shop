@@ -1,4 +1,10 @@
-# 使用说明｜把文档交给 Dot
+# 现在从哪里开始
+
+当前仓库已有应用源码；无需重新导入初始化文档或重建工程。商户操作先读[MERCHANT_QUICKSTART](MERCHANT_QUICKSTART.md)，三类合成试点与未验收项见[PILOT_ACCEPTANCE](PILOT_ACCEPTANCE.md)，安装运行沿用根目录README。代码/测试/远端状态以PROGRESS与TESTING为准。
+
+下文保留最早文档导入说明作历史背景，不是当前操作前置，也不覆盖后续已授权的常规PR自查合并权限。
+
+# 历史说明｜把初始化文档交给 Dot
 
 ## 先明确本包是什么
 
